@@ -1,0 +1,9 @@
+DB - Daniel Bush
+
+Version 0.1
+* Project started on 28-Aug-08. [DB]
+* Assertions and related support functions have been ported
+  from jsunit. [DB]
+* Tests of the assertion functions have also been ported
+  from jsunit and work on firefox 3 and IE 6. [DB]
+

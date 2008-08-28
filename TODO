@@ -1,0 +1,14 @@
+DB - Daniel Bush
+Aug-2008
+1   We don't count errors and fails; and I still need to
+    figure out if we are clearly distinguishing between these
+    two. [DB]
+2   Stack trace is a bit of a mess.  Firefox seems to have the
+    best one but it is not being used here (or not a lot)
+    because the code uses its own error object
+    JsUnitException. [DB]
+3   The way 'testOrder' and 'tests' work means that our tests are
+    anonymous functions.  This may make tracing errors harder
+    if they are in the tests.  Although, anonymous functions
+    are handy and get used everywhere so this is just a fact
+    of life. [DB]
