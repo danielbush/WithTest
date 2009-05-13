@@ -35,7 +35,7 @@ Suppose you have an html file and your js files then:
   </head>
   <body>
     <input type="button"
-      onclick="UNITJS.runner.run(testOrder,tests)" />
+      onclick="U.runner.run(testOrder,tests)" />
 
       NOTES:
       testOrder: is an array of test names.
@@ -49,9 +49,13 @@ Suppose you have an html file and your js files then:
 and is intended only to give you an idea of what to do.)
 In your_tests.js:
 
+  // Reference the unitJS modules.
+  var U = $web17_com_au$.unitJS;
+  var A = $web17_com_au$.unitJS.assertions;
+
   var testOrder=[];
   var tests={};
-  var A = UNITJS.assertions;
+
   testOrder.push('testAssert');
   tests['testAssert'] = function() {
     A.assert("true should be true", true);

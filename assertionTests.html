@@ -34,7 +34,8 @@ var testOrder=[];
 var tests={};
 
 // Shortcut label for assertions module:
-var A = UNITJS.assertions;
+var U = $web17_com_au$.unitJS;
+var A = $web17_com_au$.unitJS.assertions;
 
 testOrder.push('testAssert');
 tests['testAssert'] = function() {
@@ -446,6 +447,6 @@ tests['testAssertContains'] = function() {
   This page contains tests for the UnitJS Assertion
   functions.  Basically we're testing ourselves with ourselves.
 </p>
-<input type="button" onclick="UNITJS.runner.run(testOrder,tests);" value="Run tests" />
+<input type="button" onclick="U.runner.run(testOrder,tests);" value="Run tests" />
 </body>
 </html>
