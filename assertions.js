@@ -94,6 +94,7 @@ $web17_com_au$.unitJS = function() {
         test_div.appendChild(test_div2);
         t=tag('P',(i+1)+': '+test_name+'... ');
         test_div2.appendChild(t);
+
         try {
           tests[test_name]();
           t.appendChild(passed());
@@ -108,8 +109,9 @@ $web17_com_au$.unitJS = function() {
           if ( e.comment )
             test_div2.appendChild(tag('P',"Comment: "+e.comment));
 
-          test_div2.appendChild(tag('P',"Error message: "+e.jsUnitMessage));
-          test_div2.appendChild(tag('PRE',"Stack trace: "+e.stackTrace));
+          test_div2.appendChild(tag('P',"Error message: "+e.message));
+
+          //test_div2.appendChild(tag('PRE',"Stack trace: "+e.stackTrace));
 
           if ( e.stack ) // Firefox when throwing 'new Error(msg)':
             test_div2.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
@@ -134,27 +136,7 @@ $web17_com_au$.unitJS = function() {
 
     function _assert(comment, booleanValue, failureMessage) {
       if (!booleanValue) {
-
-        // Use own error with custom-built stacktrace:
-
-        throw new module.utils.JsUnitException(comment, failureMessage);
-
-        // TODO (29-Aug-08):
-        // For firefox, we can get a good stack trace using
-        // the Error object and its in-built 'stack' method:
-        //
-        //throw new Error(failureMessage);
-        //
-        // This will cause problems when we test directly for
-        // an exception eg
-        // try {
-        //   something that should fail
-        //   otherwise fail in a different way
-        // }
-        // catch(e) {
-        //   check how we failed
-        // }
-
+        module.utils.fail(comment, failureMessage);
       }
     }
 
@@ -317,14 +299,14 @@ $web17_com_au$.unitJS = function() {
       module.utils._validateArguments(1, arguments);
       var value = module.utils.nonCommentArg(1, 1, arguments);
       if (!value)
-        module.utils.fail(module.utils.commentArg(1, arguments));
+        module.utils.fail('',module.utils.commentArg(1, arguments));
     }
 
     assertions.assertEvaluatesToFalse = function() {
       module.utils._validateArguments(1, arguments);
       var value = module.utils.nonCommentArg(1, 1, arguments);
       if (value)
-        module.utils.fail(module.utils.commentArg(1, arguments));
+        module.utils.fail('',module.utils.commentArg(1, arguments));
     }
 
     assertions.assertHTMLEquals = function() {
@@ -458,6 +440,10 @@ $web17_com_au$.unitJS = function() {
       return 'anonymous';
     }
 
+    // This functino is not useful when using anonymous or modularised
+    // functions.  Deprecated.
+    // -- DBush Sat May 16 22:27:34 EST 2009
+
     utils.getStackTrace = function() {
       var result = '';
 
@@ -574,15 +560,17 @@ $web17_com_au$.unitJS = function() {
       return result;
     }
 
-    utils.fail = function(failureMessage) {
-      throw new utils.JsUnitException("Call to fail()", failureMessage);
+    utils.fail = function(comment,failureMessage) {
+      var e = new Error(failureMessage);
+      e.isJsUnitException = true;
+      e.comment = comment;
+      throw e;
     }
 
     utils.error = function(errorMessage) {
-      var errorObject = new Object();
-      errorObject.description = errorMessage;
-      errorObject.stackTrace = utils.getStackTrace();
-      throw errorObject;
+      var e = new Object();
+      e.description = errorMessage;
+      throw e;
     }
 
     utils.argumentsIncludeComments = function(expectedNumberOfNonCommentArgs, args) {
@@ -617,12 +605,6 @@ $web17_com_au$.unitJS = function() {
       return translator.innerHTML;
     }
 
-    utils.JsUnitException = function(comment, message) {
-      this.isJsUnitException = true;
-      this.comment = comment;
-      this.jsUnitMessage = message;
-      this.stackTrace = module.utils.getStackTrace();
-    }
 
     return utils;
 
