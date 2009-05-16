@@ -40,8 +40,37 @@ $web17_com_au$.unitJS = function() {
   module.runner = function() {
     var runner={};
 
+    // Helper functions to create tags:
+
+    function tag(tagType,text) {
+      var p=document.createElement(tagType);
+      var ptext=document.createTextNode(text);
+      p.appendChild(ptext);
+      return p;
+    }
+    function passed() {
+      var span=tag('SPAN',"PASSED");
+      span.style.color="green";
+      span.style.fontWeight="bold";
+      return span;
+    }
+    function failed() {
+      var span=tag('SPAN',"FAILED");
+      span.style.color="red";
+      span.style.fontWeight="bold";
+      return span;
+    }
+    function errored() {
+      var span=tag('SPAN',"ERROR!");
+      span.style.color="white";
+      span.style.backgroundColor="red";
+      span.style.fontWeight="bold";
+      return span;
+    }
+
     /*
-     * Run a set of unit tests.
+     * Run a set of unit tests and dump the results in
+     * a div in the body-tag with id 'tests'.
      *   tests: a hash of test_names and their functions.
      *   testOrder: an array of test_names which should be
      *     in 'tests'.
@@ -49,7 +78,7 @@ $web17_com_au$.unitJS = function() {
 
     runner.run = function(testOrder,tests) {
 
-      // Initalize test_div.
+      // Initialize the 'tests' div for a new test run.
 
       var body=document.getElementsByTagName('BODY')[0];
       var test_div=document.getElementById("tests");
@@ -60,33 +89,8 @@ $web17_com_au$.unitJS = function() {
       test_div.id = "tests";
       body.appendChild( test_div );
 
-      // Helper functions to create tags:
 
-      function tag(tagType,text) {
-        var p=document.createElement(tagType);
-        var ptext=document.createTextNode(text);
-        p.appendChild(ptext);
-        return p;
-      }
-      function passed() {
-        var span=tag('SPAN',"PASSED");
-        span.style.color="green";
-        span.style.fontWeight="bold";
-        return span;
-      }
-      function failed() {
-        var span=tag('SPAN',"FAILED");
-        span.style.color="red";
-        span.style.fontWeight="bold";
-        return span;
-      }
-      function errored() {
-        var span=tag('SPAN',"ERROR!");
-        span.style.color="white";
-        span.style.backgroundColor="red";
-        span.style.fontWeight="bold";
-        return span;
-      }
+      // Run the tests and print to screen...
 
       for ( var i=0; i<testOrder.length; i++ ) {
         var test_name=testOrder[i];
