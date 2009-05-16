@@ -101,7 +101,7 @@ $web17_com_au$.unitJS = function() {
         }
         catch(e) {
 
-          if(e.isJsUnitException)
+          if(e.isFailure)
             t.appendChild(failed());
           else
             t.appendChild(errored());
@@ -366,16 +366,22 @@ $web17_com_au$.unitJS = function() {
         container.indexOf(contained) != -1);
     }
 
-    assertions.assertJsUnitException = function(comment, allegedJsUnitException) {
-      assertions.assertNotNull(comment, allegedJsUnitException);
-      assertions.assert(comment, allegedJsUnitException.isJsUnitException);
-      assertions.assertNotUndefined(comment, allegedJsUnitException.comment);
+    // Test if error object is a failure raised by an assertion.
+
+    assertions.assertFailure = function(comment, errorObject) {
+      assertions.assertNotNull(comment, errorObject);
+      assertions.assert(comment, errorObject.isFailure);
+      assertions.assertNotUndefined(comment, errorObject.comment);
     }
 
-    assertions.assertNonJsUnitException = function(comment, allegedNonJsUnitException) {
-      assertions.assertNotNull(comment, allegedNonJsUnitException);
-      assertions.assertUndefined(comment, allegedNonJsUnitException.isJsUnitException);
-      assertions.assertNotUndefined(comment, allegedNonJsUnitException.description);
+    // Test if error object is an error other than a failure
+    // (indicating an error has been thrown which is not related
+    // to an assertion/test).
+
+    assertions.assertError = function(comment, errorObject) {
+      assertions.assertNotNull(comment, errorObject);
+      assertions.assertUndefined(comment, errorObject.isFailure);
+      assertions.assertNotUndefined(comment, errorObject.description);
     }
 
     assertions.setUp = function() {
@@ -562,7 +568,7 @@ $web17_com_au$.unitJS = function() {
 
     utils.fail = function(comment,failureMessage) {
       var e = new Error(failureMessage);
-      e.isJsUnitException = true;
+      e.isFailure = true;
       e.comment = comment;
       throw e;
     }
