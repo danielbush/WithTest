@@ -25,6 +25,11 @@
 <script language="JavaScript" type="text/javascript" src="../assertions.js"></script>
 <script language="JavaScript" type="text/javascript">
 
+// Shortcut label for assertions module:
+var U     = $web17_com_au$.unitJS;
+var A     = $web17_com_au$.unitJS.assertions;
+var utils = $web17_com_au$.unitJS.utils;
+
 /*
  * Set up tests.
  *
@@ -33,10 +38,6 @@
 var testOrder=[];
 var tests={};
 
-// Shortcut label for assertions module:
-var U     = $web17_com_au$.unitJS;
-var A     = $web17_com_au$.unitJS.assertions;
-var utils = $web17_com_au$.unitJS.utils;
 
 testOrder.push('testAssert');
 tests['testAssert'] = function() {
@@ -83,7 +84,9 @@ tests['testAssertNotNull'] = function() {
 testOrder.push('testAssertUndefined');
 tests['testAssertUndefined'] = function() {
     var myVar;
-    A.assertUndefined("A declared but unassigned variable should have the undefined value", myVar);
+    A.assertUndefined(
+      "A declared but unassigned variable should have the undefined value", 
+      myVar);
     A.assertUndefined(myVar);
 }
 
@@ -113,7 +116,9 @@ tests['testFail'] = function() {
     } catch (e) {
         excep = e;
     }
-    A.assertJsUnitException("fail(string) should throw a JsUnitException", excep);
+    A.assertJsUnitException(
+      "fail(string) should throw a JsUnitException",
+      excep);
 }
 
 testOrder.push('testTooFewArguments');
@@ -124,7 +129,9 @@ tests['testTooFewArguments'] = function() {
     } catch (e1) {
         excep = e1;
     }
-    A.assertNonJsUnitException("Calling an assertion function with too few arguments should throw an exception", excep);
+    A.assertNonJsUnitException(
+      "Calling an assertion function with too few arguments should throw an exception",
+      excep);
 }
 
 testOrder.push('testTooManyArguments');
@@ -135,7 +142,9 @@ tests['testTooManyArguments'] = function() {
     } catch (e2) {
         excep = e2;
     }
-    A.assertNonJsUnitException("Calling an assertion function with too many arguments should throw an exception", excep);
+    A.assertNonJsUnitException(
+      "Calling an assertion function with too many arguments should throw an exception",
+      excep);
 }
 
 testOrder.push('testInvalidCommentArgumentType');
@@ -146,7 +155,9 @@ tests['testInvalidCommentArgumentType'] = function() {
     } catch (e3) {
         excep = e3;
     }
-    A.assertNonJsUnitException("Calling an assertion function with a non-string comment should throw an exception", excep);
+    A.assertNonJsUnitException(
+      "Calling an assertion function with a non-string comment should throw an exception",
+      excep);
 }
 
 testOrder.push('testInvalidArgumentType');
@@ -157,7 +168,9 @@ tests['testInvalidArgumentType'] = function() {
     } catch (e) {
         excep = e;
     }
-    A.assertNonJsUnitException("Calling an assertion function with an invalid argument should throw an exception", excep);
+    A.assertNonJsUnitException(
+      "Calling an assertion function with an invalid argument should throw an exception",
+      excep);
 }
 
 testOrder.push('testAssertArrayEquals');

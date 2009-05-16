@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+/* 
+ * This is a source file for UnitJS a unit testing framework
+ * for javascript.
+ * Copyright (C) 2009 Daniel Bush
+ * This program is distributed under the terms of the GNU
+ * General Public License.  A copy of the license should be
+ * enclosed with this project in the file LICENSE.  If not
+ * see <http://www.gnu.org/licenses/>.
+ *
+ * Substantial parts of this code were taken from the JSUnit
+ * project.  The Initial Developer of the Original Code is
+ * Edward Hieatt, edward@jsunit.net.  Portions created by
+ * the Initial Developer are Copyright (C) 2003 the Initial
+ * Developer.  All Rights Reserved.
+ *
+ */
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>UnitJS Assertion Examples</title>
+<script language="JavaScript" type="text/javascript" src="../assertions.js"></script>
+<script language="JavaScript" type="text/javascript">
+
+// Shortcut label for assertions module:
+
+var U     = $web17_com_au$.unitJS;
+var A     = $web17_com_au$.unitJS.assertions;
+var utils = $web17_com_au$.unitJS.utils;
+
+/*
+ * Set up tests.
+ *
+ */
+
+var testOrder=[];
+var tests={};
+
+
+stmt = 'This test fails on the 3rd assert';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  A.assert("ok", true);
+  A.assert("ok", true);
+  A.assert("failure!", false);
+  A.assert("ok", true);
+  A.assert("ok", true);
+}
+
+stmt = 'This test has an error halfway through';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  A.assert("ok", true);
+  A.assert("ok", true);
+  throw new Error('Error!');
+  A.assert("ok", true);
+  A.assert("ok", true);
+}
+
+stmt = 'tmp';
+testOrder.push(stmt);
+tests[stmt] = function() {
+}
+
+</script>
+</head>
+
+<body>
+<h1>UnitJS Assertion Tests</h1>
+
+<p>
+  This page contains tests for the UnitJS Assertion
+  functions.  Basically we're testing ourselves with ourselves.
+</p>
+<input type="button" onclick="U.runner.run(testOrder,tests);" value="Run tests" />
+</body>
+</html>

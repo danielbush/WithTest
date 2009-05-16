@@ -5,9 +5,21 @@ Currently implementing (@May-09)
 * Counting tests and assertions [DB]
 * Improved stack trace [DB]
 * Make sure we fail when we fail and error when we error [DB]
+* an error should should say ERROR; and a fail should say FAIL [DB]
+* fail and error stack traces both make use of firefox or ie7 
+  stack traces, not the old jsunit stack trace [DB]
+  * the issue is when an assertion fails, the old jsunit code
+    uses its own customised stack trace, which doesn't work
+    well with anonymous / modularised javascript.
+    We should 
+    - record which assertion in the test failed eg 5th assertion in test X
+    - throw an error and get its real stack trace just below the failed
+      assertion ; unfortunately, this might be quite hard to do.
+
 
 Latest
-* Implemented namespacing/packaging standard - see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml
+* Modularised the unitJS module into several submodules. [DB]
+* Implemented namespacing/packaging standard - see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml [DB]
 
 Version 0.1
 * Project started on 28-Aug-08. [DB]

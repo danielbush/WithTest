@@ -48,7 +48,9 @@ $web17_com_au$.unitJS = function() {
      */
 
     runner.run = function(testOrder,tests) {
+
       // Initalize test_div.
+
       var body=document.getElementsByTagName('BODY')[0];
       var test_div=document.getElementById("tests");
       if ( test_div ) {
@@ -59,6 +61,7 @@ $web17_com_au$.unitJS = function() {
       body.appendChild( test_div );
 
       // Helper functions to create tags:
+
       function tag(tagType,text) {
         var p=document.createElement(tagType);
         var ptext=document.createTextNode(text);
@@ -77,6 +80,13 @@ $web17_com_au$.unitJS = function() {
         span.style.fontWeight="bold";
         return span;
       }
+      function errored() {
+        var span=tag('SPAN',"ERROR!");
+        span.style.color="white";
+        span.style.backgroundColor="red";
+        span.style.fontWeight="bold";
+        return span;
+      }
 
       for ( var i=0; i<testOrder.length; i++ ) {
         var test_name=testOrder[i];
@@ -89,14 +99,21 @@ $web17_com_au$.unitJS = function() {
           t.appendChild(passed());
         }
         catch(e) {
-          t.appendChild(failed());
+
+          if(e.isJsUnitException)
+            t.appendChild(failed());
+          else
+            t.appendChild(errored());
+
           if ( e.comment )
             test_div2.appendChild(tag('P',"Comment: "+e.comment));
+
           test_div2.appendChild(tag('P',"Error message: "+e.jsUnitMessage));
           test_div2.appendChild(tag('PRE',"Stack trace: "+e.stackTrace));
-          // e.stack (firefox) when throwing 'new Error(msg)':
-          if ( e.stack )
+
+          if ( e.stack ) // Firefox when throwing 'new Error(msg)':
             test_div2.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
+
         }
       }
     }
@@ -608,8 +625,8 @@ $web17_com_au$.unitJS = function() {
     }
 
     return utils;
-  }();
 
+  }();
 
   return module;
 
