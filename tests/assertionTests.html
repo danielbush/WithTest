@@ -34,8 +34,9 @@ var testOrder=[];
 var tests={};
 
 // Shortcut label for assertions module:
-var U = $web17_com_au$.unitJS;
-var A = $web17_com_au$.unitJS.assertions;
+var U     = $web17_com_au$.unitJS;
+var A     = $web17_com_au$.unitJS.assertions;
+var utils = $web17_com_au$.unitJS.utils;
 
 testOrder.push('testAssert');
 tests['testAssert'] = function() {
@@ -108,7 +109,7 @@ testOrder.push('testFail');
 tests['testFail'] = function() {
     var excep = null;
     try {
-        A.fail("Failure message");
+        utils.fail("Failure message");
     } catch (e) {
         excep = e;
     }
@@ -181,19 +182,19 @@ tests['testAssertArrayEquals'] = function() {
     A.assertArrayEquals(array1, array2);
     try {
         A.assertArrayEquals(array1, array3);
-        A.fail("Should not be equal");
+        utils.fail("Should not be equal");
     } catch (e) {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.comment == "Call to fail()")
-            A.fail(e.comment + e.jsUnitMessage); //tried fail is also caught
+            utils.fail(e.comment + e.jsUnitMessage); //tried fail is also caught
     }
     try {
         A.assertArrayEquals(array1, array4);
-        A.fail("Should not be equal");
+        utils.fail("Should not be equal");
     } catch (e) {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.comment == "Call to fail()")
-            A.fail(e.comment + e.jsUnitMessage); //tried fail is also caught
+            utils.fail(e.comment + e.jsUnitMessage); //tried fail is also caught
     }
     var array5 = ['foo', 'bar', ['nested', 'bar'], 'foobar'];
     var array6 = ['foo', 'bar', ['nested', 'bar'], 'foobar'];
@@ -203,13 +204,13 @@ tests['testAssertArrayEquals'] = function() {
     {
         A.assertArrayEquals(array5, array7);
         var failure = 'Differing nested arrays found to be equal';
-        A.fail(failure);
+        utils.fail(failure);
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
 }
 
@@ -235,24 +236,24 @@ tests['testAssertObjectEquals'] = function()
     try
     {
         A.assertObjectEquals(o1, o3);
-        A.fail(failure = 'Simple differing objects found to be the same');
+        utils.fail(failure = 'Simple differing objects found to be the same');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
     try
     {
         A.assertObjectEquals(o4, o5);
-        A.fail(failure = 'Objects with different methods found to be the same');
+        utils.fail(failure = 'Objects with different methods found to be the same');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
 
     o4.bar();
@@ -260,24 +261,24 @@ tests['testAssertObjectEquals'] = function()
     try
     {
         A.assertObjectEquals({ts:new Date()}, {ts:new Date()});
-        A.fail(failure = 'Objects with different Date attributes found to be the same');
+        utils.fail(failure = 'Objects with different Date attributes found to be the same');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
     try
     {
         A.assertObjectEquals(new Date(), new Date());
-        A.fail(failure = 'Different Date objects found to be the same');
+        utils.fail(failure = 'Different Date objects found to be the same');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
     A.assertObjectEquals(/a/, new RegExp('a'));
     A.assertObjectEquals(/a/i, new RegExp('a', 'i'));
@@ -285,24 +286,24 @@ tests['testAssertObjectEquals'] = function()
     try
     {
         A.assertObjectEquals(/a/i, new RegExp('a', 'g'));
-        A.fail(failure = 'RegExp with different flags found to be the same');
+        utils.fail(failure = 'RegExp with different flags found to be the same');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
     try
     {
         A.assertObjectEquals(/a/, new RegExp('b'));
-        A.fail(failure = 'RegExp with different patterns found to be the same');
+        utils.fail(failure = 'RegExp with different patterns found to be the same');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
 }
 
@@ -328,24 +329,24 @@ tests['testAssertObjectEqualsOnNumbers'] = function() {
     try
     {
         A.assertObjectEquals(n1, n3);
-        A.fail(failure = 'Different Numbers');
+        utils.fail(failure = 'Different Numbers');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
     try
     {
         A.assertObjectEquals(newN1, newN3);
-        A.fail(failure = 'Different New Numbers');
+        utils.fail(failure = 'Different New Numbers');
     }
     catch (e)
     {
         A.assertJsUnitException("Should be a JsUnitException", e);
         if (e.jsUnitMessage == failure)
-            A.fail(e.jsUnitMessage);
+            utils.fail(e.jsUnitMessage);
     }
 }
 
@@ -356,7 +357,7 @@ tests['testAssertEvaluatesToTrue'] = function() {
     A.assertEvaluatesToTrue(1);
     try {
         A.assertEvaluatesToTrue(null);
-        A.fail("Should have thrown a JsUnitException");
+        utils.fail("Should have thrown a JsUnitException");
     } catch (e) {
         A.assertJsUnitException("Should be a JsUnitException", e);
     }
@@ -370,7 +371,7 @@ tests['testAssertEvaluatesToFalse'] = function() {
     A.assertEvaluatesToFalse(0);
     try {
         A.assertEvaluatesToFalse("foo");
-        A.fail("Should have thrown a JsUnitException");
+        utils.fail("Should have thrown a JsUnitException");
     } catch (e) {
         A.assertJsUnitException("Should be a JsUnitException", e);
     }
@@ -393,21 +394,21 @@ tests['testAssertHashEquals'] = function() {
     var hash2 = new Array();
     try {
         A.assertHashEquals(hash1, hash2);
-        A.fail();
+        utils.fail();
     } catch (e) {
         A.assertJsUnitException("hash2 is empty", e);
     }
     hash2["key1"] = "value1";
     try {
         A.assertHashEquals(hash1, hash2);
-        A.fail();
+        utils.fail();
     } catch (e) {
         A.assertJsUnitException("hash2 is a of a different size", e);
     }
     hash2["key2"] = "foo";
     try {
         A.assertHashEquals(hash1, hash2);
-        A.fail();
+        utils.fail();
     } catch (e) {
         A.assertJsUnitException("hash2 has different values", e);
     }

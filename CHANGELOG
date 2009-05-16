@@ -3,6 +3,8 @@ DB - Daniel Bush
 Currently implementing (@May-09)
 * Returning which assertion has failed [DB]
 * Counting tests and assertions [DB]
+* Improved stack trace [DB]
+* Make sure we fail when we fail and error when we error [DB]
 
 Latest
 * Implemented namespacing/packaging standard - see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml
