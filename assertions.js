@@ -111,8 +111,6 @@ $web17_com_au$.unitJS = function() {
 
           test_div2.appendChild(tag('P',"Error message: "+e.message));
 
-          //test_div2.appendChild(tag('PRE',"Stack trace: "+e.stackTrace));
-
           if ( e.stack ) // Firefox when throwing 'new Error(msg)':
             test_div2.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
 
