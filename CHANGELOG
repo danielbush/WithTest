@@ -1,5 +1,8 @@
 DB - Daniel Bush
 
+Latest
+* Implemented namespacing/packaging standard - see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml
+
 Version 0.1
 * Project started on 28-Aug-08. [DB]
 * Assertions and related support functions have been ported
