@@ -33,6 +33,32 @@ $web17_com_au$.unitJS = function() {
   var _UNDEFINED_VALUE;
 
   /*
+   * Stats object.
+   *
+   * Initialize a new one with each runner.run().
+   *
+   */
+
+  var Stats = function() {
+    // Tests:
+    this.tests=0;
+    this.failed_tests=0;
+    this.errored_tests=0;
+    // Assertions:
+    this.assertions=0;
+    // There's no point count failed or errored assertions.
+    // Both will be counted as test fails or errors.
+  }
+
+  /*
+   * A Stats instance is stored here and updated
+   * by assertions when running tests.
+   *
+   */
+
+  var stats = null;
+
+  /*
    * Runner submodule
    * ---------------------------------------------------
    * - you can invoke runner.run directly in your html
@@ -77,22 +103,6 @@ $web17_com_au$.unitJS = function() {
       return span;
     }
 
-    // Stats object.
-    //
-    // Initialize a new one with each runner.run().
-
-    var Stats = function() {
-      this.assertions=0;
-      this.tests=0;
-      this.failures=0;
-      this.passes=0;
-      this.errors=0;
-    }
-
-    // A Stats instance is stored here and updated
-    // by assertions when running tests.
-
-    var stats = null;
 
     /*
      * Run a set of unit tests and dump the results in
@@ -133,17 +143,16 @@ $web17_com_au$.unitJS = function() {
           stats.tests++;
           tests[test_name]();
           t.appendChild(passed());
-          stats.passes++;
         }
         catch(e) {
 
           if(e.isFailure) {
             t.appendChild(failed());
-            stats.failures++;
+            stats.failed_tests++;
           }
           else {
             t.appendChild(errored());
-            stats.errors++;
+            stats.errored_tests++;
           }
 
           if ( e.comment )
@@ -156,8 +165,23 @@ $web17_com_au$.unitJS = function() {
 
         }
       }
+
+      // Display stats.
+
+      var stats_div = document.createElement('DIV');
+      tests_div.appendChild(stats_div);
+      stats_div.innerHTML = 
+        'Tests: '+stats.tests+'<br/>'+
+        'Tests - Failed: '+stats.failed_tests+'<br/>'+
+        'Tests - Errors: '+stats.errored_tests+'<br/>'+
+        'Assertions: '+stats.assertions+'<br/>';
+
+      return stats;
+
     }
+
     return runner;
+
   }();
 
   /*
@@ -190,6 +214,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assert = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var booleanValue = module.utils.nonCommentArg(1, 1, arguments);
 
@@ -202,6 +227,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertTrue = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var booleanValue = module.utils.nonCommentArg(1, 1, arguments);
 
@@ -214,6 +240,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertFalse = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var booleanValue = module.utils.nonCommentArg(1, 1, arguments);
 
@@ -226,6 +253,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertEquals = function() {
+      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -238,6 +266,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotEquals = function() {
+      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -248,6 +277,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNull = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -259,6 +289,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotNull = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -268,6 +299,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertUndefined = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -279,6 +311,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotUndefined = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -288,6 +321,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNaN = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert(module.utils.commentArg(1, arguments), isNaN(aVar),
@@ -295,6 +329,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotNaN = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert(module.utils.commentArg(1, arguments), !isNaN(aVar),
@@ -302,6 +337,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertObjectEquals = function() {
+      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -345,6 +381,7 @@ $web17_com_au$.unitJS = function() {
     assertions.assertArrayEquals = assertions.assertObjectEquals;
 
     assertions.assertEvaluatesToTrue = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var value = module.utils.nonCommentArg(1, 1, arguments);
       if (!value)
@@ -352,6 +389,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertEvaluatesToFalse = function() {
+      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var value = module.utils.nonCommentArg(1, 1, arguments);
       if (value)
@@ -359,6 +397,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertHTMLEquals = function() {
+      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -374,6 +413,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertHashEquals = function() {
+      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -394,6 +434,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertRoughlyEquals = function() {
+      stats.assertions++;
       module.utils._validateArguments(3, arguments);
       var expected = module.utils.nonCommentArg(1, 3, arguments);
       var actual = module.utils.nonCommentArg(2, 3, arguments);
@@ -406,6 +447,7 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertContains = function() {
+      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var contained = module.utils.nonCommentArg(1, 2, arguments);
       var container = module.utils.nonCommentArg(2, 2, arguments);
@@ -418,6 +460,7 @@ $web17_com_au$.unitJS = function() {
     // Test if error object is a failure raised by an assertion.
 
     assertions.assertFailure = function(comment, errorObject) {
+      stats.assertions++;
       assertions.assertNotNull(comment, errorObject);
       assertions.assert(comment, errorObject.isFailure);
       assertions.assertNotUndefined(comment, errorObject.comment);
@@ -428,6 +471,7 @@ $web17_com_au$.unitJS = function() {
     // to an assertion/test).
 
     assertions.assertError = function(comment, errorObject) {
+      stats.assertions++;
       assertions.assertNotNull(comment, errorObject);
       assertions.assertUndefined(comment, errorObject.isFailure);
       assertions.assertNotUndefined(comment, errorObject.description);
