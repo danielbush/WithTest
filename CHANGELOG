@@ -1,6 +1,16 @@
 DB - Daniel Bush
 
 Currently implementing (@May-09)
+- Clean up the argument parsing for assertions
+  - Currently there are several util methods
+      utils.argumentsIncludeComments = function(expectedNumberOfNonCommentArgs, args) {
+      utils.commentArg = function(expectedNumberOfNonCommentArgs, args) {
+      utils.nonCommentArg = function( desiredNonCommentArgIndex, 
+      utils._validateArguments = function(expectedNumberOfNonCommentArgs, args) {
+    Not sure if I want to keep it this way.
+    The (expectedNumberOfNonCommentArgs, args) interface might be a necessary evil if there
+    is some variability in this when calling all the different assertions - is there???
+    
 * Returning which assertion has failed [DB]
 * Counting tests and assertions [DB]
 * Improved stack trace [DB]
