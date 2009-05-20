@@ -77,6 +77,23 @@ $web17_com_au$.unitJS = function() {
       return span;
     }
 
+    // Stats object.
+    //
+    // Initialize a new one with each runner.run().
+
+    var Stats = function() {
+      this.assertions=0;
+      this.tests=0;
+      this.failures=0;
+      this.passes=0;
+      this.errors=0;
+    }
+
+    // A Stats instance is stored here and updated
+    // by assertions when running tests.
+
+    var stats = null;
+
     /*
      * Run a set of unit tests and dump the results in
      * a div in the body-tag with id 'tests'.
@@ -99,6 +116,11 @@ $web17_com_au$.unitJS = function() {
       test_div.id = "tests";
       body.appendChild( test_div );
 
+      // Initialize stats object for collecting stats.
+      //
+      // Assertions will update the stats as they run.
+
+      stats = new Stats();
 
       // Run the tests and print to screen...
 
@@ -110,15 +132,21 @@ $web17_com_au$.unitJS = function() {
         test_div2.appendChild(t);
 
         try {
+          stats.tests++;
           tests[test_name]();
           t.appendChild(passed());
+          stats.passes++;
         }
         catch(e) {
 
-          if(e.isFailure)
+          if(e.isFailure) {
             t.appendChild(failed());
-          else
+            stats.failures++;
+          }
+          else {
             t.appendChild(errored());
+            stats.errors++;
+          }
 
           if ( e.comment )
             test_div2.appendChild(tag('P',"Comment: "+e.comment));
