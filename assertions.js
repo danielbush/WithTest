@@ -108,17 +108,15 @@ $web17_com_au$.unitJS = function() {
       // Initialize the 'tests' div for a new test run.
 
       var body=document.getElementsByTagName('BODY')[0];
-      var test_div=document.getElementById("tests");
-      if ( test_div ) {
-        body.removeChild(test_div);
+      var tests_div=document.getElementById("tests");
+      if ( tests_div ) {
+        body.removeChild(tests_div);
       }
-      var test_div=document.createElement('DIV');
-      test_div.id = "tests";
-      body.appendChild( test_div );
+      tests_div=document.createElement('DIV');
+      tests_div.id = "tests";
+      body.appendChild( tests_div );
 
       // Initialize stats object for collecting stats.
-      //
-      // Assertions will update the stats as they run.
 
       stats = new Stats();
 
@@ -126,10 +124,10 @@ $web17_com_au$.unitJS = function() {
 
       for ( var i=0; i<testOrder.length; i++ ) {
         var test_name=testOrder[i];
-        var test_div2=document.createElement('DIV');
-        test_div.appendChild(test_div2);
+        var test_div=document.createElement('DIV');
+        tests_div.appendChild(test_div);
         t=tag('P',(i+1)+': '+test_name+'... ');
-        test_div2.appendChild(t);
+        test_div.appendChild(t);
 
         try {
           stats.tests++;
@@ -149,12 +147,12 @@ $web17_com_au$.unitJS = function() {
           }
 
           if ( e.comment )
-            test_div2.appendChild(tag('P',"Comment: "+e.comment));
+            test_div.appendChild(tag('P',"Comment: "+e.comment));
 
-          test_div2.appendChild(tag('P',"Error message: "+e.message));
+          test_div.appendChild(tag('P',"Error message: "+e.message));
 
           if ( e.stack ) // Firefox when throwing 'new Error(msg)':
-            test_div2.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
+            test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
 
         }
       }
