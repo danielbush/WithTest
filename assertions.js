@@ -35,6 +35,15 @@ $web17_com_au$.unitJS = function() {
   /*
    * Runner submodule
    * ---------------------------------------------------
+   * - you can invoke runner.run directly in your html
+   *   (eg using an input button) once you've set
+   *   up the tests
+   * - to set up tests you have to set up 
+   *   - an array of test names
+   *   - a hash of test names and their functions
+   * - these are passed into runner.run
+   *   
+   *
    */
 
   module.runner = function() {
@@ -71,9 +80,10 @@ $web17_com_au$.unitJS = function() {
     /*
      * Run a set of unit tests and dump the results in
      * a div in the body-tag with id 'tests'.
+     *
      *   tests: a hash of test_names and their functions.
      *   testOrder: an array of test_names which should be
-     *     in 'tests'.
+     *              in 'tests'.
      */
 
     runner.run = function(testOrder,tests) {
@@ -128,6 +138,17 @@ $web17_com_au$.unitJS = function() {
    * Assertions submodule
    * ---------------------------------------------------
    * - contains all assertion code
+   * - there is one private assertion: _assert
+   *   which is usually called by all the other assertions
+   * - public assertions generally take 1 or 2 args
+   *   - 1) comment : a user comment shown at failure [optional]
+   *   - 2) a boolean test result
+   * - _assert takes these args and an addition arg:
+   *   - 3) failureMessage : a generic message shown at failure; it is
+   *        used as the errors 'message' property
+   * - if the boolean test fails 'comment' and 'failureMessage' are 
+   *   passed off to module.utils.fail and these are used to generate (throw)
+   *   a failure error object
    *
    */
 
@@ -567,6 +588,15 @@ $web17_com_au$.unitJS = function() {
       }
       return result;
     }
+
+    /*
+     * Raise a failure - usually for an assertion that
+     * fails.  
+     *
+     * This involves raising an error and giving it a 
+     * special flag.
+     *
+     */
 
     utils.fail = function(comment,failureMessage) {
       var e = new Error(failureMessage);

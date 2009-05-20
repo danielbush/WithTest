@@ -43,6 +43,7 @@ var tests={};
 stmt = 'This test fails on the 3rd assert';
 testOrder.push(stmt);
 tests[stmt] = function() {
+  A.assert(true);
   A.assert("ok", true);
   A.assert("ok", true);
   A.assert("failure!", false);
