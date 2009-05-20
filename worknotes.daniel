@@ -1,0 +1,29 @@
+Currently implementing (@May-09)
+------------------------------------
+
+- Clean up the argument parsing for assertions
+  - Currently there are several util methods
+      utils.argumentsIncludeComments = function(expectedNumberOfNonCommentArgs, args) {
+      utils.commentArg = function(expectedNumberOfNonCommentArgs, args) {
+      utils.nonCommentArg = function( desiredNonCommentArgIndex, 
+      utils._validateArguments = function(expectedNumberOfNonCommentArgs, args) {
+    Not sure if I want to keep it this way.
+    The (expectedNumberOfNonCommentArgs, args) interface might be a necessary evil if there
+    is some variability in this when calling all the different assertions - is there???
+    
+* Returning which assertion has failed
+* Counting tests and assertions
+* Improved stack trace
+* Make sure we fail when we fail and error when we error
+* an error should should say ERROR; and a fail should say FAIL
+* fail and error stack traces both make use of firefox or ie7 
+  stack traces, not the old jsunit stack trace
+  * the issue is when an assertion fails, the old jsunit code
+    uses its own customised stack trace, which doesn't work
+    well with anonymous / modularised javascript.
+    We should 
+    - record which assertion in the test failed eg 5th assertion in test X
+    - throw an error and get its real stack trace just below the failed
+      assertion ; unfortunately, this might be quite hard to do.
+
+
