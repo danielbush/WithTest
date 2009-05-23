@@ -175,18 +175,17 @@ $web17_com_au$.unitJS = function() {
           if(e.isFailure) {
             t.appendChild(failed());
             STATS.failed_tests++;
-            test_div.appendChild(tag('P',e.message));  // assertionTypeMessage.
+            test_div.appendChild(tag('P',
+              "Failure on assertion #"+STATS.current.assertion_count+'. '+e.message));
             if ( e.comment )
               test_div.appendChild(tag('P',"Comment: "+e.comment));
-            test_div.appendChild(tag('P',
-              "Failure on assertion #"+STATS.current.assertion_count));
           }
           else {
             t.appendChild(errored());
             STATS.errored_tests++;
-            test_div.appendChild(tag('P',"Error message: "+e.message));
             test_div.appendChild(tag('P',
               "Error occurred on or after assertion #"+STATS.current.assertion_count));
+            test_div.appendChild(tag('P',"Error message: "+e.message));
           }
 
           if ( e.stack ) // Firefox when throwing 'new Error(msg)':
@@ -250,6 +249,7 @@ $web17_com_au$.unitJS = function() {
     var assertions={};
 
     function before_assert() {
+      STATS.assertions++;
       assertions.setup();
       STATS.current.assertion_level++;
       if(STATS.current.assertion_level==1)
