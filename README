@@ -1,16 +1,17 @@
 From: Daniel Bush 
+Updated: Sat May 23 15:52:26 EST 2009
 Date: Fri Aug 29 09:18:39 EST 2008
 Subject: What is UnitJS?
 
 UnitJS is simplified unit testing framework.
-It was put together quickly overnight using some of the code
-used in JSUnit.net.  It does not have anything like the
-functionality of JSUnit.
+It was originally put together overnight using some of the code
+used in JSUnit.net.  By intention, it does not have a lot of the
+added features of JSUnit.
 
-UnitJS's main purpose is to allow you to collect together
-your assertions and run them in some desired order; the results
-are added to the html page in which the tests have been
-embedded.
+UnitJS's main purpose is to allow you to write and collect
+together your tests and run them in some desired order; the
+results are added to the html page in which the tests have
+been embedded.
 
 I want something simple which I can then hack into more
 complex or automated solutions as I require.
@@ -19,14 +20,26 @@ Currently, UnitJS has to work in the browser environment
 (where most javascript lives anyway) and uses the html page
 (DOM) to display its results.
 
+CONTACT
+-----------------------------------------------------------
 Any issues, please contact me: dlb.id.au -at-- gmail.com.
-Regards,
-Daniel Bush
+
+
+NAMESPACING / PACKAGING
+-----------------------------------------------------------
+Unitjs follows the guidelines set out in README.modules.html 
+and is an example of the application of those guidelines.
+The latest standard can be found at:
+http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml
 
 
 GETTING STARTED
+-----------------------------------------------------------
+Suppose you have an html file and you project js files and a
+file with your tests.
+Include the unitjs assertions, then your project and then
+your tests:
 
-Suppose you have an html file and your js files then:
 <html>
   <head>
     <script type="text/javascript" src="path/to/unitjs/assertions.js" ></script>
@@ -56,8 +69,9 @@ In your_tests.js:
   var testOrder=[];
   var tests={};
 
-  testOrder.push('testAssert');
-  tests['testAssert'] = function() {
+  stmt = "Nice long description of what you're testing..."
+  testOrder.push(stmt);
+  tests[stmt] = function() {
     A.assert("true should be true", true);
     A.assert(true);
   }
@@ -68,6 +82,11 @@ That should be it.
 Peruse assertions.js to see what type of assert functions
 are available.
 
-Also see:
-  assertionTests.html 
+Also see and run (in your browser):
+  tests/assertionTests.html 
+  examples/examples.html 
 which shows unitjs in action testing itself.
+
+
+Regards,
+Daniel Bush
