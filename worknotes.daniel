@@ -1,10 +1,25 @@
 Currently implementing (@May-09) [DB]
 ------------------------------------
 
-- Create a TestPrinter object
-  - DefaultPrinter will print the tests in the tests div and append to html page
+* Returning which assertion has failed
+  - This can be shown using the 'comment' provided by the tester.
+    Why do we also want to say "5th assert failed for test X" ??
+  - It might be a convenience in the event that the tester doesn't bother to
+    put comments in his assertions or reuses the comment.
+- Assertions counting
+  - when we count assertions we may well count internal assertions because an assert*
+    function happens to make use of one or more other assert* functions.  Do we worry
+    about this?
+    - Yes - because I want to be able to say "5th assert failed for test X".
+  - We might set a flag which tells the assert function to suppress counting itself
+    if it is being used by another assert.  This flag gets set at the start
+    of the external assert function and is unset at the end; any calls to asserts
+    in between will suppress stats.
+    
+- Create a ResultPrinter object
+  - DefaultPrinter will print the test results in the tests div and append to html page
   - LogPrinter will use the web17 logger to log tests
-  - TestPrinterIf defines an interface that runner.run() expects and which DefaultPrinter 
+  - ResultPrinterIf defines an interface that runner.run() expects and which DefaultPrinter 
     and LogPrinter implement.
 - Clean up the argument parsing for assertions
   - Currently there are several util methods
@@ -16,8 +31,6 @@ Currently implementing (@May-09) [DB]
     The (expectedNumberOfNonCommentArgs, args) interface might be a necessary evil if there
     is some variability in this when calling all the different assertions - is there???
     
-* Returning which assertion has failed
-* Counting tests and assertions
 * Improved stack trace
 * Make sure we fail when we fail and error when we error
 * an error should should say ERROR; and a fail should say FAIL

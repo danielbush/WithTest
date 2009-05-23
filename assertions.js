@@ -39,24 +39,46 @@ $web17_com_au$.unitJS = function() {
    *
    */
 
+  // A Stats instance is stored here and updated
+  // by assertions when running tests.
+
+  var STATS = null;
+
   var Stats = function() {
-    // Tests:
-    this.tests=0;
-    this.failed_tests=0;
-    this.errored_tests=0;
-    // Assertions:
-    this.assertions=0;
-    // There's no point count failed or errored assertions.
-    // Both will be counted as test fails or errors.
+
+    var me=this;
+
+    /* Test stats */
+
+    me.tests=0;
+    me.failed_tests=0;
+    me.errored_tests=0;
+
+    /* Assertion stats */
+
+    // Total number of assertions executed.
+    me.assertions=0;  
+
+    /* The current test stats */
+
+    me.current={};
+    me.current.test_name=null;
+    me.current.assertion_count=0;
+    // Public assertions may call eachother internally.
+    // We use this variable to help us track this.
+    me.current.assertion_level=0;
+
+    // Call this after each test or after catching 
+    // error or failure.
+
+    me.current.reset = function() {
+      me.current.test_name=null;
+      me.current.assertion_count=0;
+      me.current.assertion_level=0;
+    }
+
   }
 
-  /*
-   * A Stats instance is stored here and updated
-   * by assertions when running tests.
-   *
-   */
-
-  var stats = null;
 
   /*
    * Runner submodule
@@ -67,12 +89,13 @@ $web17_com_au$.unitJS = function() {
    * - to set up tests you have to set up 
    *   - an array of test names
    *   - a hash of test names and their functions
-   * - these are passed into runner.run
+   *   - these are passed into runner.run
    *   
    *
    */
 
   module.runner = function() {
+
     var runner={};
 
     // Helper functions to create tags:
@@ -126,9 +149,9 @@ $web17_com_au$.unitJS = function() {
       tests_div.id = "tests";
       body.appendChild( tests_div );
 
-      // Initialize stats object for collecting stats.
+      // Initialize STATS object for collecting stats.
 
-      stats = new Stats();
+      STATS = new Stats();
 
       // Run the tests and print to screen...
 
@@ -140,43 +163,50 @@ $web17_com_au$.unitJS = function() {
         test_div.appendChild(t);
 
         try {
-          stats.tests++;
+          STATS.tests++;
+          STATS.current.reset();
+          STATS.current.test_name=test_name;
           tests[test_name]();
           t.appendChild(passed());
         }
+
         catch(e) {
 
           if(e.isFailure) {
             t.appendChild(failed());
-            stats.failed_tests++;
+            STATS.failed_tests++;
+            test_div.appendChild(tag('P',e.message));  // assertionTypeMessage.
+            if ( e.comment )
+              test_div.appendChild(tag('P',"Comment: "+e.comment));
+            test_div.appendChild(tag('P',
+              "Failure on assertion #"+STATS.current.assertion_count));
           }
           else {
             t.appendChild(errored());
-            stats.errored_tests++;
+            STATS.errored_tests++;
+            test_div.appendChild(tag('P',"Error message: "+e.message));
+            test_div.appendChild(tag('P',
+              "Error occurred on or after assertion #"+STATS.current.assertion_count));
           }
-
-          if ( e.comment )
-            test_div.appendChild(tag('P',"Comment: "+e.comment));
-
-          test_div.appendChild(tag('P',"Error message: "+e.message));
 
           if ( e.stack ) // Firefox when throwing 'new Error(msg)':
             test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
 
+          STATS.current.reset();
         }
       }
 
-      // Display stats.
+      // Display STATS.
 
       var stats_div = document.createElement('DIV');
       tests_div.appendChild(stats_div);
       stats_div.innerHTML = 
-        'Tests: '+stats.tests+'<br/>'+
-        'Tests - Failed: '+stats.failed_tests+'<br/>'+
-        'Tests - Errors: '+stats.errored_tests+'<br/>'+
-        'Assertions: '+stats.assertions+'<br/>';
+        'Tests: '+STATS.tests+'<br/>'+
+        'Tests - Failed: '+STATS.failed_tests+'<br/>'+
+        'Tests - Errors: '+STATS.errored_tests+'<br/>'+
+        'Assertions: '+STATS.assertions+'<br/>';
 
-      return stats;
+      return STATS;
 
     }
 
@@ -190,15 +220,28 @@ $web17_com_au$.unitJS = function() {
    * - contains all assertion code
    * - there is one private assertion: _assert
    *   which is usually called by all the other assertions
-   * - public assertions generally take 1 or 2 args
-   *   - 1) comment : a user comment shown at failure [optional]
-   *   - 2) a boolean test result
-   * - _assert takes these args and an addition arg:
-   *   - 3) failureMessage : a generic message shown at failure; it is
-   *        used as the errors 'message' property
-   * - if the boolean test fails 'comment' and 'failureMessage' are 
-   *   passed off to module.utils.fail and these are used to generate (throw)
-   *   a failure error object
+   * - PUBLIC ASSERTIONS 
+   *   - are named like 'assert*'
+   *   - generally take 1 or 2 args
+   *     1) comment : a user comment shown at failure [optional]
+   *     2) a boolean value representing a test result
+   *   - NOTE!!!: there is some plumbing at the bottom which adds a wrapper
+   *     to each public assertion:
+   *     - before_assert : run before the assertion.
+   *     - after_assert  : run after the assertion.
+   *     - setup         : run before the assertion.
+   *                       User can override and run their own.
+   *     - teardown      : run after the assertion.
+   *                       User can override and run their own.
+   *   - 'internal assertion' = public assertion called by 
+   *     another public assertion
+   * - _assert 
+   *   - takes assertion args args and an additional arg provided by the assertion:
+   *     3) assertionTypeMessage : a generic message shown at failure
+   *        that identifies the assertion.
+   *   - if the boolean test fails 'comment' and 'assertionTypeMessage' are 
+   *     passed off to module.utils.fail and these are used to generate (throw)
+   *     a failure error object
    *
    */
 
@@ -206,15 +249,33 @@ $web17_com_au$.unitJS = function() {
 
     var assertions={};
 
+    function before_assert() {
+      assertions.setup();
+      STATS.current.assertion_level++;
+      if(STATS.current.assertion_level==1)
+        STATS.current.assertion_count++;
+    }
 
-    function _assert(comment, booleanValue, failureMessage) {
+    function after_assert() {
+      STATS.current.assertion_level--;
+      assertions.teardown();
+    }
+
+    assertions.setup = function() {
+    }
+
+    assertions.teardown = function() {
+    }
+
+    function _assert(comment, booleanValue, assertionTypeMessage) {
       if (!booleanValue) {
-        module.utils.fail(comment, failureMessage);
+        module.utils.fail(comment, assertionTypeMessage);
       }
     }
 
+    // Public assertions start here...
+
     assertions.assert = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var booleanValue = module.utils.nonCommentArg(1, 1, arguments);
 
@@ -227,7 +288,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertTrue = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var booleanValue = module.utils.nonCommentArg(1, 1, arguments);
 
@@ -240,7 +300,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertFalse = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var booleanValue = module.utils.nonCommentArg(1, 1, arguments);
 
@@ -253,7 +312,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertEquals = function() {
-      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -266,7 +324,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotEquals = function() {
-      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -277,7 +334,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNull = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -289,7 +345,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotNull = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -299,7 +354,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertUndefined = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -311,7 +365,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotUndefined = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert( module.utils.commentArg(1, arguments), 
@@ -321,7 +374,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNaN = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert(module.utils.commentArg(1, arguments), isNaN(aVar),
@@ -329,7 +381,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertNotNaN = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var aVar = module.utils.nonCommentArg(1, 1, arguments);
       _assert(module.utils.commentArg(1, arguments), !isNaN(aVar),
@@ -337,7 +388,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertObjectEquals = function() {
-      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -381,7 +431,6 @@ $web17_com_au$.unitJS = function() {
     assertions.assertArrayEquals = assertions.assertObjectEquals;
 
     assertions.assertEvaluatesToTrue = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var value = module.utils.nonCommentArg(1, 1, arguments);
       if (!value)
@@ -389,7 +438,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertEvaluatesToFalse = function() {
-      stats.assertions++;
       module.utils._validateArguments(1, arguments);
       var value = module.utils.nonCommentArg(1, 1, arguments);
       if (value)
@@ -397,7 +445,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertHTMLEquals = function() {
-      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -413,7 +460,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertHashEquals = function() {
-      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
@@ -434,7 +480,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertRoughlyEquals = function() {
-      stats.assertions++;
       module.utils._validateArguments(3, arguments);
       var expected = module.utils.nonCommentArg(1, 3, arguments);
       var actual = module.utils.nonCommentArg(2, 3, arguments);
@@ -447,7 +492,6 @@ $web17_com_au$.unitJS = function() {
     }
 
     assertions.assertContains = function() {
-      stats.assertions++;
       module.utils._validateArguments(2, arguments);
       var contained = module.utils.nonCommentArg(1, 2, arguments);
       var container = module.utils.nonCommentArg(2, 2, arguments);
@@ -460,7 +504,6 @@ $web17_com_au$.unitJS = function() {
     // Test if error object is a failure raised by an assertion.
 
     assertions.assertFailure = function(comment, errorObject) {
-      stats.assertions++;
       assertions.assertNotNull(comment, errorObject);
       assertions.assert(comment, errorObject.isFailure);
       assertions.assertNotUndefined(comment, errorObject.comment);
@@ -471,16 +514,24 @@ $web17_com_au$.unitJS = function() {
     // to an assertion/test).
 
     assertions.assertError = function(comment, errorObject) {
-      stats.assertions++;
       assertions.assertNotNull(comment, errorObject);
       assertions.assertUndefined(comment, errorObject.isFailure);
       assertions.assertNotUndefined(comment, errorObject.description);
     }
 
-    assertions.setUp = function() {
-    }
 
-    assertions.tearDown = function() {
+    for(var i in assertions) {
+      var assertion;
+      if(/^assert/.test(i)) {
+        assertion=assertions[i];
+        assertions[i] = function(assertion2) {
+          return function() {
+            before_assert();
+            assertion2.apply(this,arguments);
+            after_assert();
+          };
+        }(assertion);
+      }
     }
 
     return assertions;
@@ -660,24 +711,24 @@ $web17_com_au$.unitJS = function() {
     }
 
     /*
-     * Raise a failure - usually for an assertion that
-     * fails.  
+     * Raise a failure - this should only be used when
+     * an assertion fails.  
      *
      * This involves raising an error and giving it a 
-     * special flag.
+     * special flag and user comment field.
      *
      */
 
-    utils.fail = function(comment,failureMessage) {
-      var e = new Error(failureMessage);
+    utils.fail = function(comment,assertionTypeMessage) {
+      var e = new Error(assertionTypeMessage);
       e.isFailure = true;
       e.comment = comment;
       throw e;
     }
 
     utils.error = function(errorMessage) {
-      var e = new Object();
-      e.description = errorMessage;
+      var e = new Error(errorMessage);
+      e.description = errorMessage;  // FIXME: Do we need this???
       throw e;
     }
 

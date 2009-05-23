@@ -2,6 +2,7 @@ DB - Daniel Bush
 
 
 Latest
+* Counting tests and assertions [DB]
 * Modularised the unitJS module into several submodules. [DB]
 * Implemented namespacing/packaging standard - see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml [DB]
 

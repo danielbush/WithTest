@@ -40,11 +40,20 @@ var testOrder=[];
 var tests={};
 
 
-stmt = 'This test fails on the 3rd assert';
+stmt = 'This test fails on the 4th assert';
 testOrder.push(stmt);
 tests[stmt] = function() {
   A.assert(true);
   A.assert("ok", true);
+  A.assert("ok", true);
+  A.assert("failure!", false);
+  A.assert("ok", true);
+  A.assert("ok", true);
+}
+
+stmt = 'This test fails on the 2nd assert';
+testOrder.push(stmt);
+tests[stmt] = function() {
   A.assert("ok", true);
   A.assert("failure!", false);
   A.assert("ok", true);
