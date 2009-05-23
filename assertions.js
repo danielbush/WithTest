@@ -519,6 +519,8 @@ $web17_com_au$.unitJS = function() {
       assertions.assertNotUndefined(comment, errorObject.description);
     }
 
+    // Wrap public assertions with a wrapper that calls
+    // before/after_assert etc
 
     for(var i in assertions) {
       var assertion;
