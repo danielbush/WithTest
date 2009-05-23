@@ -476,15 +476,72 @@ tests[stmt] = function() {
     A.assertContains("bar", "foobar");
 }
 
-
-// TODO - things we should test...
 stmt = '[Stats object] Test stats show that 3rd assertion fails';
+testOrder.push(stmt);
+tests[stmt] = function(STATS) {
+    A.assert(true);
+    A.assert(true);
+    try {
+      A.assert(false);
+    } catch(e) { }
+    A.assert(STATS.current.assertion_count==3);
+}
+
 stmt = '[Stats object] Test stats show that error occurs on or after 2nd assertion';
-stmt = '[Stats object] Test assertion count for a test';
-stmt = '[Stats object] Test assertion level (for detecting nested public assertion calls)';
+testOrder.push(stmt);
+tests[stmt] = function(STATS) {
+    try {
+      A.assert(true);
+      A.assert(true);
+      throw new Error('Unexpected error here!');
+    } catch(e) { }
+    A.assert(STATS.current.assertion_count==2);
+}
+
 stmt = 'Test setup works at beginning of test';
-stmt = 'Test teardown works at end of test';
+testOrder.push(stmt);
+var setupChecker = {val:null};
+A.setup = function() { setupChecker.val='setup!'; }
+tests[stmt] = function() {
+  A.assertEquals('setup!',setupChecker.val);
+}
+
+// To test teardown, we
+// - create A.teardown function (which is done prior to any test running)
+//   and which modifies a global teardownChecker object if it exists
+// - FIRST TEST: create a teardownChecker object
+// - SECOND TEST: test that A.teardown is called by checking 
+//   teardownChecker has been modified
+
+stmt = 'Test teardown works at end of test - part 1';
+testOrder.push(stmt);
+var teardownChecker;
+A.teardown = function() { if(teardownChecker) teardownChecker.val='teardown!'; }
+tests[stmt] = function() {
+  // Create teardownChecker here.
+  teardownChecker = {val:null};  
+  A.assertEquals(null,teardownChecker.val);
+}
+stmt = 'Test teardown works at end of test - part 2';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  // ... and we should be updated here thanks to previous test.
+  A.assertEquals('teardown!',teardownChecker.val);
+}
+
+stmt = '[Stats object] Test assertion count for a test';
+testOrder.push(stmt);
+tests[stmt] = function(STATS) {
+    A.assertEquals(0,STATS.current.assertion_count);
+    A.assertEquals(1,STATS.current.assertion_count);
+    A.assertEquals(2,STATS.current.assertion_count);
+    // etc...
+}
+
 // Not sure how to do these yet...
+// -- Sat May 23 15:29:57 EST 2009
+
+stmt = '[Stats object] Test assertion level (for detecting nested public assertion calls)';
 stmt = '[Stats object] Test all/failure/error test counts';
 stmt = '[Stats object] Test global assertion count';
 

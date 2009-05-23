@@ -166,7 +166,9 @@ $web17_com_au$.unitJS = function() {
           STATS.tests++;
           STATS.current.reset();
           STATS.current.test_name=test_name;
-          tests[test_name]();
+          // Pass STATS in to the test mainly so I can test this framework
+          // more easily.
+          tests[test_name](STATS);
           t.appendChild(passed());
         }
 
