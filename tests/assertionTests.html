@@ -37,52 +37,61 @@ var utils = $web17_com_au$.unitJS.utils;
 
 var testOrder=[];
 var tests={};
+var stmt;
 
 
-testOrder.push('testAssert');
-tests['testAssert'] = function() {
+stmt = 'Test assert';
+testOrder.push(stmt);
+tests[stmt] = function() {
   A.assert("true should be true", true);
   A.assert(true);
 }
 
-testOrder.push('testAssertTrue');
-tests['testAssertTrue'] = function() {
+stmt = 'Test assertTrue';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertTrue("true should be true", true);
     A.assertTrue(true);
 }
 
-testOrder.push('testAssertFalse');
-tests['testAssertFalse'] = function() {
+stmt = 'Test assertFalse';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertFalse("false should be false", false);
     A.assertFalse(false);
 }
 
-testOrder.push('testAssertEquals');
-tests['testAssertEquals'] = function() {
+stmt = 'Test assertEquals';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertEquals("1 should equal 1", 1, 1);
     A.assertEquals(1, 1);
 }
 
-testOrder.push('testAssertNotEquals');
-tests['testAssertNotEquals'] = function() {
+stmt = 'Test assertNotEquals';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertNotEquals("1 should not equal 2", 1, 2);
     A.assertNotEquals(1, 2);
 }
 
-testOrder.push('testAssertNull');
-tests['testAssertNull'] = function() {
+stmt = 'Test assertNull';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertNull("null should be null", null);
     A.assertNull(null);
 }
 
-testOrder.push('testAssertNotNull');
-tests['testAssertNotNull'] = function() {
+stmt = 'Test assertNotNull';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertNotNull("1 should not be null", 1);
     A.assertNotNull(1);
 }
 
-testOrder.push('testAssertUndefined');
-tests['testAssertUndefined'] = function() {
+stmt = 'Test assertUndefined';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var myVar;
     A.assertUndefined(
       "A declared but unassigned variable should have the undefined value", 
@@ -90,26 +99,30 @@ tests['testAssertUndefined'] = function() {
     A.assertUndefined(myVar);
 }
 
-testOrder.push('testAssertNotUndefined');
-tests['testAssertNotUndefined'] = function() {
+stmt = 'Test assertNotUndefined';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertNotUndefined("1 should not be undefined", 1);
     A.assertNotUndefined(1);
 }
 
-testOrder.push('testAssertNaN');
-tests['testAssertNaN'] = function() {
+stmt = 'Test assertNaN';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertNaN("a string should not be a number", "string");
     A.assertNaN("string");
 }
 
-testOrder.push('testAssertNotNaN');
-tests['testAssertNotNaN'] = function() {
+stmt = 'Test assertNotNaN';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertNotNaN("1 should not be not a number", 1);
     A.assertNotNaN(1);
 }
 
-testOrder.push('testFail');
-tests['testFail'] = function() {
+stmt = 'Test utils.fail';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var excep = null;
     try {
         utils.fail("Failure message",'');
@@ -121,8 +134,9 @@ tests['testFail'] = function() {
       excep);
 }
 
-testOrder.push('testTooFewArguments');
-tests['testTooFewArguments'] = function() {
+stmt = 'Test too few arguments to assertion functions';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var excep = null;
     try {
         A.assert();
@@ -134,8 +148,9 @@ tests['testTooFewArguments'] = function() {
       excep);
 }
 
-testOrder.push('testTooManyArguments');
-tests['testTooManyArguments'] = function() {
+stmt = 'Test too many arguments to assertion functions';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var excep = null;
     try {
         A.assertEquals("A comment", true, true, true);
@@ -147,8 +162,9 @@ tests['testTooManyArguments'] = function() {
       excep);
 }
 
-testOrder.push('testInvalidCommentArgumentType');
-tests['testInvalidCommentArgumentType'] = function() {
+stmt = 'Test invalid argument comment type';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var excep = null;
     try {
         A.assertNull(1, true);
@@ -160,8 +176,9 @@ tests['testInvalidCommentArgumentType'] = function() {
       excep);
 }
 
-testOrder.push('testInvalidArgumentType');
-tests['testInvalidArgumentType'] = function() {
+stmt = 'Test invalid boolean test / argument type';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var excep = null;
     try {
         A.assert("string");
@@ -173,8 +190,9 @@ tests['testInvalidArgumentType'] = function() {
       excep);
 }
 
-testOrder.push('testAssertArrayEquals');
-tests['testAssertArrayEquals'] = function() {
+stmt = 'Test assertArrayEquals';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var array1 = Array();
     array1[0] = "foo";
     array1[1] = "bar";
@@ -227,8 +245,9 @@ tests['testAssertArrayEquals'] = function() {
     }
 }
 
-testOrder.push('testAssertObjectEquals');
-tests['testAssertObjectEquals'] = function()
+stmt = 'Test assertObjectEquals';
+testOrder.push(stmt);
+tests[stmt] = function()
 {
     var failure;
     var o1 = {foo:'bar'};
@@ -320,8 +339,9 @@ tests['testAssertObjectEquals'] = function()
     }
 }
 
-testOrder.push('testAssertObjectEqualsOnStrings');
-tests['testAssertObjectEqualsOnStrings'] = function() {
+stmt = 'Test assertObjectEquals for strings';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var s1 = 'string1';
     var s2 = 'string1';
     var newS1 = new String('string1');
@@ -329,8 +349,9 @@ tests['testAssertObjectEqualsOnStrings'] = function() {
     A.assertObjectEquals('Same Strings 1 with new', s1, newS1);
 }
 
-testOrder.push('testAssertObjectEqualsOnNumbers');
-tests['testAssertObjectEqualsOnNumbers'] = function() {
+stmt = 'Test assertObjectEquals for numbers';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var failure;
     var n1 = 1;
     var n2 = 1;
@@ -363,8 +384,9 @@ tests['testAssertObjectEqualsOnNumbers'] = function() {
     }
 }
 
-testOrder.push('testAssertEvaluatesToTrue');
-tests['testAssertEvaluatesToTrue'] = function() {
+stmt = 'Test assertEvaluatesToTrue';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertEvaluatesToTrue("foo");
     A.assertEvaluatesToTrue(true);
     A.assertEvaluatesToTrue(1);
@@ -376,8 +398,9 @@ tests['testAssertEvaluatesToTrue'] = function() {
     }
 }
 
-testOrder.push('testAssertEvaluatesToFalse');
-tests['testAssertEvaluatesToFalse'] = function() {
+stmt = 'Test assertEvaluatesToFalse';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertEvaluatesToFalse("");
     A.assertEvaluatesToFalse(null);
     A.assertEvaluatesToFalse(false);
@@ -390,16 +413,18 @@ tests['testAssertEvaluatesToFalse'] = function() {
     }
 }
 
-testOrder.push('testAssertHTMLEquals');
-tests['testAssertHTMLEquals'] = function() {
+stmt = 'Test assertHTMLEquals';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertHTMLEquals("<div id=mydiv>foobar</div>", "<div id='mydiv'>foobar</div>");
     A.assertHTMLEquals("<p/>", "<p></p>");
     A.assertHTMLEquals("foo bar", "foo bar");
     A.assertHTMLEquals("a comment", "<p id='foo'>foo bar</p>", "<p id=foo>foo bar</p>");
 }
 
-testOrder.push('testAssertHashEquals');
-tests['testAssertHashEquals'] = function() {
+stmt = 'Test assertHashEquals';
+testOrder.push(stmt);
+tests[stmt] = function() {
     var hash1 = new Array();
     hash1["key1"] = "value1";
     hash1["key2"] = "value2";
@@ -429,8 +454,9 @@ tests['testAssertHashEquals'] = function() {
     A.assertHashEquals(hash1, hash2);
 }
 
-testOrder.push('testAssertRoughlyEquals');
-tests['testAssertRoughlyEquals'] = function() {
+stmt = 'Test assertRoughlyEquals';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertRoughlyEquals(1, 1.1, 0.5);
     A.assertRoughlyEquals(1, 5, 6);
     A.assertRoughlyEquals(-4, -5, 2);
@@ -442,8 +468,9 @@ tests['testAssertRoughlyEquals'] = function() {
     }
 }
 
-testOrder.push('testAssertContains');
-tests['testAssertContains'] = function() {
+stmt = 'Test assertContains';
+testOrder.push(stmt);
+tests[stmt] = function() {
     A.assertContains("foo", "foobar");
     A.assertContains("ooba", "foobar");
     A.assertContains("bar", "foobar");
