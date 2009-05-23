@@ -1,10 +1,19 @@
 DB - Daniel Bush
 
-
 Latest
-* Counting tests and assertions [DB]
+* An error should should say ERROR; and a fail should say FAIL [DB]
+* We can now say: "Xth assertion failed" for a test [DB]
+* throw an error and get its real stack trace just below the failed
+  assertion for fails
+* Fail and error stack traces both make use of firefox
+  stack trace (if available), not the old jsunit stack trace [DB]
+  * the issue is when an assertion fails, the old jsunit code
+    used its own customised stack trace, which didn't work
+    well with anonymous functions / modularised javascript.
+* Count tests (passes, fails, errors) and total assertions [DB]
 * Modularised the unitJS module into several submodules. [DB]
-* Implemented namespacing/packaging standard - see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml [DB]
+* Implemented namespacing/packaging standard - 
+  see http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml [DB]
 
 Version 0.1
 * Project started on 28-Aug-08. [DB]
