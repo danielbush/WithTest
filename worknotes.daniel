@@ -1,6 +1,10 @@
 Currently implementing (@May-09) [DB]
 ------------------------------------
 
+- Context
+  - be able to group a bunch of tests under a general headline
+  - be able to cat all the test files into one big file and just run it
+    and the contexts should all still work
 - Create a ResultPrinter object
   - DefaultPrinter will print the test results in the tests div and append to html page
   - LogPrinter will use the web17 logger to log tests
