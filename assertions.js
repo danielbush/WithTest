@@ -235,7 +235,7 @@ $web17_com_au$.unitJS = function() {
    *   - 'internal assertion' = public assertion called by 
    *     another public assertion
    * - _assert 
-   *   - takes assertion args args and an additional arg provided by the assertion:
+   *   - takes public assertion args and an additional arg provided by the assertion:
    *     3) assertionTypeMessage : a generic message shown at failure
    *        that identifies the assertion.
    *   - if the boolean test fails 'comment' and 'assertionTypeMessage' are 
