@@ -4,14 +4,18 @@ Date: Fri Aug 29 09:18:39 EST 2008
 Subject: What is UnitJS?
 
 UnitJS is simplified unit testing framework.
-It was originally put together overnight using some of the code
-used in JSUnit.net.  By intention, it does not have a lot of the
-added features of JSUnit.
+It was originally put together overnight using some of the
+code used in JSUnit.net.  By intention, it does not have a
+lot of the added features of JSUnit.
 
 UnitJS's main purpose is to allow you to write and collect
 together your tests and run them in some desired order; the
 results are added to the html page in which the tests have
 been embedded.
+
+WARNING: At this early stage most work has been done in
+Firefox and no thought has been given at the moment
+to providing helpful stack traces in IE or other browsers.
 
 I want something simple which I can then hack into more
 complex or automated solutions as I require.

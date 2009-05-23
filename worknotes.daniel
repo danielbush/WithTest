@@ -8,7 +8,7 @@ Currently implementing (@May-09) [DB]
 - Create a ResultPrinter object
   - DefaultPrinter will print the test results in the tests div and append to html page
   - LogPrinter will use the web17 logger to log tests
-  - ResultPrinterIf defines an interface that runner.run() expects and which DefaultPrinter 
+  - ResultPrinterIface defines an interface that runner.run() expects and which DefaultPrinter 
     and LogPrinter implement.
 - Clean up the argument parsing for assertions
   - Currently there are several util methods
