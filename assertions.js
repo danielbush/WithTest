@@ -97,35 +97,7 @@ $web17_com_au$.unitJS = function() {
   module.runner = function() {
 
     var runner={};
-
-    // Helper functions to create tags:
-
-    function tag(tagType,text) {
-      var p=document.createElement(tagType);
-      var ptext=document.createTextNode(text);
-      p.appendChild(ptext);
-      return p;
-    }
-    function passed() {
-      var span=tag('SPAN',"PASSED");
-      span.style.color="green";
-      span.style.fontWeight="bold";
-      return span;
-    }
-    function failed() {
-      var span=tag('SPAN',"FAILED");
-      span.style.color="red";
-      span.style.fontWeight="bold";
-      return span;
-    }
-    function errored() {
-      var span=tag('SPAN',"ERROR!");
-      span.style.color="white";
-      span.style.backgroundColor="red";
-      span.style.fontWeight="bold";
-      return span;
-    }
-
+    runner.sections={};
 
     /*
      * Run a set of unit tests and dump the results in
@@ -134,20 +106,11 @@ $web17_com_au$.unitJS = function() {
      *   tests: a hash of test_names and their functions.
      *   testOrder: an array of test_names which should be
      *              in 'tests'.
+     *   printer: an object the has the UNITJS.formatter.DefaultPrinter interface
+     *            It should print results usually into an html file.
      */
 
-    runner.run = function(testOrder,tests) {
-
-      // Initialize the 'tests' div for a new test run.
-
-      var body=document.getElementsByTagName('BODY')[0];
-      var tests_div=document.getElementById("tests");
-      if ( tests_div ) {
-        body.removeChild(tests_div);
-      }
-      tests_div=document.createElement('DIV');
-      tests_div.id = "tests";
-      body.appendChild( tests_div );
+    runner.run = function(testOrder,tests,printer) {
 
       // Initialize STATS object for collecting stats.
 
@@ -157,10 +120,6 @@ $web17_com_au$.unitJS = function() {
 
       for ( var i=0; i<testOrder.length; i++ ) {
         var test_name=testOrder[i];
-        var test_div=document.createElement('DIV');
-        tests_div.appendChild(test_div);
-        t=tag('P',(i+1)+': '+test_name+'... ');
-        test_div.appendChild(t);
 
         try {
           STATS.tests++;
@@ -169,51 +128,163 @@ $web17_com_au$.unitJS = function() {
           // Pass STATS in to the test mainly so I can test this framework
           // more easily.
           tests[test_name](STATS);
-          t.appendChild(passed());
+          printer.printPass(i+1,test_name,STATS);
         }
 
         catch(e) {
-
           if(e.isFailure) {
-            t.appendChild(failed());
             STATS.failed_tests++;
-            test_div.appendChild(tag('P',
-              "Failure on assertion #"+STATS.current.assertion_count+'. '+e.message));
-            if ( e.comment )
-              test_div.appendChild(tag('P',"Comment: "+e.comment));
+            printer.printFail(i+1,test_name,STATS,e);
           }
           else {
-            t.appendChild(errored());
             STATS.errored_tests++;
-            test_div.appendChild(tag('P',
-              "Error occurred on or after assertion #"+STATS.current.assertion_count));
-            test_div.appendChild(tag('P',"Error message: "+e.message));
+            printer.printError(i+1,test_name,STATS,e);
           }
-
-          if ( e.stack ) // Firefox when throwing 'new Error(msg)':
-            test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
-
           STATS.current.reset();
         }
       }
-
-      // Display STATS.
-
-      var stats_div = document.createElement('DIV');
-      tests_div.appendChild(stats_div);
-      stats_div.innerHTML = 
-        'Tests: '+STATS.tests+'<br/>'+
-        'Tests - Failed: '+STATS.failed_tests+'<br/>'+
-        'Tests - Errors: '+STATS.errored_tests+'<br/>'+
-        'Assertions: '+STATS.assertions+'<br/>';
 
       return STATS;
 
     }
 
+    // Run all the tests for sections in a Sections object.
+
+    runner.sections.run = function(sections,printer) {
+      var s;
+      for(var i=0;i<sections.members.length;i++) {
+        s = sections.members[i]
+        runner.run(s.testOrder,s.tests,printer);
+        if(s.sections.members.length>0)
+          runner.sections.run(s.sections,printer);
+      }
+    }
+
     return runner;
 
   }();
+
+
+  // Print STATS to a div which we append to parentNode.
+  //
+  // parentNode: the parent node we should attach our results to.
+  //
+  // We should move printing and formatting out of this module.
+  // -- DBush Thu Jun  4 15:26:28 EST 2009
+
+  module.printers = function() {
+
+    var printers = {};
+
+    printers.DefaultPrinter = function(parentNode) {
+      var me = this;
+
+      // Delete 'tests' div if already in DOM...
+      var tests_div=document.getElementById("tests");
+      if ( tests_div ) {
+        parentNode.removeChild(tests_div);
+      }
+      // Create 'tests' div...
+      tests_div=document.createElement('DIV');
+      tests_div.id = "tests";
+      parentNode.appendChild( tests_div );
+
+      me.printPass = function(num,test_name,stats) {
+        var test_div=document.createElement('DIV');
+        var t=tag('P',num+': '+test_name+'... ');
+        t.appendChild(passed());
+        test_div.appendChild(t);
+        tests_div.appendChild(test_div);
+      }
+      me.printFail  = function(num,test_name,stats,e) {
+        var test_div=document.createElement('DIV');
+        var t=tag('P',num+': '+test_name+'... ');
+        t.appendChild(failed());
+        test_div.appendChild(t);
+        test_div.appendChild(tag('P',
+          "Failure on assertion #"+stats.current.assertion_count+'. '+e.message));
+        if ( e.comment )
+          test_div.appendChild(tag('P',"Comment: "+e.comment));
+        if ( e.stack ) // Firefox when throwing 'new Error(msg)':
+          test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
+        tests_div.appendChild(test_div);
+      }
+      me.printError = function(num,test_name,stats,e) {
+        var test_div=document.createElement('DIV');
+        var t=tag('P',num+': '+test_name+'... ');
+        t.appendChild(errored());
+        test_div.appendChild(t);
+        test_div.appendChild(tag('P',
+          "Error occurred on or after assertion #"+stats.current.assertion_count));
+        test_div.appendChild(tag('P',"Error message: "+e.message));
+        if ( e.stack ) // Firefox when throwing 'new Error(msg)':
+          test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
+        tests_div.appendChild(test_div);
+      }
+      me.printStats = function(stats) {
+        var stats_div = document.createElement('DIV');
+        tests_div.appendChild(stats_div);
+        stats_div.innerHTML = 
+          'Tests: '+stats.tests+'<br/>'+
+          'Tests - Failed: '+stats.failed_tests+'<br/>'+
+          'Tests - Errors: '+stats.errored_tests+'<br/>'+
+          'Assertions: '+stats.assertions+'<br/>';
+      }
+
+      // Helper functions to create tags:
+
+      function tag(tagType,text) {
+        var p=document.createElement(tagType);
+        var ptext=document.createTextNode(text);
+        p.appendChild(ptext);
+        return p;
+      }
+      function passed() {
+        var span=tag('SPAN',"PASSED");
+        span.style.color="green";
+        span.style.fontWeight="bold";
+        return span;
+      }
+      function failed() {
+        var span=tag('SPAN',"FAILED");
+        span.style.color="red";
+        span.style.fontWeight="bold";
+        return span;
+      }
+      function errored() {
+        var span=tag('SPAN',"ERROR!");
+        span.style.color="white";
+        span.style.backgroundColor="red";
+        span.style.fontWeight="bold";
+        return span;
+      }
+
+    }
+
+    return printers;
+  }();
+
+  /*
+   * Sections and Section objects
+   * ---------------------------------------------------
+   */
+
+  module.Sections = function() {
+    var me = this;
+    me.members = [];
+    me.add = function(name) {
+      var s = new module.Section();
+      me.members.push(s);
+      return s;
+    }
+  }
+
+  module.Section = function() {
+    var me = this;
+    me.sections = new module.Sections();  // For subsections.
+    me.testOrder=[];
+    me.tests={};
+  }
 
   /*
    * Assertions submodule

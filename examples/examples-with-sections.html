@@ -25,10 +25,11 @@
 <script language="JavaScript" type="text/javascript" src="../assertions.js"></script>
 <script language="JavaScript" type="text/javascript">
 
-var U       = $web17_com_au$.unitJS;
-var A       = $web17_com_au$.unitJS.assertions;
-var utils   = $web17_com_au$.unitJS.utils;
-var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
+var U        = $web17_com_au$.unitJS;
+var A        = $web17_com_au$.unitJS.assertions;
+var utils    = $web17_com_au$.unitJS.utils;
+var Printer  = $web17_com_au$.unitJS.printers.DefaultPrinter;
+var sections = new $web17_com_au$.unitJS.Sections();
 
 /*
  * Set up tests.
@@ -37,61 +38,61 @@ var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
 
 var testOrder=[];
 var tests={};
-var stmt;
+var stmt,sec;
+var S,SS;
 
 
-stmt = 'This test fails on the 4th assert';
-testOrder.push(stmt);
-tests[stmt] = function() {
+//---------------------------------
+sec = 'section 1';
+
+S = sections.add(sec);
+
+stmt = 'test #1';
+S.testOrder.push(stmt);
+S.tests[stmt] = function() {
+  A.assert("ok", true);
+}
+
+stmt = 'test #2';
+S.testOrder.push(stmt);
+S.tests[stmt] = function() {
   A.assert(true);
-  A.assert("ok", true);
-  A.assert("ok", true);
-  A.assert("failure!", false);
-  A.assert("ok", true);
+}
+
+//---------------------------------
+sec = 'section 2';
+
+S = sections.add(sec);
+// Create a subsection...
+SS = S.sections.add('subsection 1');
+
+stmt = 'test #3';
+SS.testOrder.push(stmt);
+SS.tests[stmt] = function() {
   A.assert("ok", true);
 }
 
-stmt = 'This test fails on the 2nd assert';
-testOrder.push(stmt);
-tests[stmt] = function() {
-  A.assert("ok", true);
-  A.assert("failure!", false);
-  A.assert("ok", true);
-  A.assert("ok", true);
-}
-
-stmt = 'This test has an error halfway through';
-testOrder.push(stmt);
-tests[stmt] = function() {
-  A.assert("ok", true);
-  A.assert("ok", true);
-  throw new Error('Error!');
-  A.assert("ok", true);
-  A.assert("ok", true);
-}
-
-stmt = 'Blank test passes';
-testOrder.push(stmt);
-tests[stmt] = function() {
+stmt = 'test #4';
+S.testOrder.push(stmt);
+S.tests[stmt] = function() {
+  A.assert(true);
 }
 
 var printer;
-
 function init() {
   printer = new Printer(document.body);
 }
-  
 
 </script>
 </head>
 
-<body onload="init();">
+<body onload="init();" >
 <h1>UnitJS Assertion Examples</h1>
 
 <p>
   This page contains tests for the UnitJS Assertion
   functions.  Basically we're testing ourselves with ourselves.
 </p>
-<input type="button" onclick="U.runner.run(testOrder,tests,printer);" value="Run tests" />
+<input type="button" onclick="U.runner.sections.run(sections,printer);" value="Run tests" />
 </body>
 </html>

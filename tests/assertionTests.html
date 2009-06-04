@@ -28,6 +28,7 @@
 var U     = $web17_com_au$.unitJS;
 var A     = $web17_com_au$.unitJS.assertions;
 var utils = $web17_com_au$.unitJS.utils;
+var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
 
 /*
  * Set up tests.
@@ -544,16 +545,21 @@ stmt = '[Stats object] Test assertion level (for detecting nested public asserti
 stmt = '[Stats object] Test all/failure/error test counts';
 stmt = '[Stats object] Test global assertion count';
 
+var printer;
+function init() {
+  printer = new Printer(document.body);
+}
+
 </script>
 </head>
 
-<body>
+<body onload="init();" >
 <h1>UnitJS Assertion Tests</h1>
 
 <p>
   This page contains tests for the UnitJS Assertion
   functions.  Basically we're testing ourselves with ourselves.
 </p>
-<input type="button" onclick="U.runner.run(testOrder,tests);" value="Run tests" />
+<input type="button" onclick="U.runner.run(testOrder,tests,printer);" value="Run tests" />
 </body>
 </html>
