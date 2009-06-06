@@ -16,6 +16,8 @@ $web17_com_au$.unitJS.printers = function() {
   //             in a recursive or nested context (multiple instances on
   //             the one DOM); 
   //             Increment and use 'sequencer' (in this module) to generate a unique id.
+  //             If id is NOT supplied, DefaultPrinter will assume id='tests' and 
+  //             will first search and destroy any such element.
   // label     : Optional description that will be shown at the top before the tests.
   // tests_div : div that contains test results
   // test_div  : div that contains individual test result
