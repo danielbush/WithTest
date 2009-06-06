@@ -3,52 +3,61 @@ $web17_com_au$.unitJS.printers = function() {
 
   var module={};
 
+  // Increment and use for generating id's.
+
+  var sequencer=0;
+
   // DefaultPrinter
   //
   // Prints results of tests into an html document.
   //
   // parentNode: the parent node we should attach our results to.
+  // id        : you must specify this if you are invoking DefaultPrinter
+  //             in a recursive or nested context (multiple instances on
+  //             the one DOM); 
+  //             Increment and use 'sequencer' (in this module) to generate a unique id.
+  // label     : Optional description that will be shown at the top before the tests.
   // tests_div : div that contains test results
   // test_div  : div that contains individual test result
-  //
-  // We should move printing and formatting out of this module.
-  // -- DBush Thu Jun  4 15:26:28 EST 2009
+  // 
 
-  module.DefaultPrinter = function(parentNode) {
+  module.DefaultPrinter = function(parentNode,id,label) {
 
     var me = this;
+    var tests_div;
 
-    // Delete 'tests' div if already in DOM...
-    var tests_div=document.getElementById("tests");
-    if ( tests_div ) {
-      parentNode.removeChild(tests_div);
+    if(!id) {
+      // Delete 'tests' div if already in DOM...
+      tests_div=document.getElementById("tests");
+      if ( tests_div ) {
+        parentNode.removeChild(tests_div);
+      }
+      // Create 'tests' div...
+      tests_div=document.createElement('DIV');
+      tests_div.id = "tests";
+      parentNode.appendChild( tests_div );
+    } else {
+      tests_div=document.createElement('DIV');
+      tests_div.id = id;
+      tests_div.className = 'subsection';
+      parentNode.appendChild( tests_div );
     }
-
-    // Create 'tests' div...
-    tests_div=document.createElement('DIV');
-    tests_div.id = "tests";
-    parentNode.appendChild( tests_div );
+    if(label) {
+      tests_div.appendChild(tag('P',label));
+    }
 
     // Create a section div, run the tests and append
     // to this div instead of directly to tests_div.
 
-    me.section = function(name,tests_to_run) {
-      var orig_tests_div;
-      var sec_div=document.createElement('DIV');
-      var t=tag('P',name);
-
-      sec_div.className="section";
-      sec_div.appendChild(t);
-      tests_div.appendChild(sec_div);
-      orig_tests_div = tests_div;
-      tests_div = sec_div;
-      tests_to_run();
-      tests_div = orig_tests_div;
+    me.subsection = function(name) {
+      return new module.DefaultPrinter(tests_div,'section-'+(sequencer++),name);
     }
+
 
     me.printPass = function(num,test_name,stats) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
+      test_div.className = 'test';
       t.appendChild(passed());
       test_div.appendChild(t);
       tests_div.appendChild(test_div);
@@ -57,6 +66,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printFail  = function(num,test_name,stats,e) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
+      test_div.className = 'test';
       t.appendChild(failed());
       test_div.appendChild(t);
       test_div.appendChild(tag('P',
@@ -71,6 +81,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printError = function(num,test_name,stats,e) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
+      test_div.className = 'test';
       t.appendChild(errored());
       test_div.appendChild(t);
       test_div.appendChild(tag('P',
@@ -83,6 +94,7 @@ $web17_com_au$.unitJS.printers = function() {
 
     me.printStats = function(stats) {
       var stats_div = document.createElement('DIV');
+      stats_div.className = 'stats';
       tests_div.appendChild(stats_div);
       stats_div.innerHTML = 
         'Tests: '+stats.tests+'<br/>'+
@@ -90,6 +102,7 @@ $web17_com_au$.unitJS.printers = function() {
         'Tests - Errors: '+stats.errored_tests+'<br/>'+
         'Assertions: '+stats.assertions+'<br/>';
     }
+
 
     // Helper functions to create tags:
 

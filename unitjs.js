@@ -152,15 +152,13 @@ $web17_com_au$.unitJS = function() {
     // Run all the tests for sections in a Sections object.
 
     runner.sections.run = function(sections,printer) {
-      var s;
+      var s,section_printer;
       for(var i=0;i<sections.members.length;i++) {
-        s = sections.members[i]
-        printer.section( 
-          s.name , 
-          function(){runner.run(s.testOrder,s.tests,printer);}
-        );
+        s = sections.members[i];
+        section_printer = printer.subsection( s.name );
+        runner.run(s.testOrder,s.tests,section_printer);
         if(s.sections.members.length>0)
-          runner.sections.run(s.sections,printer);
+          runner.sections.run(s.sections,section_printer);
       }
     }
 
