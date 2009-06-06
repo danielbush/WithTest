@@ -1,12 +1,16 @@
 Currently implementing (@Jun-09)
 ------------------------------------
 
-- Context
+- Context/Sections
   - be able to group a bunch of tests under a general headline
   - be able to cat all the test files into one big file and just run it
     and the contexts should all still work
+  - use the Section object as a convenient wrapper for setting
+    tests and testOrder objects (so you don't have to write both when
+    writing tests)
 
-- Create a ResultPrinter object
+- Create a printer objects
+  - PrinterInterface object : placeholder functions with expected return values
   - DefaultPrinter will print the test results in the tests div and append to html page
   - LogPrinter will use the web17 logger to log tests
   - ResultPrinterIface defines an interface that runner.run() expects and which DefaultPrinter 

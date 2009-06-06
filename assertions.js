@@ -106,7 +106,7 @@ $web17_com_au$.unitJS = function() {
      *   tests: a hash of test_names and their functions.
      *   testOrder: an array of test_names which should be
      *              in 'tests'.
-     *   printer: an object the has the UNITJS.formatter.DefaultPrinter interface
+     *   printer: an object the has the unitJS.printers.DefaultPrinter interface
      *            It should print results usually into an html file.
      */
 
@@ -165,9 +165,13 @@ $web17_com_au$.unitJS = function() {
   }();
 
 
-  // Print STATS to a div which we append to parentNode.
+  // DefaultPrinter
+  //
+  // Prints results of tests into an html document.
   //
   // parentNode: the parent node we should attach our results to.
+  // tests_div : div that contains test results
+  // test_div  : div that contains individual test result
   //
   // We should move printing and formatting out of this module.
   // -- DBush Thu Jun  4 15:26:28 EST 2009
@@ -267,20 +271,33 @@ $web17_com_au$.unitJS = function() {
   /*
    * Sections and Section objects
    * ---------------------------------------------------
+   *
+   * Section objects allow you to group tests into meaningful
+   * sections.
+   * - When you run tests without any sectioning, you
+   *   use testOrder and tests objects directly.
+   * - When you use sections, a Section object now contains
+   *   a testOrder and tests object.
+   * - The Sections object allows you to group and nest Section
+   *   objects (ie subsections).
+   * - unitJS.runner.sections.run(Sections) will run through
+   *   all the Section objects in a Sections object.
+   * 
    */
 
   module.Sections = function() {
     var me = this;
     me.members = [];
     me.add = function(name) {
-      var s = new module.Section();
+      var s = new module.Section(name);
       me.members.push(s);
       return s;
     }
   }
 
-  module.Section = function() {
+  module.Section = function(name) {
     var me = this;
+    me.name = name;
     me.sections = new module.Sections();  // For subsections.
     me.testOrder=[];
     me.tests={};
