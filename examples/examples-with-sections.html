@@ -30,52 +30,54 @@ var U        = $web17_com_au$.unitJS;
 var A        = $web17_com_au$.unitJS.assertions;
 var utils    = $web17_com_au$.unitJS.utils;
 var Printer  = $web17_com_au$.unitJS.printers.DefaultPrinter;
-var sections = new $web17_com_au$.unitJS.Sections();
+var Sections = $web17_com_au$.unitJS.Sections;
+
 
 /*
  * Set up tests.
  *
  */
 
+var sections = new Sections();
 var testOrder=[];
 var tests={};
 var stmt,sec;
-var S,SS;
+var s,ss;
 
 
 //---------------------------------
 sec = 'section 1';
 
-S = sections.add(sec);
+s = sections.add(sec);
 
 stmt = 'test #1';
-S.testOrder.push(stmt);
-S.tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   A.assert("ok", true);
 }
 
 stmt = 'test #2';
-S.testOrder.push(stmt);
-S.tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   A.assert(true);
 }
 
 //---------------------------------
 sec = 'section 2';
 
-S = sections.add(sec);
+s = sections.add(sec);
 // Create a subsection...
-SS = S.sections.add('subsection 1');
+ss = s.sections.add('subsection 1');
 
 stmt = 'test #3';
-SS.testOrder.push(stmt);
-SS.tests[stmt] = function() {
+ss.testOrder.push(stmt);
+ss.tests[stmt] = function() {
   A.assert("ok", true);
 }
 
 stmt = 'test #4';
-S.testOrder.push(stmt);
-S.tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   A.assert(true);
 }
 
