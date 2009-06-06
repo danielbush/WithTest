@@ -97,7 +97,6 @@ $web17_com_au$.unitJS = function() {
   module.runner = function() {
 
     var runner={};
-    runner.sections={};
 
     /*
      * Run a set of unit tests and dump the results in
@@ -148,13 +147,18 @@ $web17_com_au$.unitJS = function() {
 
     }
 
+    runner.sections={};
+
     // Run all the tests for sections in a Sections object.
 
     runner.sections.run = function(sections,printer) {
       var s;
       for(var i=0;i<sections.members.length;i++) {
         s = sections.members[i]
-        runner.run(s.testOrder,s.tests,printer);
+        printer.section( 
+          s.name , 
+          function(){runner.run(s.testOrder,s.tests,printer);}
+        );
         if(s.sections.members.length>0)
           runner.sections.run(s.sections,printer);
       }

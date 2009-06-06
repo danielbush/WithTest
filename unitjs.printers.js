@@ -29,6 +29,23 @@ $web17_com_au$.unitJS.printers = function() {
     tests_div.id = "tests";
     parentNode.appendChild( tests_div );
 
+    // Create a section div, run the tests and append
+    // to this div instead of directly to tests_div.
+
+    me.section = function(name,tests_to_run) {
+      var orig_tests_div;
+      var sec_div=document.createElement('DIV');
+      var t=tag('P',name);
+
+      sec_div.className="section";
+      sec_div.appendChild(t);
+      tests_div.appendChild(sec_div);
+      orig_tests_div = tests_div;
+      tests_div = sec_div;
+      tests_to_run();
+      tests_div = orig_tests_div;
+    }
+
     me.printPass = function(num,test_name,stats) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');

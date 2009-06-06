@@ -47,7 +47,6 @@ var s,ss;
 
 //---------------------------------
 sec = 'section 1';
-
 s = sections.add(sec);
 
 stmt = 'test #1';
@@ -64,11 +63,10 @@ s.tests[stmt] = function() {
 
 //---------------------------------
 sec = 'section 2';
-
 s = sections.add(sec);
+
 // Create a subsection...
 ss = s.sections.add('subsection 1');
-
 stmt = 'test #3';
 ss.testOrder.push(stmt);
 ss.tests[stmt] = function() {
