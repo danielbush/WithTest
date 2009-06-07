@@ -101,12 +101,18 @@ $web17_com_au$.unitJS = function() {
     /*
      * Run a set of unit tests and dump the results in
      * a div in the body-tag with id 'tests'.
+     * If you are running this standalone (not via
+     * runner.sections.run()), do NOT include
+     * the stats parameter.
      *
      *   tests: a hash of test_names and their functions.
      *   testOrder: an array of test_names which should be
      *              in 'tests'.
      *   printer: an object the has the unitJS.printers.DefaultPrinter interface
      *            It should print results usually into an html file.
+     *   stats:   A Stats object instance; if you don't include it,
+     *            runner.run() assumes that it is running by itself
+     *            and not as part of a section.
      */
 
     runner.run = function(testOrder,tests,printer,stats) {
