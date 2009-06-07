@@ -96,7 +96,7 @@ $web17_com_au$.unitJS = function() {
 
   module.runner = function() {
 
-    var runner={};
+    var runner = {};
 
     /*
      * Run a set of unit tests and dump the results in
@@ -110,18 +110,17 @@ $web17_com_au$.unitJS = function() {
      *              in 'tests'.
      *   printer: an object the has the unitJS.printers.DefaultPrinter interface
      *            It should print results usually into an html file.
-     *   stats:   A Stats object instance; if you don't include it,
-     *            runner.run() assumes that it is running by itself
-     *            and not as part of a section.
+     *   stats:   A Stats object instance
+     *
      */
 
     runner.run = function(testOrder,tests,printer,stats) {
-      var standalone=false;  // True = we are being invoked by a section.
+      var standalone = false;  // True = we are being invoked by a section.
 
       // Initialize STATS object for collecting stats.
       if(!stats) {
         stats = new Stats();
-        standalone=true;
+        standalone = true;
       }
 
       // Run the tests and print to screen...
