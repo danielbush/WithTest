@@ -7,12 +7,6 @@
  * enclosed with this project in the file LICENSE.  If not
  * see <http://www.gnu.org/licenses/>.
  *
- * Substantial parts of this code were taken from the JSUnit
- * project.  The Initial Developer of the Original Code is
- * Edward Hieatt, edward@jsunit.net.  Portions created by
- * the Initial Developer are Copyright (C) 2003 the Initial
- * Developer.  All Rights Reserved.
- *
  */
 
 /* 
