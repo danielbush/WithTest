@@ -155,10 +155,10 @@ $web17_com_au$.unitJS = function() {
       var s,section_printer;
       for(var i=0;i<sections.members.length;i++) {
         s = sections.members[i];
-        section_printer = printer.subsection( s.name );
+        section_printer = printer.subsection_printer( s.name );
         runner.run(s.testOrder,s.tests,section_printer);
-        if(s.sections.members.length>0)
-          runner.sections.run(s.sections,section_printer);
+        if(s.subsections.members.length>0)
+          runner.sections.run(s.subsections,section_printer);
       }
     }
 
@@ -198,7 +198,7 @@ $web17_com_au$.unitJS = function() {
   module.Section = function(name) {
     var me = this;
     me.name = name;
-    me.sections = new module.Sections();  // For subsections.
+    me.subsections = new module.Sections();  // For subsections.
     me.testOrder=[];
     me.tests={};
   }
@@ -239,11 +239,12 @@ $web17_com_au$.unitJS = function() {
     var assertions={};
 
     function before_assert() {
-      STATS.assertions++;
       assertions.setup();
       STATS.current.assertion_level++;
-      if(STATS.current.assertion_level==1)
+      if(STATS.current.assertion_level==1) {
         STATS.current.assertion_count++;
+        STATS.assertions++;
+      }
     }
 
     function after_assert() {
