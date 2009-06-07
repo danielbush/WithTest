@@ -109,11 +109,14 @@ $web17_com_au$.unitJS = function() {
      *            It should print results usually into an html file.
      */
 
-    runner.run = function(testOrder,tests,printer) {
+    runner.run = function(testOrder,tests,printer,stats) {
+      var standalone=false;  // True = we are being invoked by a section.
 
       // Initialize STATS object for collecting stats.
-
-      STATS = new Stats();
+      if(!stats) {
+        stats = new Stats();
+        standalone=true;
+      }
 
       // Run the tests and print to screen...
 
@@ -121,44 +124,60 @@ $web17_com_au$.unitJS = function() {
         var test_name=testOrder[i];
 
         try {
-          STATS.tests++;
-          STATS.current.reset();
-          STATS.current.test_name=test_name;
-          // Pass STATS in to the test mainly so I can test this framework
+          stats.tests++;
+          stats.current.reset();
+          stats.current.test_name=test_name;
+          STATS=stats; // So assertion code can update stats.
+          // Pass stats in to the test mainly so I can test this framework
           // more easily.
-          tests[test_name](STATS);
-          printer.printPass(i+1,test_name,STATS);
+          tests[test_name](stats);
+          STATS=null;
+          printer.printPass(i+1,test_name,stats);
         }
 
         catch(e) {
           if(e.isFailure) {
-            STATS.failed_tests++;
-            printer.printFail(i+1,test_name,STATS,e);
+            stats.failed_tests++;
+            printer.printFail(i+1,test_name,stats,e);
           }
           else {
-            STATS.errored_tests++;
-            printer.printError(i+1,test_name,STATS,e);
+            stats.errored_tests++;
+            printer.printError(i+1,test_name,stats,e);
           }
-          STATS.current.reset();
+          stats.current.reset();
         }
+
       }
 
-      return STATS;
+      if(standalone) printer.printStats(stats);
+      return stats;
 
     }
 
     runner.sections={};
 
     // Run all the tests for sections in a Sections object.
+    //
+    // Should be invoked without stats and level parameters.
 
-    runner.sections.run = function(sections,printer) {
+    runner.sections.run = function(sections,printer,stats,level) {
       var s,section_printer;
+
+      // Initialize STATS object for collecting stats.
+      if(!stats) stats = new Stats();
+      if(!level) level = 1;
+
       for(var i=0;i<sections.members.length;i++) {
         s = sections.members[i];
         section_printer = printer.subsection_printer( s.name );
-        runner.run(s.testOrder,s.tests,section_printer);
+        runner.run(s.testOrder,s.tests,section_printer,stats);
         if(s.subsections.members.length>0)
-          runner.sections.run(s.subsections,section_printer);
+          runner.sections.run(s.subsections,section_printer,stats,level+1);
+      }
+
+      if(level==1) {
+        printer.printStats(stats);
+        return stats;
       }
     }
 
