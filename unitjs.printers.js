@@ -64,6 +64,9 @@ $web17_com_au$.unitJS.printers = function() {
     if(label) {
       tests_div.appendChild(tag('P',label));
     }
+    var stats_container_div=document.createElement('DIV');
+    stats_container_div.className = "stats-container";
+    tests_div.appendChild(stats_container_div);
 
     // Create a section div, run the tests and append
     // to this div instead of directly to tests_div.
@@ -114,7 +117,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printStats = function(stats) {
       var stats_div = document.createElement('DIV');
       stats_div.className = 'stats';
-      tests_div.appendChild(stats_div);
+      stats_container_div.appendChild(stats_div);
       stats_div.innerHTML = 
         'Tests: '+stats.tests+'<br/>'+
         'Tests - Failed: '+stats.failed_tests+'<br/>'+
@@ -125,7 +128,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printSectionStats = function(stats) {
       var stats_div = document.createElement('DIV');
       stats_div.className = 'section-stats';
-      tests_div.appendChild(stats_div);
+      stats_container_div.appendChild(stats_div);
       stats_div.innerHTML = 
         'Tests: '+stats.section.tests+'<br/>'+
         'Tests - Failed: '+stats.section.failed_tests+'<br/>'+
