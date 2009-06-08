@@ -150,9 +150,8 @@ $web17_com_au$.unitJS.interfaces = function() {
    * or test sections.
    * In unitJS it is not currently implemented as an object in its own right.
    *
-   * - you can invoke runner.run directly in your html
-   *   (eg using an input button) once you've set
-   *   up the tests
+   * - you can invoke runner.run or runner.sections.run directly in your html
+   *   (eg using an input button) once you've set up the tests
    * - you'll need to provide it with a printer object;
    *   unitJS provides one implementation: unitjs.printers.DefaultPrinter.
    *   See printer interace.
@@ -160,20 +159,18 @@ $web17_com_au$.unitJS.interfaces = function() {
    * - run()
    *     Run tests in the order specified by testOrder.
    *     Catch any errors and note if they are assertion failures or
-   *     otherwise.  Update stats.
+   *     otherwise.
    *
-   *     If invoking directly (not via me.sections.run()) then do NOT
-   *     include 'stats'.  run() will then instantiate its own stats
-   *     instance and get the printer to print the stats.
-   *     If run() is passed stats, it will assume it is
-   *     running in a section and will not print stats.
+   *     RETURNS
+   *     Stats instance
    *
    *     PARAMETERS
    *     tests:     see tests/testOrder above
    *     testOrder: see tests/testOrder above
    *     printer:   an object the has the module.Printer interface
    *                It should print results usually into an html file.
-   *     stats:     A Stats object instance
+   *     nested:    If false (or not specified), run()
+   *                assumes it is in standalone mode.
    *
    * - sections.run()
    *     Run tests for each section in 'sections'.
@@ -202,8 +199,7 @@ $web17_com_au$.unitJS.interfaces = function() {
         testOrder,
         tests,
         printer,
-        {setup:function(){},teardown:function(){}},
-        stats){}
+        nested){ return new module.Stats() }
     module.sections={};
     module.sections.run = function(
         sections,
@@ -294,6 +290,12 @@ $web17_com_au$.unitJS.interfaces = function() {
    * current.reset()
    *   Should reinitialize all me.current.* data.
    *
+   * merge
+   *   Merge global and section-level stats with another
+   *   stats object.  For instance, runner.run will create
+   *   and return a stats object which you might want to
+   *   merge into a global stats object.
+   *
    */
 
   module.Stats = function() {
@@ -316,6 +318,8 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.current.assertion_level=0;
     me.current.assertion_count=0;
     me.current.reset = function() { }
+
+    me.merge = function(stats) {}
   }
 
 
