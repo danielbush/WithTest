@@ -57,6 +57,20 @@ $web17_com_au$.unitJS = function() {
     me.errored_tests=0;
     me.assertions=0;  // Total number of assertions executed.
 
+    me.section={};
+    me.section.name=null;
+    me.section.tests = 0;
+    me.section.failed_tests = 0;
+    me.section.errored_tests = 0;
+    me.section.assertions = 0;
+    me.section.reset = function() { 
+      me.section.name=null;
+      me.section.tests=0;
+      me.section.failed_tests = 0;
+      me.section.errored_tests = 0;
+      me.section.assertions = 0;
+    }
+
     // The current test stats
     me.current={};
     me.current.test_name=null;
@@ -99,6 +113,7 @@ $web17_com_au$.unitJS = function() {
 
         try {
           stats.tests++;
+          stats.section.tests++;
           stats.current.reset();
           stats.current.test_name=test_name;
           STATS=stats; // So assertion code can update stats.
@@ -114,10 +129,12 @@ $web17_com_au$.unitJS = function() {
         catch(e) {
           if(e.isFailure) {
             stats.failed_tests++;
+            stats.section.failed_tests++;
             printer.printFail(i+1,test_name,stats,e);
           }
           else {
             stats.errored_tests++;
+            stats.section.errored_tests++;
             printer.printError(i+1,test_name,stats,e);
           }
           stats.current.reset();
@@ -142,7 +159,11 @@ $web17_com_au$.unitJS = function() {
       for(var i=0;i<sections.members.length;i++) {
         s = sections.members[i];
         section_printer = printer.subsection_printer( s.name );
+        stats.section.reset();
+        stats.section.name = s.name;
         runner.run(s.testOrder,s.tests,section_printer,stats);
+        section_printer.printSectionStats(stats);
+
         if(s.subsections.members.length>0)
           runner.sections.run(s.subsections,section_printer,stats,level+1);
       }
@@ -210,6 +231,7 @@ $web17_com_au$.unitJS = function() {
       if(STATS.current.assertion_level==1) {
         STATS.current.assertion_count++;
         STATS.assertions++;
+        STATS.section.assertions++;
       }
     }
 

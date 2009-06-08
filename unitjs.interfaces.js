@@ -304,6 +304,15 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.failed_tests = 0;  // Count failed tests
     me.errored_tests = 0; // Count tests which threw an error other than an assertion failure
     me.assertions = 0;    // Count the number of assertions called
+
+    me.section={};
+    me.section.name='section name';
+    me.section.tests = 0;
+    me.section.failed_tests = 0;
+    me.section.errored_tests = 0;
+    me.section.assertions = 0;
+    me.section.reset = function() { }
+
     me.current={};
     me.current.test_name='test name';  // Name/description of current test
     me.current.assertion_level=0;

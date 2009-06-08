@@ -122,6 +122,17 @@ $web17_com_au$.unitJS.printers = function() {
         'Assertions: '+stats.assertions+'<br/>';
     }
 
+    me.printSectionStats = function(stats) {
+      var stats_div = document.createElement('DIV');
+      stats_div.className = 'section-stats';
+      tests_div.appendChild(stats_div);
+      stats_div.innerHTML = 
+        'Tests: '+stats.section.tests+'<br/>'+
+        'Tests - Failed: '+stats.section.failed_tests+'<br/>'+
+        'Tests - Errors: '+stats.section.errored_tests+'<br/>'+
+        'Assertions: '+stats.section.assertions+'<br/>';
+    }
+
 
     // Helper functions to create tags:
 
