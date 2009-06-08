@@ -234,8 +234,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      e         : error object; for printFail this should be the unitJS
    *                  failure object.
    *  - subsection_printer
-   *      Return an object that implements this 
-   *      interface.  
+   *
+   *      RETURNS
+   *      An object that implements this interface.  
    *
    *      PARAMETERS
    *      section_name : Name/description of section
@@ -253,6 +254,12 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      element rather than the main testing div element.
    *      Don't forget to ensure id is unique if you use it.
    *
+   *  - updateSectionStatus
+   *      Once a section has run all its tests it may want
+   *      to display the fact that one or more has failed
+   *      or that everything has passed which is the purpose
+   *      of this function.
+   *
    */
 
   module.Printer = function(parentNode,id,label) {
@@ -263,6 +270,7 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.subsection_printer = function(section_name){ 
       return new module.Printer(parentNode,id,label); 
     };
+    me.updateSectionStatus = function(stats){}
 
   }
 
