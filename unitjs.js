@@ -182,6 +182,7 @@ $web17_com_au$.unitJS = function() {
         if(s.subsections.members.length>0)
           runner.sections.run(s.subsections,section_printer,stats,level+1);
 
+        section_printer.updateSectionStatus(stats);
         if(level==1) {
           section_printer.printSectionStats(stats);
           stats.current.reset();

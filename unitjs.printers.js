@@ -61,16 +61,18 @@ $web17_com_au$.unitJS.printers = function() {
       tests_frame_div.id = id;
       tests_frame_div.className = 'section';
       parentNode.appendChild( tests_frame_div );
+      tests_div.style.display='none';
     }
     tests_frame_div.innerHTML = 
       '<div class="banner" ><div class="menu" ></div>'+
-      '<div class="title" ></div><div class="clear"></div></div>';
+      '<div class="title" ><h2></h2></div><div class="clear"></div></div>';
     var banner_div = tests_frame_div.firstChild;
     var menu_div = banner_div.firstChild;
     var title_div = banner_div.firstChild.nextSibling;
+    var h2_div = title_div.firstChild;
 
     if(label) {
-      title_div.appendChild(tag('H2',label));
+      h2_div.innerHTML=label;
     }
 
     var a = document.createElement('A');
@@ -82,12 +84,25 @@ $web17_com_au$.unitJS.printers = function() {
       tests_div.style.display='none' ;
     };
 
-
     var stats_container_div=document.createElement('DIV');
     stats_container_div.className = "stats-container";
     tests_frame_div.appendChild(stats_container_div);
 
     tests_frame_div.appendChild(tests_div);
+
+    me.updateSectionStatus = function(stats) {
+      var msg = ' (Tests:'+stats.section.tests+'; ';
+      if(stats.section.failed_tests>0||stats.section.errored_tests) {
+        msg+=' Fails: '+stats.section.failed_tests+' / Errors: '+stats.section.errored_tests+')';
+        banner_div.className = "banner section-fail";
+        h2_div.appendChild(document.createTextNode(msg));
+      }
+      else {
+        msg+=' Passed)'
+        banner_div.className = "banner section-pass";
+        h2_div.appendChild(document.createTextNode(msg));
+      }
+    }
 
     me.subsection_printer = function(name) {
       return new module.DefaultPrinter(tests_div,'section-'+(sequencer++),name);

@@ -4,15 +4,16 @@
 }
 body {
   color:#444;
+  background-color:#eeeeee;
 }
 div.clear {
   clear:both;
 }
 h2 {
-  font-size:1.4em;
+  font-size:1.2em;
 }
 .section .section h2 {
-  font-size:1.2em;
+  font-size:1.1em;
 }
 
 div.banner {
@@ -34,7 +35,6 @@ a {
 }
 
 div.tests {
-  background-color:#eeeeee;
   padding-left:1em;
 }
 
@@ -85,4 +85,12 @@ div.test span.fail {
   color:red;
   float:right;
   margin-right:1em;
+}
+
+.section-fail {
+  background-color:#fdd;
+}
+
+.section-pass {
+  background-color:#dfd;
 }
