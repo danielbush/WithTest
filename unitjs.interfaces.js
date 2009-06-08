@@ -26,7 +26,7 @@
  * contract on parameters and return values for functions
  * and methods.
  * Despite this, interfaces are an excellent way to document
- * the visible and not-so-visiable 'surfaces' of a
+ * the visible and not-so-visible 'surfaces' of a
  * javascript project and how they interact without worrying
  * about implementation detail.
  *
@@ -115,9 +115,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   - name
    *       Name/description of section
    *   - tests
-   *       See module.tests
+   *       See tests
    *   - testOrder
-   *       See module.testOrder
+   *       See testOrder
    *   - subsections
    *       A section may have its own subsections.
    *       At any rate, me.sections should point to an
