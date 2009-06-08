@@ -43,33 +43,51 @@ $web17_com_au$.unitJS.printers = function() {
   module.DefaultPrinter = function(parentNode,id,label) {
 
     var me = this;
-    var tests_div;
+    var tests_frame_div;
+    var tests_div = document.createElement('DIV');
 
     if(!id) {
       // Delete 'tests' div if already in DOM...
-      tests_div=document.getElementById("tests");
-      if ( tests_div ) {
-        parentNode.removeChild(tests_div);
+      tests_frame_div=document.getElementById("tests");
+      if ( tests_frame_div ) {
+        parentNode.removeChild(tests_frame_div);
       }
       // Create 'tests' div...
-      tests_div=document.createElement('DIV');
-      tests_div.id = "tests";
-      parentNode.appendChild( tests_div );
+      tests_frame_div=document.createElement('DIV');
+      tests_frame_div.id = "tests";
+      parentNode.appendChild( tests_frame_div );
     } else {
-      tests_div=document.createElement('DIV');
-      tests_div.id = id;
-      tests_div.className = 'section';
-      parentNode.appendChild( tests_div );
+      tests_frame_div=document.createElement('DIV');
+      tests_frame_div.id = id;
+      tests_frame_div.className = 'section';
+      parentNode.appendChild( tests_frame_div );
     }
+    tests_frame_div.innerHTML = 
+      '<div class="banner" ><div class="menu" ></div>'+
+      '<div class="title" ></div><div class="clear"></div></div>';
+    var banner_div = tests_frame_div.firstChild;
+    var menu_div = banner_div.firstChild;
+    var title_div = banner_div.firstChild.nextSibling;
+
     if(label) {
-      tests_div.appendChild(tag('H2',label));
+      title_div.appendChild(tag('H2',label));
     }
+
+    var a = document.createElement('A');
+    a.innerHTML='show';
+    menu_div.appendChild(a);
+    a.onclick = function() {
+      tests_div.style.display=='none' ?
+      tests_div.style.display='' :
+      tests_div.style.display='none' ;
+    };
+
+
     var stats_container_div=document.createElement('DIV');
     stats_container_div.className = "stats-container";
-    tests_div.appendChild(stats_container_div);
+    tests_frame_div.appendChild(stats_container_div);
 
-    // Create a section div, run the tests and append
-    // to this div instead of directly to tests_div.
+    tests_frame_div.appendChild(tests_div);
 
     me.subsection_printer = function(name) {
       return new module.DefaultPrinter(tests_div,'section-'+(sequencer++),name);
@@ -119,16 +137,9 @@ $web17_com_au$.unitJS.printers = function() {
 
     me.printStats = function(stats) {
       var holder_div = document.createElement('DIV');
-      var stats_div = document.createElement('DIV');
+      var stats_div  = document.createElement('DIV');
+
       holder_div.className = 'stats-holder';
-      holder_div.innerHTML='<a href="#" >show stats</a>';
-      holder_div.firstChild.className = 'stats-toggle';
-      holder_div.firstChild.onclick = function() {
-          stats_div.style.display=='none' ?
-          stats_div.style.display='' :
-          stats_div.style.display='none';
-          return false;
-      };
       stats_div.style.display='';  // Show global stats by default.
       stats_div.className = 'stats';
       stats_div.innerHTML = 
@@ -142,11 +153,14 @@ $web17_com_au$.unitJS.printers = function() {
 
     me.printSectionStats = function(stats) {
       var holder_div = document.createElement('DIV');
-      var stats_div = document.createElement('DIV');
+      var stats_div  = document.createElement('DIV');
+      var a = document.createElement('A');
+
       holder_div.className = 'section-stats-holder';
-      holder_div.innerHTML='<a href="#" >show stats</a>';
-      holder_div.firstChild.className = 'section-stats-toggle';
-      holder_div.firstChild.onclick = function() {
+      a.innerHTML="stats";
+      a.className = 'section-stats-toggle';
+      menu_div.appendChild(a);
+      a.onclick = function() {
           stats_div.style.display=='none' ?
           stats_div.style.display='' :
           stats_div.style.display='none';

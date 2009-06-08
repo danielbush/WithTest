@@ -15,6 +15,24 @@ h2 {
   font-size:1.2em;
 }
 
+div.banner {
+}
+div.banner div.menu {
+  float:right;
+  padding-right:1em;
+  font-size:80%;
+}
+div.banner div.menu * {
+  padding-left:1em;
+}
+div.banner div.title {
+  float:left;
+}
+a {
+  text-decoration:underline;
+  cursor:pointer;
+}
+
 div.tests {
   background-color:#eeeeee;
   padding-left:1em;
@@ -51,7 +69,7 @@ div.test span.pass {
   font-weight:bold;
   color:green;
   float:right;
-  padding-right:1em;
+  margin-right:1em;
 }
 
 div.test span.error {
@@ -59,12 +77,12 @@ div.test span.error {
   color:white;
   background-color:red;
   float:right;
-  padding-right:1em;
+  margin-right:1em;
 }
 
 div.test span.fail {
   font-weight:bold;
   color:red;
   float:right;
-  padding-right:1em;
+  margin-right:1em;
 }
