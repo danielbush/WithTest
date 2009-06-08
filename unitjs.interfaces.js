@@ -81,8 +81,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.tests = { 'test 1':function(stats){} , 'test that X is Y':function(stats){} }
-  module.testOrder = [ 'test 2' , 'test 1' ];
+  tests = { 'test 1':function(stats){} , 'test that X is Y':function(stats){} }
+  testOrder = [ 'test 2' , 'test 1' ];
+
 
 
 
@@ -181,18 +182,44 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     each section in 'sections' using section.tests
    *     and section.testOrder as parameters.
    *
-   *     Should be invoked without stats and level parameters.
+   *     Should be invoked WITHOUT stats and level parameters.
    *     When recursing, this function will pass relevant objects
    *     and values for these parameters.
+   *
+   * - setup()
+   *     Global setup function for this runner.  If you set
+   *     this the runner will always run it as well as any
+   *     setup function passed as a parameter.
+   *     It may be easier just to do setup here and not
+   *     pass setup/teardown into the runner.
+   *     Passing in setup/teardown is used by a Section
+   *     object which may have its own particular
+   *     setup/teardown.
+   *
+   * - teardown()
+   *     Same as setup but for the teardown process.
    *
    *
    */
 
   module.runner = function() {
     var module = {};
-    module.run = function(testOrder,tests,printer,stats){}
+    module.run = function(
+        testOrder,
+        tests,
+        printer,
+        {setup:function(){},teardown:function(){}},
+        stats){}
     module.sections={};
-    module.sections.run = function(sections,printer,stats,level){}
+    module.sections.run = function(
+        sections,
+        printer,
+        stats,
+        level){}
+
+    module.setup = function(){};
+    module.teardown = function(){};
+
     return module;
   }();
 
@@ -299,7 +326,7 @@ $web17_com_au$.unitJS.interfaces = function() {
   module.Failure = function(assertionMessage) {
     var me = this;
     me.message = assertionMessage;   // Eg for assertEquals: "Expected <a> but got <b>." 
-    me.isFailure = true;             // Flags this as being
+    me.isFailure = true;             // Flags this as being an assertion failure (as opposed to some other error)
     me.comment = 'test_name';        // The name or description of the test.
   }
 
@@ -312,19 +339,12 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   - generally take 1 or 2 args
    *     1) comment : a user comment shown at failure [optional]
    *     2) a boolean value representing a test result
-   *   - setup         : run before the assertion.
-   *                     User can override and run their own.
-   *   - teardown      : run after the assertion.
-   *                     User can override and run their own.
    *
    */
 
   module.assertions = function() {
 
     var module = {};
-
-    module.setup = function() {}
-    module.teardown = function() {}
 
     module.assert = function() {}
     module.assertTrue = function() {}

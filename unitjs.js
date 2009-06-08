@@ -81,6 +81,9 @@ $web17_com_au$.unitJS = function() {
 
     var runner = {};
 
+    runner.setup = null;
+    runner.teardown = null;
+
     runner.run = function(testOrder,tests,printer,stats) {
       var standalone = false;  // True = we are being invoked by a section.
 
@@ -101,7 +104,9 @@ $web17_com_au$.unitJS = function() {
           STATS=stats; // So assertion code can update stats.
           // Pass stats in to the test mainly so I can test this framework
           // more easily.
+          if (runner.setup) runner.setup();
           tests[test_name](stats);
+          if (runner.teardown) runner.teardown();
           STATS=null;
           printer.printPass(i+1,test_name,stats);
         }
@@ -201,7 +206,6 @@ $web17_com_au$.unitJS = function() {
     var assertions={};
 
     function before_assert() {
-      assertions.setup();
       STATS.current.assertion_level++;
       if(STATS.current.assertion_level==1) {
         STATS.current.assertion_count++;
@@ -211,13 +215,6 @@ $web17_com_au$.unitJS = function() {
 
     function after_assert() {
       STATS.current.assertion_level--;
-      assertions.teardown();
-    }
-
-    assertions.setup = function() {
-    }
-
-    assertions.teardown = function() {
     }
 
     function _assert(comment, booleanValue, assertionTypeMessage) {

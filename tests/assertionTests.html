@@ -502,7 +502,7 @@ tests[stmt] = function(STATS) {
 stmt = 'Test setup works at beginning of test';
 testOrder.push(stmt);
 var setupChecker = {val:null};
-A.setup = function() { setupChecker.val='setup!'; }
+U.runner.setup = function() { setupChecker.val='setup!'; }
 tests[stmt] = function() {
   A.assertEquals('setup!',setupChecker.val);
 }
@@ -517,7 +517,7 @@ tests[stmt] = function() {
 stmt = 'Test teardown works at end of test - part 1';
 testOrder.push(stmt);
 var teardownChecker;
-A.teardown = function() { if(teardownChecker) teardownChecker.val='teardown!'; }
+U.runner.teardown = function() { if(teardownChecker) teardownChecker.val='teardown!'; }
 tests[stmt] = function() {
   // Create teardownChecker here.
   teardownChecker = {val:null};  
