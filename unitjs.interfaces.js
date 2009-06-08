@@ -187,17 +187,11 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     and values for these parameters.
    *
    * - setup()
-   *     Global setup function for this runner.  If you set
-   *     this the runner will always run it as well as any
-   *     setup function passed as a parameter.
-   *     It may be easier just to do setup here and not
-   *     pass setup/teardown into the runner.
-   *     Passing in setup/teardown is used by a Section
-   *     object which may have its own particular
-   *     setup/teardown.
-   *
+   *     Global setup function for this runner.
+   *     Run before every test.
    * - teardown()
-   *     Same as setup but for the teardown process.
+   *     Global teardown function for this runner.
+   *     Run after every test.
    *
    *
    */
@@ -280,6 +274,10 @@ $web17_com_au$.unitJS.interfaces = function() {
   /*
    * Stats Object (not implementable)
    * ----------------------------------------------------------------
+   *
+   * section.*
+   *   Section stats should store all stats for a section
+   *   AND all of its subsections.
    *
    * current.*
    *   Current = stats for a single test.

@@ -73,8 +73,18 @@ ss.testOrder.push(stmt);
 ss.tests[stmt] = function() {
   A.assert("ok", true);
 }
+stmt = 'test #5';
+ss.testOrder.push(stmt);
+ss.tests[stmt] = function() {
+  A.assert("ok", false);
+}
 
 stmt = 'test #4';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  A.assert(true);
+}
+stmt = 'test #6';
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
   A.assert(true);

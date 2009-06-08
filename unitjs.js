@@ -82,6 +82,18 @@ $web17_com_au$.unitJS = function() {
       me.current.assertion_level=0;
     }
 
+    me.merge = function(stats) {
+      me.tests         +=stats.tests;
+      me.failed_tests  +=stats.failed_tests;
+      me.errored_tests +=stats.errored_tests;
+      me.assertions    +=stats.assertions;
+
+      me.section.tests         +=stats.section.tests;
+      me.section.failed_tests  +=stats.section.failed_tests;
+      me.section.errored_tests +=stats.section.errored_tests;
+      me.section.assertions    +=stats.section.assertions;
+    }
+
   }
 
 
@@ -98,13 +110,13 @@ $web17_com_au$.unitJS = function() {
     runner.setup = null;
     runner.teardown = null;
 
-    runner.run = function(testOrder,tests,printer,stats) {
-      var standalone = false;  // True = we are being invoked by a section.
+    // If you invoke without nested, nested will be treated
+    // as false and runnuer.run assumes it is running as 
+    // standalone and will print stats.
 
-      if(!stats) {
-        stats = new Stats();
-        standalone = true;
-      }
+    runner.run = function(testOrder,tests,printer,nested) {
+
+      var stats = new Stats();
 
       // Run the tests and print to screen...
 
@@ -142,7 +154,7 @@ $web17_com_au$.unitJS = function() {
 
       }
 
-      if(standalone) printer.printStats(stats);
+      if(!nested) printer.printStats(stats);
       return stats;
 
     }
@@ -150,7 +162,7 @@ $web17_com_au$.unitJS = function() {
     runner.sections={};
 
     runner.sections.run = function(sections,printer,stats,level) {
-      var s,section_printer;
+      var s,section_printer,runner_stats;
 
       // Initialize STATS object for collecting stats.
       if(!stats) stats = new Stats();
@@ -159,13 +171,23 @@ $web17_com_au$.unitJS = function() {
       for(var i=0;i<sections.members.length;i++) {
         s = sections.members[i];
         section_printer = printer.subsection_printer( s.name );
-        stats.section.reset();
         stats.section.name = s.name;
-        runner.run(s.testOrder,s.tests,section_printer,stats);
-        section_printer.printSectionStats(stats);
+        runner_stats = runner.run(s.testOrder,s.tests,section_printer,true);
+        stats.merge(runner_stats);
+
+        if(level!=1) {
+          section_printer.printSectionStats(runner_stats);
+        }
 
         if(s.subsections.members.length>0)
           runner.sections.run(s.subsections,section_printer,stats,level+1);
+
+        if(level==1) {
+          section_printer.printSectionStats(stats);
+          stats.current.reset();
+          stats.section.reset();
+        }
+
       }
 
       if(level==1) {
