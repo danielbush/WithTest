@@ -1,0 +1,70 @@
+* {
+  margin:0;
+  padding:0;
+}
+body {
+  color:#444;
+}
+div.clear {
+  clear:both;
+}
+h2 {
+  font-size:1.4em;
+}
+.section .section h2 {
+  font-size:1.2em;
+}
+
+div.tests {
+  background-color:#eeeeee;
+  padding-left:1em;
+}
+
+div.test {
+  background-color:#dddddd;
+  padding:0.1em;
+  padding-left:1em;
+  border-top:solid #337 1px;
+}
+
+div.section {
+  background-color:#eee;
+  border-top:solid #337 1px;
+  padding-left:1em;
+}
+div.section .section {
+  border-top:none;
+  margin-left:1em;
+}
+
+div.section-stats ,
+div.stats {
+  border-top:solid #666 1px;
+  padding:1em;
+  background-color:#eef;
+}
+
+div.test span {
+  float:left;
+}
+div.test span.pass {
+  font-weight:bold;
+  color:green;
+  float:right;
+  padding-right:1em;
+}
+
+div.test span.error {
+  font-weight:bold;
+  color:white;
+  background-color:red;
+  float:right;
+  padding-right:1em;
+}
+
+div.test span.fail {
+  font-weight:bold;
+  color:red;
+  float:right;
+  padding-right:1em;
+}

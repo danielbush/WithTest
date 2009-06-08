@@ -58,11 +58,11 @@ $web17_com_au$.unitJS.printers = function() {
     } else {
       tests_div=document.createElement('DIV');
       tests_div.id = id;
-      tests_div.className = 'subsection';
+      tests_div.className = 'section';
       parentNode.appendChild( tests_div );
     }
     if(label) {
-      tests_div.appendChild(tag('P',label));
+      tests_div.appendChild(tag('H2',label));
     }
     var stats_container_div=document.createElement('DIV');
     stats_container_div.className = "stats-container";
@@ -78,19 +78,21 @@ $web17_com_au$.unitJS.printers = function() {
 
     me.printPass = function(num,test_name,stats) {
       var test_div=document.createElement('DIV');
-      var t=tag('P',num+': '+test_name+'... ');
+      var t=tag('SPAN',num+': '+test_name+'... ');
       test_div.className = 'test';
-      t.appendChild(passed());
       test_div.appendChild(t);
+      test_div.appendChild(passed());
+      test_div.appendChild(clearing_div());
       tests_div.appendChild(test_div);
     }
 
     me.printFail  = function(num,test_name,stats,e) {
       var test_div=document.createElement('DIV');
-      var t=tag('P',num+': '+test_name+'... ');
+      var t=tag('SPAN',num+': '+test_name+'... ');
       test_div.className = 'test';
-      t.appendChild(failed());
       test_div.appendChild(t);
+      test_div.appendChild(failed());
+      test_div.appendChild(clearing_div());
       test_div.appendChild(tag('P',
         "Failure on assertion #"+stats.current.assertion_count+'. '+e.message));
       if ( e.comment )
@@ -104,8 +106,9 @@ $web17_com_au$.unitJS.printers = function() {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
       test_div.className = 'test';
-      t.appendChild(errored());
       test_div.appendChild(t);
+      test_div.appendChild(errored());
+      test_div.appendChild(clearing_div());
       test_div.appendChild(tag('P',
         "Error occurred on or after assertion #"+stats.current.assertion_count));
       test_div.appendChild(tag('P',"Error message: "+e.message));
@@ -163,6 +166,12 @@ $web17_com_au$.unitJS.printers = function() {
 
     // Helper functions to create tags:
 
+    function clearing_div() {
+      var d = document.createElement('DIV');
+      d.className="clear";
+      return d;
+    }
+
     function tag(tagType,text) {
       var p=document.createElement(tagType);
       var ptext=document.createTextNode(text);
@@ -172,23 +181,19 @@ $web17_com_au$.unitJS.printers = function() {
 
     function passed() {
       var span=tag('SPAN',"PASSED");
-      span.style.color="green";
-      span.style.fontWeight="bold";
+      span.className="pass";
       return span;
     }
 
     function failed() {
       var span=tag('SPAN',"FAILED");
-      span.style.color="red";
-      span.style.fontWeight="bold";
+      span.className="fail";
       return span;
     }
 
     function errored() {
       var span=tag('SPAN',"ERROR!");
-      span.style.color="white";
-      span.style.backgroundColor="red";
-      span.style.fontWeight="bold";
+      span.className="error";
       return span;
     }
 
