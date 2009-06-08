@@ -79,6 +79,19 @@ ss.tests[stmt] = function() {
   A.assert("ok", false);
 }
 
+sss = ss.subsections.add('subsection 1.1');
+stmt = 'test #7';
+sss.testOrder.push(stmt);
+sss.tests[stmt] = function() {
+  A.assert("ok", false);
+}
+stmt = 'test #8';
+sss.testOrder.push(stmt);
+sss.tests[stmt] = function() {
+  A.assert("ok", true);
+}
+
+
 stmt = 'test #4';
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
@@ -101,10 +114,6 @@ function init() {
 <body onload="init();" >
 <h1>UnitJS Assertion Examples</h1>
 
-<p>
-  This page contains tests for the UnitJS Assertion
-  functions.  Basically we're testing ourselves with ourselves.
-</p>
 <input type="button" onclick="U.runner.sections.run(sections,printer);" value="Run tests" />
 </body>
 </html>

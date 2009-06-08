@@ -17,6 +17,7 @@ h2 {
 }
 
 div.banner {
+  padding-left:1em;
 }
 div.banner div.menu {
   float:right;
@@ -28,6 +29,7 @@ div.banner div.menu * {
 }
 div.banner div.title {
   float:left;
+  cursor:pointer;
 }
 a {
   text-decoration:underline;
@@ -52,7 +54,7 @@ div.section {
 }
 div.section .section {
   border-top:none;
-  margin-left:1em;
+  padding-left:1em;
 }
 
 div.section-stats ,

@@ -78,7 +78,8 @@ $web17_com_au$.unitJS.printers = function() {
     var a = document.createElement('A');
     a.innerHTML='show';
     menu_div.appendChild(a);
-    a.onclick = function() {
+
+    title_div.onclick = a.onclick = function() {
       tests_div.style.display=='none' ?
       tests_div.style.display='' :
       tests_div.style.display='none' ;
@@ -158,6 +159,7 @@ $web17_com_au$.unitJS.printers = function() {
       stats_div.style.display='';  // Show global stats by default.
       stats_div.className = 'stats';
       stats_div.innerHTML = 
+        '<h2>Summary</h2>'+
         'Tests: '+stats.tests+'<br/>'+
         'Tests - Failed: '+stats.failed_tests+'<br/>'+
         'Tests - Errors: '+stats.errored_tests+'<br/>'+
