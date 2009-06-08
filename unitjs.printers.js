@@ -168,33 +168,6 @@ $web17_com_au$.unitJS.printers = function() {
       stats_container_div.appendChild(holder_div);
     }
 
-    me.printSectionStats = function(stats) {
-      var holder_div = document.createElement('DIV');
-      var stats_div  = document.createElement('DIV');
-      var a = document.createElement('A');
-
-      holder_div.className = 'section-stats-holder';
-      a.innerHTML="stats";
-      a.className = 'section-stats-toggle';
-      menu_div.appendChild(a);
-      a.onclick = function() {
-          stats_div.style.display=='none' ?
-          stats_div.style.display='' :
-          stats_div.style.display='none';
-          return false;
-      };
-      stats_div.style.display='none';
-      stats_div.className = 'section-stats';
-      stats_div.innerHTML = 
-        'Tests: '+stats.section.tests+'<br/>'+
-        'Tests - Failed: '+stats.section.failed_tests+'<br/>'+
-        'Tests - Errors: '+stats.section.errored_tests+'<br/>'+
-        'Assertions: '+stats.section.assertions+'<br/>';
-      holder_div.appendChild(stats_div);
-      stats_container_div.appendChild(holder_div);
-    }
-
-
     // Helper functions to create tags:
 
     function clearing_div() {

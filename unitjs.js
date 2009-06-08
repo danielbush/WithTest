@@ -161,43 +161,25 @@ $web17_com_au$.unitJS = function() {
 
     runner.sections={};
 
-    runner.sections.run = function(sections,printer,stats,level) {
-      var s,section_printer,runner_stats;
+    runner.sections.run = function(sections,printer,level) {
+      var s,section_printer,calc_stats,all_stats;
+      all_stats = new Stats();
 
-      // Initialize STATS object for collecting stats.
-      if(!stats) stats = new Stats();
       if(!level) level = 1;
 
       for(var i=0;i<sections.members.length;i++) {
         s = sections.members[i];
         section_printer = printer.subsection_printer( s.name );
-        stats.section.name = s.name;
-        runner_stats = runner.run(s.testOrder,s.tests,section_printer,true);
-        stats.merge(runner_stats);
-
-        if(level!=1) {
-          section_printer.printSectionStats(runner_stats);
-        }
-
+        s.stats = runner.run(s.testOrder,s.tests,section_printer,true);
         if(s.subsections.members.length>0)
-          runner.sections.run(s.subsections,section_printer,stats,level+1);
-
-        if(level==1)
-          section_printer.updateSectionStatus(stats);
-        else
-          section_printer.updateSectionStatus(runner_stats);
-
-        if(level==1) {
-          section_printer.printSectionStats(stats);
-          stats.current.reset();
-          stats.section.reset();
-        }
-
+          runner.sections.run(s.subsections,section_printer,level+1);
+        calc_stats = s.calculateStats();
+        if(level==1) all_stats.merge(calc_stats);
+        section_printer.updateSectionStatus(calc_stats);
       }
 
       if(level==1) {
-        printer.printStats(stats);
-        return stats;
+        printer.printStats(all_stats);
       }
     }
 
@@ -229,6 +211,15 @@ $web17_com_au$.unitJS = function() {
     me.subsections = new module.Sections();  // For subsections.
     me.testOrder=[];
     me.tests={};
+    me.stats = null;
+    me.calculateStats = function() {
+      var stats = new Stats();
+      stats.merge(me.stats);
+      for(var i=0;i<me.subsections.members.length;i++) {
+        stats.merge(me.subsections.members[i].calculateStats());
+      }
+      return stats;
+    }
   }
 
   /*

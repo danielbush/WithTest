@@ -122,6 +122,11 @@ $web17_com_au$.unitJS.interfaces = function() {
    *       A section may have its own subsections.
    *       At any rate, me.sections should point to an
    *       object that implements the module.Sections interface.
+   *   - calculateStats
+   *       Sum stats for section and all its subsections.
+   *   - stats
+   *       Store instance of Stats object containing stats
+   *       for this section.  Does not include subsections.
    * 
    *
    */
@@ -138,6 +143,8 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.tests = {};               
     me.testOrder = [];           
     me.subsections = new module.Sections();
+    me.stats = null;
+    me.calculateStats = function(){ return new Stats(); }
   }
 
 
@@ -179,9 +186,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     each section in 'sections' using section.tests
    *     and section.testOrder as parameters.
    *
-   *     Should be invoked WITHOUT stats and level parameters.
-   *     When recursing, this function will pass relevant objects
-   *     and values for these parameters.
+   *     Should be invoked WITHOUT the level parameter.
+   *     When recursing, this function will increment the
+   *     level.
    *
    * - setup()
    *     Global setup function for this runner.
@@ -199,12 +206,11 @@ $web17_com_au$.unitJS.interfaces = function() {
         testOrder,
         tests,
         printer,
-        nested){ return new module.Stats() }
+        nested){ return new Stats() }
     module.sections={};
     module.sections.run = function(
         sections,
         printer,
-        stats,
         level){}
 
     module.setup = function(){};
@@ -233,6 +239,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      stats     : a Stats object instance, used for collecting stats in unitJS
    *      e         : error object; for printFail this should be the unitJS
    *                  failure object.
+   *
    *  - subsection_printer
    *
    *      RETURNS
@@ -267,6 +274,7 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.printPass = function(num,test_name,stats){};
     me.printFail = function(num,test_name,stats,e){};
     me.printError = function(num,test_name,stats,e){};
+    me.printStats = function(stats){};
     me.subsection_printer = function(section_name){ 
       return new module.Printer(parentNode,id,label); 
     };
@@ -306,7 +314,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.Stats = function() {
+  var Stats = function() {
     var me = this;
     me.tests = 0;         // Count all tests
     me.failed_tests = 0;  // Count failed tests
