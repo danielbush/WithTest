@@ -115,25 +115,49 @@ $web17_com_au$.unitJS.printers = function() {
     }
 
     me.printStats = function(stats) {
+      var holder_div = document.createElement('DIV');
       var stats_div = document.createElement('DIV');
+      holder_div.className = 'stats-holder';
+      holder_div.innerHTML='<a href="#" >show stats</a>';
+      holder_div.firstChild.className = 'stats-toggle';
+      holder_div.firstChild.onclick = function() {
+          stats_div.style.display=='none' ?
+          stats_div.style.display='' :
+          stats_div.style.display='none';
+          return false;
+      };
+      stats_div.style.display='';  // Show global stats by default.
       stats_div.className = 'stats';
-      stats_container_div.appendChild(stats_div);
       stats_div.innerHTML = 
         'Tests: '+stats.tests+'<br/>'+
         'Tests - Failed: '+stats.failed_tests+'<br/>'+
         'Tests - Errors: '+stats.errored_tests+'<br/>'+
         'Assertions: '+stats.assertions+'<br/>';
+      holder_div.appendChild(stats_div);
+      stats_container_div.appendChild(holder_div);
     }
 
     me.printSectionStats = function(stats) {
+      var holder_div = document.createElement('DIV');
       var stats_div = document.createElement('DIV');
+      holder_div.className = 'section-stats-holder';
+      holder_div.innerHTML='<a href="#" >show stats</a>';
+      holder_div.firstChild.className = 'section-stats-toggle';
+      holder_div.firstChild.onclick = function() {
+          stats_div.style.display=='none' ?
+          stats_div.style.display='' :
+          stats_div.style.display='none';
+          return false;
+      };
+      stats_div.style.display='none';
       stats_div.className = 'section-stats';
-      stats_container_div.appendChild(stats_div);
       stats_div.innerHTML = 
         'Tests: '+stats.section.tests+'<br/>'+
         'Tests - Failed: '+stats.section.failed_tests+'<br/>'+
         'Tests - Errors: '+stats.section.errored_tests+'<br/>'+
         'Assertions: '+stats.section.assertions+'<br/>';
+      holder_div.appendChild(stats_div);
+      stats_container_div.appendChild(holder_div);
     }
 
 
