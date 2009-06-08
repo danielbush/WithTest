@@ -19,10 +19,14 @@ var $web17_com_au$ = $web17_com_au$ || {};
 
 /*
  * unitJS Module
- * Contains:
- * - Runner submodule
- * - Assertions submodule
- * - Utils submodule
+ *
+ * ============================================
+ * This file is an implementation of the
+ * interfaces in unitjs.interfaces.js which
+ * define how the key components of the unitjs
+ * system can interact.
+ * For documentation, see unitjs.interfaces.js
+ * ============================================
  *
  */
 
@@ -32,45 +36,32 @@ $web17_com_au$.unitJS = function() {
 
   var _UNDEFINED_VALUE;
 
-  /*
-   * Stats object.
-   *
-   * Initialize a new one with each runner.run().
-   *
-   */
-
   // A Stats instance is stored here and updated
   // by assertions when running tests.
 
   var STATS = null;
 
+  /*
+   * Stats object.
+   * ---------------------------------------------------
+   *
+   */
+
   var Stats = function() {
 
     var me=this;
 
-    /* Test stats */
-
+    // Global test/assertion stats
     me.tests=0;
     me.failed_tests=0;
     me.errored_tests=0;
+    me.assertions=0;  // Total number of assertions executed.
 
-    /* Assertion stats */
-
-    // Total number of assertions executed.
-    me.assertions=0;  
-
-    /* The current test stats */
-
+    // The current test stats
     me.current={};
     me.current.test_name=null;
     me.current.assertion_count=0;
-    // Public assertions may call eachother internally.
-    // We use this variable to help us track this.
     me.current.assertion_level=0;
-
-    // Call this after each test or after catching 
-    // error or failure.
-
     me.current.reset = function() {
       me.current.test_name=null;
       me.current.assertion_count=0;
@@ -83,14 +74,6 @@ $web17_com_au$.unitJS = function() {
   /*
    * Runner submodule
    * ---------------------------------------------------
-   * - you can invoke runner.run directly in your html
-   *   (eg using an input button) once you've set
-   *   up the tests
-   * - to set up tests you have to set up 
-   *   - an array of test names
-   *   - a hash of test names and their functions
-   *   - these are passed into runner.run
-   *   
    *
    */
 
@@ -98,26 +81,9 @@ $web17_com_au$.unitJS = function() {
 
     var runner = {};
 
-    /*
-     * Run a set of unit tests and dump the results in
-     * a div in the body-tag with id 'tests'.
-     * If you are running this standalone (not via
-     * runner.sections.run()), do NOT include
-     * the stats parameter.
-     *
-     *   tests: a hash of test_names and their functions.
-     *   testOrder: an array of test_names which should be
-     *              in 'tests'.
-     *   printer: an object the has the unitJS.printers.DefaultPrinter interface
-     *            It should print results usually into an html file.
-     *   stats:   A Stats object instance
-     *
-     */
-
     runner.run = function(testOrder,tests,printer,stats) {
       var standalone = false;  // True = we are being invoked by a section.
 
-      // Initialize STATS object for collecting stats.
       if(!stats) {
         stats = new Stats();
         standalone = true;
@@ -161,10 +127,6 @@ $web17_com_au$.unitJS = function() {
 
     runner.sections={};
 
-    // Run all the tests for sections in a Sections object.
-    //
-    // Should be invoked without stats and level parameters.
-
     runner.sections.run = function(sections,printer,stats,level) {
       var s,section_printer;
 
@@ -196,17 +158,6 @@ $web17_com_au$.unitJS = function() {
    * Sections and Section objects
    * ---------------------------------------------------
    *
-   * Section objects allow you to group tests into meaningful
-   * sections.
-   * - When you run tests without any sectioning, you
-   *   use testOrder and tests objects directly.
-   * - When you use sections, a Section object now contains
-   *   a testOrder and tests object.
-   * - The Sections object allows you to group and nest Section
-   *   objects (ie subsections).
-   * - unitJS.runner.sections.run(Sections) will run through
-   *   all the Section objects in a Sections object.
-   * 
    */
 
   module.Sections = function() {
@@ -230,31 +181,18 @@ $web17_com_au$.unitJS = function() {
   /*
    * Assertions submodule
    * ---------------------------------------------------
-   * - contains all assertion code
-   * - there is one private assertion: _assert
-   *   which is usually called by all the other assertions
-   * - PUBLIC ASSERTIONS 
-   *   - are named like 'assert*'
-   *   - generally take 1 or 2 args
-   *     1) comment : a user comment shown at failure [optional]
-   *     2) a boolean value representing a test result
-   *   - NOTE!!!: there is some plumbing at the bottom which adds a wrapper
-   *     to each public assertion:
-   *     - before_assert : run before the assertion.
-   *     - after_assert  : run after the assertion.
-   *     - setup         : run before the assertion.
-   *                       User can override and run their own.
-   *     - teardown      : run after the assertion.
-   *                       User can override and run their own.
-   *   - 'internal assertion' = public assertion called by 
-   *     another public assertion
-   * - _assert 
+   * _assert 
+   *   - there is one private assertion: _assert
+   *     which is usually called by all the other assertions
    *   - takes public assertion args and an additional arg provided by the assertion:
-   *     3) assertionTypeMessage : a generic message shown at failure
-   *        that identifies the assertion.
+   *     assertionTypeMessage : a generic message shown at failure that identifies the assertion.
    *   - if the boolean test fails 'comment' and 'assertionTypeMessage' are 
    *     passed off to module.utils.fail and these are used to generate (throw)
    *     a failure error object
+   * before_assert / after_assert
+   *   These functions are run before and after each assertion.
+   * NOTE!!!: there is some plumbing at the bottom which adds a wrapper
+   *   to each public assertion:
    *
    */
 
@@ -555,11 +493,14 @@ $web17_com_au$.unitJS = function() {
 
   }();
 
+
+
   /*
    * Utils submodule
    * ---------------------------------------------------
    *
    */
+
   module.utils = function() {
 
     var utils = {};
