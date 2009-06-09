@@ -1,8 +1,7 @@
 DB - Daniel Bush
 
-Version 0.3 - 9-Jun-09
 
-Latest
+Version 0.3 - 9-Jun-09
 [DB]
 * Created interfaces js file for defining key interfaces of unitJS
 * Created printer interface and provided one implementation: DefaultPrinter
