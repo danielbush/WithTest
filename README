@@ -1,5 +1,5 @@
 From: Daniel Bush 
-Updated: Sat May 23 15:52:26 EST 2009
+Updated: Tue Jun  9 22:52:31 EST 2009
 Date: Fri Aug 29 09:18:39 EST 2008
 Subject: What is UnitJS?
 
@@ -7,6 +7,8 @@ UnitJS is simplified unit testing framework.
 It was originally put together overnight using some of the
 code used in JSUnit.net.  By intention, it does not have a
 lot of the added features of JSUnit.
+I wanted something simple which I could then hack into more
+complex or automated solutions as I required.
 
 UnitJS's main purpose is to allow you to write and collect
 together your tests and run them in some desired order; the
@@ -16,9 +18,9 @@ been embedded.
 WARNING: At this early stage most work has been done in
 Firefox and no thought has been given at the moment
 to providing helpful stack traces in IE or other browsers.
-
-I want something simple which I can then hack into more
-complex or automated solutions as I require.
+Unitjs does try to help by telling you which assertion
+failed or if a general error occured on or before a certain
+assertion in your test.
 
 Currently, UnitJS has to work in the browser environment
 (where most javascript lives anyway) and uses the html page
@@ -37,38 +39,56 @@ The latest standard can be found at:
 http://js.web17.com.au/specs/packaging-and-namespacing/index.xhtml
 
 
+DEVELOPERS / IN-DEPTH DOCUMENTATION
+-----------------------------------------------------------
+To get a good understanding of the code in unitjs.js
+and unitjs.printers.js, see unitjs.interfaces.js.  This
+file sets out the key interfaces which the various parts
+of the unitjs system assume and use to get things done.
+This file should not be included for execution even though
+it is written in javascript.
+Project changes are of course logged to CHANGELOG file.
+
+
 GETTING STARTED
 -----------------------------------------------------------
-Suppose you have an html file and you project js files and a
-file with your tests.
-Include the unitjs assertions, then your project and then
-your tests:
+See exmples/ directory for standalone (examples.html) and
+an example using sections.
+Note: for compactness, I've put the tests in the html file - 
+it would probably be tidier to put them in their own js file.
+
+More generally:
+Suppose you have an html file for running your tests and your project js files
+and a file with your tests.  Include the unitjs project, then your project
+and then your tests into your html file like so:
+
 
 <html>
   <head>
-    <script type="text/javascript" src="path/to/unitjs/assertions.js" ></script>
+    <link rel="stylesheet" type="text/css" href="../defaultPrinter.css" media="screen" />
+    <script language="JavaScript" type="text/javascript" src="/path/to/unitjs.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/path/to/unitjs.printers.js"></script>
     <script type="text/javascript" src="your_app.js" ></script>
     <script type="text/javascript" src="your_tests.js" ></script>
+    <script type="text/javascript" >
+      var Printer  = $web17_com_au$.unitJS.printers.DefaultPrinter;
+      var printer;
+      function init() {
+        printer = new Printer(document.body);
+      }
+    </script>
   </head>
-  <body>
+  <body onload="init();">
     <input type="button"
-      onclick="U.runner.run(testOrder,tests)" />
-
-      NOTES:
-      testOrder: is an array of test names.
-      tests: is a hash of test names and their functions.
-
-      You could also put your_tests.js in this file etc etc.
+      onclick="U.runner.run(testOrder,tests,printer)" />
   </body>
 </html>
 
-(This html file is a rough guide of the layout you should use
-and is intended only to give you an idea of what to do.)
 In your_tests.js:
 
-  // Reference the unitJS modules.
-  var U = $web17_com_au$.unitJS;
-  var A = $web17_com_au$.unitJS.assertions;
+  var U        = $web17_com_au$.unitJS;
+  var A        = $web17_com_au$.unitJS.assertions;
+  var Sections = $web17_com_au$.unitJS.Sections;
 
   var testOrder=[];
   var tests={};
@@ -83,13 +103,13 @@ In your_tests.js:
   
 That should be it.
 
-Peruse assertions.js to see what type of assert functions
-are available.
+If you want to use sections to organise a large series of tests into
+several smaller labelled series then see examples/examples-with-sections.html
+for a simple demonstration.  You can nest sections if you really want to.
 
-Also see and run (in your browser):
-  tests/assertionTests.html 
-  examples/examples.html 
-which shows unitjs in action testing itself.
+Peruse unitjs.interfaces.js to see what type of assert functions
+are available (or the actual implementation in unitjs.js).
+(TODO: I should document this in a more user-friendly way at some point.)
 
 
 Regards,

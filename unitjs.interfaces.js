@@ -249,6 +249,8 @@ $web17_com_au$.unitJS.interfaces = function() {
    *                It should print results usually into an html file.
    *     nested:    If false (or not specified), run()
    *                assumes it is in standalone mode.
+   *                (In general leave this out as it is used
+   *                internally)
    *
    * - sections.run()
    *     Run tests for each section in 'sections'.
