@@ -1,6 +1,25 @@
 DB - Daniel Bush
 
+Version 0.3 - 9-Jun-09
+
 Latest
+[DB]
+* Created interfaces js file for defining key interfaces of unitJS
+* Created printer interface and provided one implementation: DefaultPrinter
+  Moved all printer code out into a separate file.
+  DefaultPrinter also relies on a css file for most formatting.  The test
+  output is broken up into divs, spans and p tags with semantic class names.
+* Tests can be run as standalone or can be grouped into sections.  Sections can
+  be nested.  The DefaultPrinter displays the nested sections in a collapsibe
+  format.
+* Stats on test results are calculated for each section and also for all that
+  section's subsections.
+* This project is still very firefox-centric at the moment.
+* We haven't written tests for some of the features added here especially
+  sections and section stats.
+* Object/method labelling is a bit schizophrenic - I like the ruby underscore
+  method because it reduces clutter.  But I like using camel case for object
+  (class) names and instance methods.
 
 Version 0.2
 * An error should should say ERROR; and a fail should say FAIL [DB]
