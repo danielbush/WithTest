@@ -45,7 +45,6 @@ $web17_com_au$.unitJS.printers = function() {
     var title_div;
     var h2_div;
     var tests_div;
-    var a;
     var stats_container_div;
 
     // Delete 'tests' div if already in DOM...
@@ -68,7 +67,6 @@ $web17_com_au$.unitJS.printers = function() {
       title_div = banner_div.firstChild.nextSibling;
       h2_div = title_div.firstChild;
       tests_div = document.createElement('DIV');
-      a = document.createElement('A');
       stats_container_div=document.createElement('DIV');
       if(!nested) {
         tests_frame_div.id = "tests";
@@ -82,10 +80,8 @@ $web17_com_au$.unitJS.printers = function() {
         h2_div.innerHTML=label;
       }
 
-      a.innerHTML='show';
-      menu_div.appendChild(a);
 
-      title_div.onclick = a.onclick = function() {
+      title_div.onclick = function() {
         tests_div.style.display=='none' ?
         tests_div.style.display='' :
         tests_div.style.display='none' ;
