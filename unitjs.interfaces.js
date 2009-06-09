@@ -36,13 +36,16 @@
  * Some terminology:
  *
  * 'not implementable' :
- *     this object is not something you should implement
+ *     this object is something you don't have to implement
  *     yourself.  This means that you can still use it as
  *     required but shouldn't try to write your own version.
  *     If you are a maintainer (as opposed to a user), you
  *     may of course decide to reimplement (or even change
  *     the implementation contract) by modifying the project
  *     itself.
+ *
+ *     Parts of a 'non implementable' thing can be marked
+ *     as 'implementable'.
  *
  * 'implementable' :
  *     you (as the user) can implement your own if you want
@@ -57,12 +60,13 @@ $web17_com_au$.unitJS.interfaces = function() {
   var module = {};
 
   /*
-   * Test series (not implementable)
+   * Test series
    * ----------------------------------------------------------------
    *
-   * We define a series of tests using 2 objects:
+   * You define a series of tests using 2 objects:
    * tests     - a hash of test functions, hashed by their name or description
    * testOrder - the order of the tests (using an array)
+   * You do this yourself and store them wherever you like.
    *
    * 'test functions' are the tests that you write; they
    * usually contain one or more assertions.  See
@@ -85,6 +89,72 @@ $web17_com_au$.unitJS.interfaces = function() {
   testOrder = [ 'test 2' , 'test 1' ];
 
 
+  /*
+   * Stats Object (not implementable)
+   * ----------------------------------------------------------------
+   * Stats objects are generated for each test series or
+   * each section representing a test series.
+   *
+   * section.*
+   *   Section stats should store all stats for a section.
+   *   Depending on how it is used, it may or may not
+   *   include stats for subsections.
+   *
+   * section.reset()
+   *   Should reinitialize all me.section.* data.
+   *
+   * current.*
+   *   Stats for a single test.
+   *   current.* should get reset using current.reset()
+   *   prior to every test.
+   *
+   * current.assertion_level
+   *   Public assertions may call eachother internally.
+   *   We use this variable to help us track this.
+   *   The actual assertion invoked by the user in a test has level=1;
+   *   if this assertion calls other public assertions these will
+   *   have level>1.
+   *   When counting assertions we only count those with
+   *   level=1.
+   *
+   * current.assertion_count
+   *   Count of public assertions (excluding any with assertion_level > 1).
+   *
+   * current.reset()
+   *   Should reinitialize all me.current.* data.
+   *
+   * merge
+   *   Merge global and section-level stats with another
+   *   stats object.  For instance, runner.run will create
+   *   and return a stats object which you might want to
+   *   merge into a global stats object.
+   *
+   */
+
+  var Stats = function() {
+    var me = this;
+    me.tests = 0;         // Count all tests
+    me.failed_tests = 0;  // Count failed tests
+    me.errored_tests = 0; // Count tests which threw an error other than an assertion failure
+    me.assertions = 0;    // Count the number of assertions called
+
+    me.section={};
+    me.section.name='section name';
+    me.section.tests = 0;
+    me.section.failed_tests = 0;
+    me.section.errored_tests = 0;
+    me.section.assertions = 0;
+    me.section.reset = function() { }
+
+    me.current={};
+    me.current.test_name='test name';  // Name/description of current test
+    me.current.assertion_level=0;
+    me.current.assertion_count=0;
+    me.current.reset = function() { }
+
+    me.merge = function(stats) {}
+  }
+
 
 
   /*
@@ -100,8 +170,8 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   run the tests.
    * - When you run tests without any sectioning, you
    *   use testOrder and tests objects directly.
-   * - When you use sections, a Section object now contains
-   *   a testOrder and tests object.
+   * - When you use sections, the Section object contains
+   *   instances of testOrder and tests object.
    *
    * Sections
    *   - members
@@ -159,9 +229,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    * - you can invoke runner.run or runner.sections.run directly in your html
    *   (eg using an input button) once you've set up the tests
-   * - you'll need to provide it with a printer object;
+   * - you'll also need to provide it with a printer object;
    *   unitJS provides one implementation: unitjs.printers.DefaultPrinter.
-   *   See printer interace.
+   *   See printer interface.
    *
    * - run()
    *     Run tests in the order specified by testOrder.
@@ -182,7 +252,8 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    * - sections.run()
    *     Run tests for each section in 'sections'.
-   *     Should be invoked without 'level' parameter.
+   *     Should be invoked initially by the user
+   *     without the 'level' parameter.
    *   
    *     The unitJS implementation will invoke module.run on
    *     each section in 'sections' using section.tests
@@ -203,19 +274,21 @@ $web17_com_au$.unitJS.interfaces = function() {
 
   module.runner = function() {
     var module = {};
+
     module.run = function(
         testOrder,
         tests,
         printer,
         nested){ return new Stats() }
+
     module.sections={};
     module.sections.run = function(
         sections,
         printer,
         level){}
 
-    module.setup = function(){};
-    module.teardown = function(){};
+    module.setup = function(){};       // Implementable.
+    module.teardown = function(){};    // Implementable.
 
     return module;
   }();
@@ -247,29 +320,40 @@ $web17_com_au$.unitJS.interfaces = function() {
    *  - section_printer
    *
    *      RETURNS
-   *      An object that implements this interface.  
+   *      An object that implements the printer interface.  
    *
    *      PARAMETERS
    *      section_name : Name/description of section
    *
-   *      It will get called by runner.sections.run(sections)
-   *      if a section in 'sections' has its own set of subsections. 
+   *      It will get called by runner.sections.run() for
+   *      each section it encounters.  runner.sections.run
+   *      will then pass this as the printer to runner.run
+   *      when running the tests for that section. 
    *
-   *      You may decide to return the same instance or to create
-   *      a new instance.  Be aware that you must be able to 
-   *      handle nesting of subsections to abitrary levels.
+   *      You may decide to return the same instance or to
+   *      create a new instance of the printer interface.
+   *      Be aware that you must be able to handle nesting
+   *      of sections to abitrary levels.
    *
-   *      This function is designed to help you implement 
-   *      nested subsections in html output.
-   *      For instance, 'parentNode' can be set to a section div
+   *      This function is designed to help you implement
+   *      nested subsections in html output.  For instance,
+   *      'parentNode' of newly generated section_printer
+   *      instances could be set to a nested section div
    *      element rather than the main testing div element.
    *
    *  - updateSectionStatus
    *
-   *      Once a section has run all its tests it may want
-   *      to display the fact that one or more has failed
-   *      or that everything has passed which is the purpose
-   *      of this function.
+   *      Instruct the printer to update itself with the
+   *      latest stats for the section it is handling.
+   *      The printer may want to visually display that the
+   *      section or test series it is responsible for has
+   *      >0 failed or errored tests or has passed all
+   *      tests.  This is something it only knows after
+   *      having printed all the test results out via
+   *      runner.run.
+   *
+   *      runner.sections.run will invoke this method on
+   *      each section's section_printer after runner.run.  
    *
    */
 
@@ -284,63 +368,6 @@ $web17_com_au$.unitJS.interfaces = function() {
     };
     me.updateSectionStatus = function(stats){}
 
-  }
-
-
-  /*
-   * Stats Object (not implementable)
-   * ----------------------------------------------------------------
-   *
-   * section.*
-   *   Section stats should store all stats for a section.
-   *   Depending on how it is used, it may or may not
-   *   include stats for subsections.
-   *
-   * current.*
-   *   Current = stats for a single test.
-   *   current should get reset using current.reset() prior to every test.
-   *
-   * current.assertion_level
-   *   Public assertions may call eachother internally.
-   *   We use this variable to help us track this.
-   *   The actual assertion invoked by the user in a test has level=1;
-   *   if this assertion calls other public assertions these will
-   *   have level>1.
-   * current.assertion_count
-   *   Count of public assertions (excluding any with assertion_level > 1).
-   * current.reset()
-   *   Should reinitialize all me.current.* data.
-   *
-   * merge
-   *   Merge global and section-level stats with another
-   *   stats object.  For instance, runner.run will create
-   *   and return a stats object which you might want to
-   *   merge into a global stats object.
-   *
-   */
-
-  var Stats = function() {
-    var me = this;
-    me.tests = 0;         // Count all tests
-    me.failed_tests = 0;  // Count failed tests
-    me.errored_tests = 0; // Count tests which threw an error other than an assertion failure
-    me.assertions = 0;    // Count the number of assertions called
-
-    me.section={};
-    me.section.name='section name';
-    me.section.tests = 0;
-    me.section.failed_tests = 0;
-    me.section.errored_tests = 0;
-    me.section.assertions = 0;
-    me.section.reset = function() { }
-
-    me.current={};
-    me.current.test_name='test name';  // Name/description of current test
-    me.current.assertion_level=0;
-    me.current.assertion_count=0;
-    me.current.reset = function() { }
-
-    me.merge = function(stats) {}
   }
 
 
@@ -363,43 +390,43 @@ $web17_com_au$.unitJS.interfaces = function() {
   }
 
   /*
-   * Assertions submodule
+   * Assertions submodule  (NOT IMPLEMENTABLE)
    * ---------------------------------------------------
-   * - contains all assertion code
-   * - PUBLIC ASSERTIONS 
-   *   - are named like 'assert*'
-   *   - generally take 1 or 2 args
-   *     1) comment : a user comment shown at failure [optional]
-   *     2) a boolean value representing a test result
+   * Contains all assertions you can use in your tests.
+   *
+   *   PARAMETERS
+   * - generally take 1 or 2 args
+   *   1) comment : a user comment shown at failure [optional]
+   *   2) a boolean value representing a test result
    *
    */
 
   module.assertions = function() {
 
-    var module = {};
+    var assertions = {};
 
-    module.assert = function() {}
-    module.assertTrue = function() {}
-    module.assertFalse = function() {}
-    module.assertEquals = function() {}
-    module.assertNotEquals = function() {}
-    module.assertNull = function() {}
-    module.assertNotNull = function() {}
-    module.assertUndefined = function() {}
-    module.assertNotUndefined = function() {}
-    module.assertNaN = function() {}
-    module.assertNotNaN = function() {}
-    module.assertObjectEquals = function() {}
-    module.assertEvaluatesToTrue = function() {}
-    module.assertEvaluatesToFalse = function() {}
-    module.assertHTMLEquals = function() {}
-    module.assertHashEquals = function() {}
-    module.assertRoughlyEquals = function() {}
-    module.assertContains = function() {}
-    module.assertFailure = function(comment, errorObject) {}
-    module.assertError = function(comment, errorObject) {}
+    assertions.assert = function() {}
+    assertions.assertTrue = function() {}
+    assertions.assertFalse = function() {}
+    assertions.assertEquals = function() {}
+    assertions.assertNotEquals = function() {}
+    assertions.assertNull = function() {}
+    assertions.assertNotNull = function() {}
+    assertions.assertUndefined = function() {}
+    assertions.assertNotUndefined = function() {}
+    assertions.assertNaN = function() {}
+    assertions.assertNotNaN = function() {}
+    assertions.assertObjectEquals = function() {}
+    assertions.assertEvaluatesToTrue = function() {}
+    assertions.assertEvaluatesToFalse = function() {}
+    assertions.assertHTMLEquals = function() {}
+    assertions.assertHashEquals = function() {}
+    assertions.assertRoughlyEquals = function() {}
+    assertions.assertContains = function() {}
+    assertions.assertFailure = function(comment, errorObject) {}
+    assertions.assertError = function(comment, errorObject) {}
 
-    return module;
+    return assertions;
   }();
 
 
