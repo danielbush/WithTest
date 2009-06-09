@@ -110,13 +110,11 @@ $web17_com_au$.unitJS = function() {
     runner.setup = null;
     runner.teardown = null;
 
-    // If you invoke without nested, nested will be treated
-    // as false and runnuer.run assumes it is running as 
-    // standalone and will print stats.
-
     runner.run = function(testOrder,tests,printer,nested) {
 
       var stats = new Stats();
+
+      if(!nested) printer.reset();
 
       // Run the tests and print to screen...
 
@@ -131,9 +129,9 @@ $web17_com_au$.unitJS = function() {
           STATS=stats; // So assertion code can update stats.
           // Pass stats in to the test mainly so I can test this framework
           // more easily.
-          if (runner.setup) runner.setup();
+          if(runner.setup) runner.setup();
           tests[test_name](stats);
-          if (runner.teardown) runner.teardown();
+          if(runner.teardown) runner.teardown();
           STATS=null;
           printer.printPass(i+1,test_name,stats);
         }
@@ -162,18 +160,21 @@ $web17_com_au$.unitJS = function() {
     runner.sections={};
 
     runner.sections.run = function(sections,printer,level) {
-      var s,section_printer,calc_stats,all_stats;
+      var section,section_printer,calc_stats,all_stats,nested;
       all_stats = new Stats();
 
-      if(!level) level = 1;
+      if(!level) {
+        level = 1;
+        printer.reset();
+      }
 
       for(var i=0;i<sections.members.length;i++) {
-        s = sections.members[i];
-        section_printer = printer.subsection_printer( s.name );
-        s.stats = runner.run(s.testOrder,s.tests,section_printer,true);
-        if(s.subsections.members.length>0)
-          runner.sections.run(s.subsections,section_printer,level+1);
-        calc_stats = s.calculateStats();
+        section = sections.members[i];
+        section_printer = printer.section_printer( section.name );
+        section.stats = runner.run(section.testOrder,section.tests,section_printer,true);
+        if(section.subsections.members.length>0)
+          runner.sections.run(section.subsections,section_printer,level+1);
+        calc_stats = section.calculateStats();
         if(level==1) all_stats.merge(calc_stats);
         section_printer.updateSectionStatus(calc_stats);
       }

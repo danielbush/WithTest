@@ -18,6 +18,7 @@ h2 {
 
 div.banner {
   padding-left:1em;
+  border-top:solid #337 1px;
 }
 div.banner div.menu {
   float:right;
@@ -36,10 +37,6 @@ a {
   cursor:pointer;
 }
 
-div.tests {
-  padding-left:1em;
-}
-
 div.test {
   background-color:#dddddd;
   padding:0.1em;
@@ -49,11 +46,9 @@ div.test {
 
 div.section {
   background-color:#eee;
-  border-top:solid #337 1px;
   padding-left:1em;
 }
 div.section .section {
-  border-top:none;
   padding-left:1em;
 }
 

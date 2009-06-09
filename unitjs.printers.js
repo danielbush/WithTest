@@ -20,76 +20,83 @@ $web17_com_au$.unitJS.printers = function() {
 
   var module={};
 
-  // Increment and use for generating id's.
-
-  var sequencer=0;
-
   // DefaultPrinter
   //
   // Prints results of tests into an html document.
+  // It should be instantiated without nested (or nested=false).
+  // The outer most div is given an id of 'tests'.
   //
-  // parentNode: the parent node we should attach our results to.
-  // id        : you must specify this if you are invoking DefaultPrinter
-  //             in a recursive or nested context (multiple instances on
-  //             the one DOM); 
-  //             Increment and use 'sequencer' (in this module) to generate a unique id.
-  //             If id is NOT supplied, DefaultPrinter will assume id='tests' and 
-  //             will first search and destroy any such element.
-  // label     : Optional description that will be shown at the top before the tests.
+  // nested     : If false (or not specified), the Printer assumes it
+  //              is the outer most printer.  This is how the user
+  //              should invoke it.
+  //              section_printer() will set this flag to true.
+  //
+  //
   // tests_div : div that contains test results
   // test_div  : div that contains individual test result
   // 
 
-  module.DefaultPrinter = function(parentNode,id,label) {
+  module.DefaultPrinter = function(parentNode,label,nested) {
 
     var me = this;
     var tests_frame_div;
-    var tests_div = document.createElement('DIV');
+    var banner_div;
+    var menu_div;
+    var title_div;
+    var h2_div;
+    var tests_div;
+    var a;
+    var stats_container_div;
 
-    if(!id) {
-      // Delete 'tests' div if already in DOM...
-      tests_frame_div=document.getElementById("tests");
-      if ( tests_frame_div ) {
-        parentNode.removeChild(tests_frame_div);
+    // Delete 'tests' div if already in DOM...
+
+    me.reset = function() {
+      var tmp=document.getElementById("tests");
+      if(tmp) {
+        parentNode.removeChild(tmp);
       }
-      // Create 'tests' div...
-      tests_frame_div=document.createElement('DIV');
-      tests_frame_div.id = "tests";
-      parentNode.appendChild( tests_frame_div );
-    } else {
-      tests_frame_div=document.createElement('DIV');
-      tests_frame_div.id = id;
-      tests_frame_div.className = 'section';
-      parentNode.appendChild( tests_frame_div );
-      tests_div.style.display='none';
-    }
-    tests_frame_div.innerHTML = 
-      '<div class="banner" ><div class="menu" ></div>'+
-      '<div class="title" ><h2></h2></div><div class="clear"></div></div>';
-    var banner_div = tests_frame_div.firstChild;
-    var menu_div = banner_div.firstChild;
-    var title_div = banner_div.firstChild.nextSibling;
-    var h2_div = title_div.firstChild;
-
-    if(label) {
-      h2_div.innerHTML=label;
+      build();
     }
 
-    var a = document.createElement('A');
-    a.innerHTML='show';
-    menu_div.appendChild(a);
+    function build() {
+      tests_frame_div = document.createElement('DIV');
+      tests_frame_div.innerHTML = 
+        '<div class="banner" ><div class="menu" ></div>'+
+        '<div class="title" ><h2></h2></div><div class="clear"></div></div>';
+      banner_div = tests_frame_div.firstChild;
+      menu_div = banner_div.firstChild;
+      title_div = banner_div.firstChild.nextSibling;
+      h2_div = title_div.firstChild;
+      tests_div = document.createElement('DIV');
+      a = document.createElement('A');
+      stats_container_div=document.createElement('DIV');
+      if(!nested) {
+        tests_frame_div.id = "tests";
+        parentNode.appendChild( tests_frame_div );
+      } else {
+        tests_frame_div.className = 'section';
+        parentNode.appendChild( tests_frame_div );
+        tests_div.style.display='none';
+      }
+      if(label) {
+        h2_div.innerHTML=label;
+      }
 
-    title_div.onclick = a.onclick = function() {
-      tests_div.style.display=='none' ?
-      tests_div.style.display='' :
-      tests_div.style.display='none' ;
-    };
+      a.innerHTML='show';
+      menu_div.appendChild(a);
 
-    var stats_container_div=document.createElement('DIV');
-    stats_container_div.className = "stats-container";
-    tests_frame_div.appendChild(stats_container_div);
+      title_div.onclick = a.onclick = function() {
+        tests_div.style.display=='none' ?
+        tests_div.style.display='' :
+        tests_div.style.display='none' ;
+      };
 
-    tests_frame_div.appendChild(tests_div);
+      stats_container_div.className = "stats-container";
+      tests_frame_div.appendChild(stats_container_div);
+
+      tests_frame_div.appendChild(tests_div);
+    }
+    build();
 
     me.updateSectionStatus = function(stats) {
       var msg = ' (Tests:'+stats.section.tests+'; ';
@@ -105,10 +112,9 @@ $web17_com_au$.unitJS.printers = function() {
       }
     }
 
-    me.subsection_printer = function(name) {
-      return new module.DefaultPrinter(tests_div,'section-'+(sequencer++),name);
+    me.section_printer = function(name) {
+      return new module.DefaultPrinter(tests_div,name,true);
     }
-
 
     me.printPass = function(num,test_name,stats) {
       var test_div=document.createElement('DIV');

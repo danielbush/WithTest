@@ -167,6 +167,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     Run tests in the order specified by testOrder.
    *     Catch any errors and note if they are assertion failures or
    *     otherwise.
+   *     Should be invoked without 'nested' parameter.
    *
    *     RETURNS
    *     Stats instance
@@ -181,19 +182,19 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    * - sections.run()
    *     Run tests for each section in 'sections'.
+   *     Should be invoked without 'level' parameter.
    *   
    *     The unitJS implementation will invoke module.run on
    *     each section in 'sections' using section.tests
    *     and section.testOrder as parameters.
    *
-   *     Should be invoked WITHOUT the level parameter.
    *     When recursing, this function will increment the
    *     level.
    *
-   * - setup()
+   * - setup()        (IMPLEMENTABLE)
    *     Global setup function for this runner.
    *     Run before every test.
-   * - teardown()
+   * - teardown()     (IMPLEMENTABLE)
    *     Global teardown function for this runner.
    *     Run after every test.
    *
@@ -229,6 +230,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    * A printer object is used by a test runner
    * to print the results of the tests it runs.
    *
+   * PARAMETERS
+   * parentNode : the parent node we should attach our results to.
+   * label      : Optional description that will be shown at the top before the tests.
    *
    * Printer
    *  - print*
@@ -240,7 +244,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      e         : error object; for printFail this should be the unitJS
    *                  failure object.
    *
-   *  - subsection_printer
+   *  - section_printer
    *
    *      RETURNS
    *      An object that implements this interface.  
@@ -259,9 +263,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      nested subsections in html output.
    *      For instance, 'parentNode' can be set to a section div
    *      element rather than the main testing div element.
-   *      Don't forget to ensure id is unique if you use it.
    *
    *  - updateSectionStatus
+   *
    *      Once a section has run all its tests it may want
    *      to display the fact that one or more has failed
    *      or that everything has passed which is the purpose
@@ -269,14 +273,14 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.Printer = function(parentNode,id,label) {
+  module.Printer = function(parentNode,label) {
     var me = this;
     me.printPass = function(num,test_name,stats){};
     me.printFail = function(num,test_name,stats,e){};
     me.printError = function(num,test_name,stats,e){};
     me.printStats = function(stats){};
-    me.subsection_printer = function(section_name){ 
-      return new module.Printer(parentNode,id,label); 
+    me.section_printer = function(section_name){ 
+      return new module.Printer(parentNode,label); 
     };
     me.updateSectionStatus = function(stats){}
 
@@ -288,8 +292,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    * ----------------------------------------------------------------
    *
    * section.*
-   *   Section stats should store all stats for a section
-   *   AND all of its subsections.
+   *   Section stats should store all stats for a section.
+   *   Depending on how it is used, it may or may not
+   *   include stats for subsections.
    *
    * current.*
    *   Current = stats for a single test.
