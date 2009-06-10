@@ -52,7 +52,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.reset = function() {
       var tmp=document.getElementById("tests");
       if(tmp) {
-        parentNode.removeChild(tmp);
+        tmp.parentNode.removeChild(tmp);
       }
       build();
     }
