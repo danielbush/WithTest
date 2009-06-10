@@ -59,6 +59,9 @@ $web17_com_au$.unitJS.printers = function() {
 
     function build() {
       tests_frame_div = document.createElement('DIV');
+      tests_div = document.createElement('DIV');
+      stats_container_div=document.createElement('DIV');
+
       tests_frame_div.innerHTML = 
         '<div class="banner" ><div class="menu" ></div>'+
         '<div class="title" ><h2></h2></div><div class="clear"></div></div>';
@@ -66,8 +69,7 @@ $web17_com_au$.unitJS.printers = function() {
       menu_div = banner_div.firstChild;
       title_div = banner_div.firstChild.nextSibling;
       h2_div = title_div.firstChild;
-      tests_div = document.createElement('DIV');
-      stats_container_div=document.createElement('DIV');
+
       if(!nested) {
         tests_frame_div.id = "tests";
         parentNode.appendChild( tests_frame_div );
@@ -80,7 +82,6 @@ $web17_com_au$.unitJS.printers = function() {
         h2_div.innerHTML=label;
       }
 
-
       title_div.onclick = function() {
         tests_div.style.display=='none' ?
         tests_div.style.display='' :
@@ -92,7 +93,9 @@ $web17_com_au$.unitJS.printers = function() {
 
       tests_frame_div.appendChild(tests_div);
     }
-    build();
+
+    if(nested)  me.reset();
+    if(!nested) build();
 
     me.updateSectionStatus = function(stats) {
       var msg = ' (Tests:'+stats.section.tests+'; ';
