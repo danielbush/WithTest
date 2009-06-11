@@ -531,6 +531,25 @@ tests[stmt] = function() {
   A.assertEquals('teardown!',teardownChecker.val);
 }
 
+// A little weird - this causes an error but pt2 tests that we get what we want.
+
+stmt = 'Test that teardown is called after an error or failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
+testOrder.push(stmt);
+teardownChecker=null;
+tests[stmt] = function() {
+  // Create teardownChecker here.
+  teardownChecker = {val:null};  
+  U.runner.teardown = function() { if(teardownChecker) teardownChecker.val='teardown2!'; }
+  throw new Error('foo');
+}
+stmt = 'Test that teardown is called after an error or failure in a test - pt2 - SHOULD PASS (!) '
+testOrder.push(stmt);
+tests[stmt] = function() {
+  // ... and we should be updated here thanks to previous test.
+  A.assertEquals('teardown2!',teardownChecker.val);
+}
+
+
 stmt = '[Stats object] Test assertion count for a test';
 testOrder.push(stmt);
 tests[stmt] = function(STATS) {
@@ -539,6 +558,7 @@ tests[stmt] = function(STATS) {
     A.assertEquals(2,STATS.current.assertion_count);
     // etc...
 }
+
 
 // Not sure how to do these yet...
 // -- Sat May 23 15:29:57 EST 2009

@@ -131,8 +131,6 @@ $web17_com_au$.unitJS = function() {
           // more easily.
           if(runner.setup) runner.setup();
           tests[test_name](stats);
-          if(runner.teardown) runner.teardown();
-          STATS=null;
           printer.printPass(i+1,test_name,stats);
         }
 
@@ -149,6 +147,9 @@ $web17_com_au$.unitJS = function() {
           }
           stats.current.reset();
         }
+
+        if(runner.teardown) runner.teardown();
+        STATS=null;
 
       }
 
