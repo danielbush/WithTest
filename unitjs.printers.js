@@ -94,8 +94,12 @@ $web17_com_au$.unitJS.printers = function() {
       tests_frame_div.appendChild(tests_div);
     }
 
-    if(nested)  me.reset();
-    if(!nested) build();
+    // When this printer is being instantiated we should check to see if we're
+    // the main (!nested) printer or a section printer (nested) and reset or
+    // build the html accordingly.
+
+    if(nested)  build();
+    if(!nested) me.reset();
 
     me.updateSectionStatus = function(stats) {
       var msg = ' (Tests:'+stats.section.tests+'; ';

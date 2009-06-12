@@ -114,7 +114,7 @@ $web17_com_au$.unitJS = function() {
 
       var stats = new Stats();
 
-      if(!nested) printer.reset();
+      if(!nested) printer.reset();  // Get printer to delete master 'tests' div.
 
       // Run the tests and print to screen...
 
@@ -166,7 +166,7 @@ $web17_com_au$.unitJS = function() {
 
       if(!level) {
         level = 1;
-        printer.reset();
+        printer.reset();  // Get printer to delete master 'tests' div.
       }
 
       for(var i=0;i<sections.members.length;i++) {
