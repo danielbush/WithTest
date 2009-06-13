@@ -31,6 +31,8 @@ var U       = $web17_com_au$.unitJS;
 var A       = $web17_com_au$.unitJS.assertions;
 var utils   = $web17_com_au$.unitJS.utils;
 var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
+var Sections = $web17_com_au$.unitJS.Sections;
+var Section  = $web17_com_au$.unitJS.Section;
 
 /*
  * Set up tests.
@@ -559,6 +561,43 @@ tests[stmt] = function(STATS) {
     // etc...
 }
 
+stmt = 'Calling Sections.add with a string creates and returns a Section object with that name';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  var sections,section;
+  sections = new Sections();
+  section = sections.add('foo');
+  A.assertEquals(section,sections.members[0]);
+  A.assertEquals('foo',section.name);
+}
+
+stmt = 'Adding a Section object to a Sections object augments members array';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  var sections,section;
+  sections = new Sections();
+  A.assertEquals(0,sections.members.length);
+  section = new Section('section1');
+  sections.add(section);
+  A.assertEquals(1,sections.members.length);
+  A.assertEquals(section,sections.members[0]);
+
+}
+
+stmt = 'Adding a Sections object to another Sections object augments members array of the latter';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  var sections1 = new Sections(),sections2 = new Sections();
+  var s1 = new Section('s1'),s2 = new Section('s2'),s3 = new Section('s3');
+  sections1.add(s1);
+  sections1.add(s2);
+  sections2.add(s3);
+  sections2.add(sections1);
+  A.assertEquals(s3,sections2.members[0]);
+  A.assertEquals(s1,sections2.members[1]);
+  A.assertEquals(s2,sections2.members[2]);
+  A.assertEquals(3,sections2.members.length);
+}
 
 // Not sure how to do these yet...
 // -- Sat May 23 15:29:57 EST 2009

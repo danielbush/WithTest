@@ -200,10 +200,34 @@ $web17_com_au$.unitJS = function() {
   module.Sections = function() {
     var me = this;
     me.members = [];
-    me.add = function(name) {
-      var s = new module.Section(name);
-      me.members.push(s);
-      return s;
+
+
+    // Adding sections
+    //
+    // If obj is a Section or Sections, merge
+    // the relevant Section instances into this
+    // Sections object.
+    // If obj is a string, use it as the name for
+    // a new empty section and return it.
+
+    me.add = function(obj) {
+      var s,i;
+      if(obj instanceof module.Section) {
+        me.members.push(obj);
+      } 
+
+      else if(obj instanceof module.Sections) {
+        for(i=0;i<obj.members.length;i++) {
+          me.members.push(obj.members[i]);
+        }
+      } 
+      
+      else {
+        // Assume obj is a string name.
+        s = new module.Section(obj);
+        me.members.push(s);
+        return s;
+      }
     }
   }
 
