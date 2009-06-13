@@ -122,7 +122,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printPass = function(num,test_name,stats) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
-      test_div.className = 'test';
+      test_div.className = 'test test-pass';
       test_div.appendChild(t);
       test_div.appendChild(passed());
       test_div.appendChild(clearing_div());
@@ -132,7 +132,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printFail  = function(num,test_name,stats,e) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
-      test_div.className = 'test';
+      test_div.className = 'test test-fail';
       test_div.appendChild(t);
       test_div.appendChild(failed());
       test_div.appendChild(clearing_div());
@@ -148,7 +148,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printError = function(num,test_name,stats,e) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
-      test_div.className = 'test';
+      test_div.className = 'test test-error';
       test_div.appendChild(t);
       test_div.appendChild(errored());
       test_div.appendChild(clearing_div());

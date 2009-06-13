@@ -84,6 +84,11 @@ div.test span.fail {
   margin-right:1em;
 }
 
+div.test.test-fail ,
+div.test.test-error {
+  background-color:#ffeeee;
+}
+
 .section-fail {
   background-color:#fdd;
 }
