@@ -30,7 +30,9 @@ var $web17_com_au$ = $web17_com_au$ || {};
  *
  */
 
-$web17_com_au$.unitJS = function() {
+// See end of file regarding use of 'tmp'.
+
+var tmp = function() {
 
   var module={};
 
@@ -799,4 +801,16 @@ $web17_com_au$.unitJS = function() {
 
   return module;
 
-}();
+};
+
+$web17_com_au$.unitJS = tmp();
+$web17_com_au$.unitJS.module = tmp;  // For creating new module instances of unitJS.
+
+// Currently, unitJS does not handle nested invocations of the runner.
+// The only reason you might want to nest invocations of runner is for
+// testing the framework by using itself.
+// By calling $web17_com_au$.unitJS.module() you can create a new independent
+// module for making nested invocations.
+// I may rethink this at some point (!)
+// -- DBush 15-Jun-09
+

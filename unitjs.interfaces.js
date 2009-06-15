@@ -384,6 +384,19 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      runner.sections.run will invoke this method on
    *      each section's section_printer after runner.run.  
    *
+   *  - reset
+   *
+   *      Instruct the printer to wipe clean any html it
+   *      has produced and start with new html.
+   *      DefaultPrinter assumes that this function is only
+   *      called for nested=false (ie a non-nested printer).
+   *      (The 'nested' parameter is specific to the 
+   *      DefaultPrinter implementation).
+   *
+   *      reset is called by runner.run when running as
+   *      standalone (nested=false) and by runner.sections.run
+   *      except when recursing.
+   *
    */
 
   module.Printer = function(parentNode,label) {
@@ -396,6 +409,7 @@ $web17_com_au$.unitJS.interfaces = function() {
       return new module.Printer(parentNode,label); 
     };
     me.updateSectionStatus = function(stats){}
+    me.reset = function(){}
 
   }
 

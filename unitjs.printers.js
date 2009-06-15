@@ -32,6 +32,7 @@ $web17_com_au$.unitJS.printers = function() {
       return me;
     };
     me.updateSectionStatus = function(stats){};
+    me.reset = function(){};
   }
 
   // DefaultPrinter

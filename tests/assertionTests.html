@@ -31,6 +31,7 @@ var U       = $web17_com_au$.unitJS;
 var A       = $web17_com_au$.unitJS.assertions;
 var utils   = $web17_com_au$.unitJS.utils;
 var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
+var DummyPrinter = $web17_com_au$.unitJS.printers.DummyPrinter;
 var Sections = $web17_com_au$.unitJS.Sections;
 var Section  = $web17_com_au$.unitJS.Section;
 
@@ -551,6 +552,52 @@ tests[stmt] = function() {
   A.assertEquals('teardown2!',teardownChecker.val);
 }
 
+stmt = 'Test section setup and teardown is called and called in addition to runner.setup/teardown '
+testOrder.push(stmt);
+tests[stmt] = function() {
+  var sections = new Sections(),section,printer = new DummyPrinter();
+  var obj = {setup:null,teardown:null};  
+  var runner_obj = {setup:null,teardown:null};  
+  // I'm going to create a new module of unitjs here otherwise
+  // we get an error with the STATS object.  The unitjs module currently 
+  // assumes there are no nested invocations.
+  // -- DBush 15-Jun-09
+  var U2 = $web17_com_au$.unitJS.module();
+
+  section = sections.add('section 1');
+  section.tests['test1'] = function(){};
+  section.testOrder.push('test1');
+  section.setup = function(){ obj.setup = true; }
+  section.teardown = function(){ obj.teardown = true; }
+  U2.runner.setup = function(){ runner_obj.setup = true; }
+  U2.runner.teardown = function(){ runner_obj.teardown = true; }
+
+  U2.runner.sections.run(sections,printer);
+  A.assertEquals(true,obj.setup);
+  A.assertEquals(true,obj.teardown);
+  A.assertEquals(true,runner_obj.setup);
+  A.assertEquals(true,runner_obj.teardown);
+}
+
+stmt = 'Test section teardown is still called after a test error'
+testOrder.push(stmt);
+tests[stmt] = function() {
+  var sections = new Sections(),section,printer = new DummyPrinter();
+  var obj = {teardown:null};  
+  // I'm going to create a new module of unitjs here otherwise
+  // we get an error with the STATS object.  The unitjs module currently 
+  // assumes there are no nested invocations.
+  // -- DBush 15-Jun-09
+  var U2 = $web17_com_au$.unitJS.module();
+
+  section = sections.add('section 1');
+  section.tests['test1'] = function(){throw new Error('foo');};
+  section.testOrder.push('test1');
+  section.teardown = function(){ obj.teardown = true; }
+
+  U2.runner.sections.run(sections,printer);
+  A.assertEquals(true,obj.teardown);
+}
 
 stmt = '[Stats object] Test assertion count for a test';
 testOrder.push(stmt);
