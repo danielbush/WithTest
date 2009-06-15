@@ -111,6 +111,7 @@ var tmp = function() {
 
     runner.setup = null;
     runner.teardown = null;
+    runner.local = {};
 
     runner.run = function(testOrder,tests,printer,nested,options) {
 
@@ -151,6 +152,10 @@ var tmp = function() {
           stats.current.reset();
         }
 
+        if(runner.local.teardown) {
+          runner.local.teardown();
+          runner.local.teardown = null;
+        }
         if(options && options.teardown) options.teardown();
         if(runner.teardown)  runner.teardown();
         STATS=null;

@@ -599,6 +599,22 @@ tests[stmt] = function() {
   A.assertEquals(true,obj.teardown);
 }
 
+stmt = 'Local teardown function is called on the test that sets it and no others';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  var tests={},testOrder=[],printer = new DummyPrinter();
+  var U2 = $web17_com_au$.unitJS.module();
+  var obj = {test1:0};
+
+  tests['test 1'] = function(){ U2.runner.local.teardown = function(){obj.test1++;} }
+  testOrder.push('test 1');
+  tests['test 2'] = function(){ }
+  testOrder.push('test 2');
+  U2.runner.run(testOrder,tests,printer);
+
+  A.assertEquals(1,obj.test1);  // Only incremented once.
+}
+
 stmt = '[Stats object] Test assertion count for a test';
 testOrder.push(stmt);
 tests[stmt] = function(STATS) {

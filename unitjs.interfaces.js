@@ -296,6 +296,10 @@ $web17_com_au$.unitJS.interfaces = function() {
    * - teardown()     (IMPLEMENTABLE)
    *     Global teardown function for this runner.
    *     Run after every test.
+   * - local.teardown()     (IMPLEMENTABLE)
+   *     Use this within a test to ensure that something is run after
+   *     the test even if the test fails or has an error.
+   *     Runner should set local.teardown to null after each test.
    *
    *
    */
@@ -316,8 +320,11 @@ $web17_com_au$.unitJS.interfaces = function() {
         printer,
         level){}
 
-    module.setup = function(){};       // Implementable.
-    module.teardown = function(){};    // Implementable.
+    module.setup = function(){};          // Implementable.
+    module.teardown = function(){};       // Implementable.
+
+    module.local={};
+    module.local.teardown = function() {} // Implementable.
 
     return module;
   }();
