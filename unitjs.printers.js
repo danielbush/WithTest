@@ -20,6 +20,20 @@ $web17_com_au$.unitJS.printers = function() {
 
   var module={};
 
+  // Does nothing - a blank implementation of the Printer interface.
+
+  module.DummyPrinter = function(parentNode,label,nested) {
+    var me = this;
+    me.printPass = function(num,test_name,stats){};
+    me.printFail = function(num,test_name,stats,e){};
+    me.printError = function(num,test_name,stats,e){};
+    me.printStats = function(stats){};
+    me.section_printer = function(section_name){ 
+      return me;
+    };
+    me.updateSectionStatus = function(stats){};
+  }
+
   // DefaultPrinter
   //
   // Prints results of tests into an html document.
