@@ -197,6 +197,17 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   - stats
    *       Store instance of Stats object containing stats
    *       for this section.  Does not include subsections.
+   *   - setup     [OPTIONAL,IMPLEMENTABLE]
+   *       runner.sections.run will execute this before each test
+   *       in this section
+   *   - teardown  [OPTIONAL,IMPLEMENTABLE]
+   *       runner.sections.run will execute this after each test
+   *       in this section
+   *   setup/teardown allows you to specify your own specific code
+   *   for a given section; this is useful if you are running many
+   *   sections each with different setup/teardown requirements.
+   *   runner.setup/teardown will still be executed if it has also
+   *   been set.
    * 
    *
    */
@@ -215,6 +226,8 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.subsections = new module.Sections();
     me.stats = null;
     me.calculateStats = function(){ return new Stats(); }
+    me.setup = function(){}
+    me.teardown = function(){}
   }
 
 
@@ -251,6 +264,19 @@ $web17_com_au$.unitJS.interfaces = function() {
    *                assumes it is in standalone mode.
    *                (In general leave this out as it is used
    *                internally)
+   *     options:   a hash with various options;
+   *                This was added after the nested parameter to prevent
+   *                breakage in existing projects using this api (v0.3 or previous).
+   *                It may get moved.
+   *
+   *                options.setup = function(){}
+   *                options.teardown = function(){}
+   *                  This was created to allow the runner.sections.run to
+   *                  pass in a setup/teardown functions specific to a
+   *                  section.
+   *                  It will be run in addition to runner.setup/teardown
+   *                  if the latter is also set.
+   *
    *
    * - sections.run()
    *     Run tests for each section in 'sections'.
@@ -281,7 +307,8 @@ $web17_com_au$.unitJS.interfaces = function() {
         testOrder,
         tests,
         printer,
-        nested){ return new Stats() }
+        nested,
+        options){ return new Stats() }
 
     module.sections={};
     module.sections.run = function(

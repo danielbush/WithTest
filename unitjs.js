@@ -110,7 +110,7 @@ $web17_com_au$.unitJS = function() {
     runner.setup = null;
     runner.teardown = null;
 
-    runner.run = function(testOrder,tests,printer,nested) {
+    runner.run = function(testOrder,tests,printer,nested,options) {
 
       var stats = new Stats();
 
@@ -129,7 +129,8 @@ $web17_com_au$.unitJS = function() {
           STATS=stats; // So assertion code can update stats.
           // Pass stats in to the test mainly so I can test this framework
           // more easily.
-          if(runner.setup) runner.setup();
+          if(runner.setup)  runner.setup();
+          if(options && options.setup) options.setup();
           tests[test_name](stats);
           printer.printPass(i+1,test_name,stats);
         }
@@ -148,7 +149,8 @@ $web17_com_au$.unitJS = function() {
           stats.current.reset();
         }
 
-        if(runner.teardown) runner.teardown();
+        if(options && options.teardown) options.teardown();
+        if(runner.teardown)  runner.teardown();
         STATS=null;
 
       }
@@ -172,7 +174,12 @@ $web17_com_au$.unitJS = function() {
       for(var i=0;i<sections.members.length;i++) {
         section = sections.members[i];
         section_printer = printer.section_printer( section.name );
-        section.stats = runner.run(section.testOrder,section.tests,section_printer,true);
+        section.stats = runner.run(
+              section.testOrder,
+              section.tests,
+              section_printer,
+              true,
+              { setup:section.setup , teardown:section.teardown });
         if(section.subsections.members.length>0)
           runner.sections.run(section.subsections,section_printer,level+1);
         calc_stats = section.calculateStats();
