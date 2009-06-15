@@ -167,8 +167,13 @@ $web17_com_au$.unitJS.printers = function() {
       test_div.appendChild(t);
       test_div.appendChild(errored());
       test_div.appendChild(clearing_div());
-      test_div.appendChild(tag('P',
-        "Error occurred on or after assertion #"+stats.current.assertion_count));
+      if(stats.current.assertion_count==0) {
+        test_div.appendChild(tag('P',
+          "Error occurred before first assertion."));
+      } else {
+        test_div.appendChild(tag('P',
+          "Error occurred on or after assertion #"+stats.current.assertion_count));
+      }
       test_div.appendChild(tag('P',"Error message: "+e.message));
       if ( e.stack ) // Firefox when throwing 'new Error(msg)':
         test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
