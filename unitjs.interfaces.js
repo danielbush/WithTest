@@ -57,7 +57,7 @@
 
 $web17_com_au$.unitJS.interfaces = function() {
 
-  var module = {};
+  var interfaces = {};
 
   /*
    * Test series
@@ -70,7 +70,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    * 'test functions' are the tests that you write; they
    * usually contain one or more assertions.  See
-   * module.assertions.* below.
+   * interfaces.assertions.* below.
    *
    * 'test functions' are passed an instance of Stats
    * although you shouldn't mess with it in your tests
@@ -95,6 +95,10 @@ $web17_com_au$.unitJS.interfaces = function() {
    * Stats objects are generated for each test series or
    * each section representing a test series.
    *
+   * GLOBAL STATS
+   * Global stats are accumulated in all contexts.
+   *
+   * SECTION STATS
    * section.*
    *   Section stats should store all stats for a section.
    *   Depending on how it is used, it may or may not
@@ -103,6 +107,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    * section.reset()
    *   Should reinitialize all me.section.* data.
    *
+   * CURRENT STATS
    * current.*
    *   Stats for a single test.
    *   current.* should get reset using current.reset()
@@ -133,11 +138,14 @@ $web17_com_au$.unitJS.interfaces = function() {
 
   var Stats = function() {
     var me = this;
+
+    // GLOBAL
     me.tests = 0;         // Count all tests
     me.failed_tests = 0;  // Count failed tests
     me.errored_tests = 0; // Count tests which threw an error other than an assertion failure
     me.assertions = 0;    // Count the number of assertions called
 
+    // SECTION
     me.section={};
     me.section.name='section name';
     me.section.tests = 0;
@@ -146,6 +154,7 @@ $web17_com_au$.unitJS.interfaces = function() {
     me.section.assertions = 0;
     me.section.reset = function() { }
 
+    // CURRENT
     me.current={};
     me.current.test_name='test name';  // Name/description of current test
     me.current.assertion_level=0;
@@ -191,7 +200,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   - subsections
    *       A section may have its own subsections.
    *       At any rate, me.sections should point to an
-   *       object that implements the module.Sections interface.
+   *       object that implements the interfaces.Sections interface.
    *   - calculateStats
    *       Sum stats for section and all its subsections.
    *   - stats
@@ -212,18 +221,18 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.Sections = function() {
+  interfaces.Sections = function() {
     var me = this;
     me.members = [];
     me.add = function(name) { return new Section(name); }
   }
 
-  module.Section = function(name) {
+  interfaces.Section = function(name) {
     var me = this;
     me.name = name;              
     me.tests = {};               
     me.testOrder = [];           
-    me.subsections = new module.Sections();
+    me.subsections = new interfaces.Sections();
     me.stats = null;
     me.calculateStats = function(){ return new Stats(); }
     me.setup = function(){}
@@ -238,12 +247,14 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    * A test runner does the job of running a series of tests
    * or test sections.
-   * In unitJS it is not currently implemented as an object in its own right.
+   * Runner is a module, not an object.
    *
    * - you can invoke runner.run or runner.sections.run directly in your html
    *   (eg using an input button) once you've set up the tests
    * - you'll also need to provide it with a printer object;
-   *   unitJS provides one implementation: unitjs.printers.DefaultPrinter.
+   *   unitJS provides 2 implementations: 
+   *     unitjs.printers.DefaultPrinter.
+   *     unitjs.printers.DummyPrinter.
    *   See printer interface.
    *
    * - run()
@@ -258,7 +269,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     PARAMETERS
    *     tests:     see tests/testOrder above
    *     testOrder: see tests/testOrder above
-   *     printer:   an object the has the module.Printer interface
+   *     printer:   an object the has the interfaces.Printer interface
    *                It should print results usually into an html file.
    *     nested:    If false (or not specified), run()
    *                assumes it is in standalone mode.
@@ -272,7 +283,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *                options.setup = function(){}
    *                options.teardown = function(){}
    *                  This was created to allow the runner.sections.run to
-   *                  pass in a setup/teardown functions specific to a
+   *                  pass in a setup/teardown functions belonging to a
    *                  section.
    *                  It will be run in addition to runner.setup/teardown
    *                  if the latter is also set.
@@ -283,50 +294,51 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     Should be invoked initially by the user
    *     without the 'level' parameter.
    *   
-   *     The unitJS implementation will invoke module.run on
+   *     The unitJS implementation will invoke interfaces.runner.run on
    *     each section in 'sections' using section.tests
    *     and section.testOrder as parameters.
    *
    *     When recursing, this function will increment the
    *     level.
    *
-   * - setup()        (IMPLEMENTABLE)
+   * - setup()        (IMPLEMENTABLE) (OPTIONAL)
    *     Global setup function for this runner.
    *     Run before every test.
-   * - teardown()     (IMPLEMENTABLE)
+   * - teardown()     (IMPLEMENTABLE) (OPTIONAL)
    *     Global teardown function for this runner.
    *     Run after every test.
    * - local.teardown()     (IMPLEMENTABLE)
    *     Use this within a test to ensure that something is run after
    *     the test even if the test fails or has an error.
+   *     Should be done near the beginning of the test.
    *     Runner should set local.teardown to null after each test.
    *
    *
    */
 
-  module.runner = function() {
-    var module = {};
+  interfaces.runner = function() {
+    var runner = {};
 
-    module.run = function(
+    runner.run = function(
         testOrder,
         tests,
         printer,
         nested,
         options){ return new Stats() }
 
-    module.sections={};
-    module.sections.run = function(
+    runner.sections={};
+    runner.sections.run = function(
         sections,
         printer,
         level){}
 
-    module.setup = function(){};          // Implementable.
-    module.teardown = function(){};       // Implementable.
+    runner.setup = function(){};          // Implementable.
+    runner.teardown = function(){};       // Implementable.
 
-    module.local={};
-    module.local.teardown = function() {} // Implementable.
+    runner.local={};
+    runner.local.teardown = function() {} // Implementable.
 
-    return module;
+    return runner;
   }();
 
 
@@ -406,14 +418,14 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.Printer = function(parentNode,label) {
+  interfaces.Printer = function(parentNode,label) {
     var me = this;
     me.printPass = function(num,test_name,stats){};
     me.printFail = function(num,test_name,stats,e){};
     me.printError = function(num,test_name,stats,e){};
     me.printStats = function(stats){};
     me.section_printer = function(section_name){ 
-      return new module.Printer(parentNode,label); 
+      return new interfaces.Printer(parentNode,label); 
     };
     me.updateSectionStatus = function(stats){}
     me.reset = function(){}
@@ -432,7 +444,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.Failure = function(assertionMessage) {
+  interfaces.Failure = function(assertionMessage) {
     var me = this;
     me.message = assertionMessage;   // Eg for assertEquals: "Expected <a> but got <b>." 
     me.isFailure = true;             // Flags this as being an assertion failure (as opposed to some other error)
@@ -451,7 +463,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    */
 
-  module.assertions = function() {
+  interfaces.assertions = function() {
 
     var assertions = {};
 
@@ -480,7 +492,7 @@ $web17_com_au$.unitJS.interfaces = function() {
   }();
 
 
-  return module;
+  return interfaces;
 
 }();
 
