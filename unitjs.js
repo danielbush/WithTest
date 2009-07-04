@@ -116,13 +116,28 @@ var tmp = function() {
     runner.run = function(testOrder,tests,printer,nested,options) {
 
       var stats = new Stats();
+      var i,j;
+      var test_name;
+      var onlyFound;  // Only used if runner.only is set; reset after each test.
+      runner.onlyFound = false;  // Reset (here) at beginning of each run.
 
       if(!nested) printer.reset();  // Get printer to delete master 'tests' div.
 
       // Run the tests and print to screen...
 
-      for ( var i=0; i<testOrder.length; i++ ) {
-        var test_name=testOrder[i];
+      for ( i=0; i<testOrder.length; i++ ) {
+        test_name=testOrder[i];
+
+        onlyFound=false;
+        if(runner.only) {
+          for(j=0;j<runner.only.length;j++) {
+            if(runner.only[j]==tests[test_name]){
+              onlyFound=true;
+              runner.onlyFound = true;
+            }
+          }
+          if(!onlyFound) { continue; }
+        }
 
         try {
           stats.tests++;
@@ -243,6 +258,7 @@ var tmp = function() {
         return s;
       }
     }
+
   }
 
   module.Section = function(name) {

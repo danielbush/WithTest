@@ -662,6 +662,12 @@ tests[stmt] = function() {
   A.assertEquals(3,sections2.members.length);
 }
 
+// TODO: 4-Jul-09
+stmt = 'Runner should only run the tests in runner.only if set';
+stmt = 'Runner should run all tests if runner.only is null or []';
+stmt = 'runner.onlyFound should be set to true if runner finds (and runs) a test that matches one in runner.only';
+stmt = 'runner.run should reset runner.onlyFound to false at beginning of each run';
+
 // Not sure how to do these yet...
 // -- Sat May 23 15:29:57 EST 2009
 

@@ -313,6 +313,14 @@ $web17_com_au$.unitJS.interfaces = function() {
    *     Should be done near the beginning of the test.
    *     Runner should set local.teardown to null after each test.
    *
+   * - runner.only
+   *     An array of tests you want to test exclusively.
+   *     Do this when you want to run only one or several tests when debugging
+   *     a problem.
+   * - runner.onlyFound
+   *     set to true by runner.run if at least one test was run from runner.only
+   *     otherwise it should be set to false
+   *
    *
    */
 
@@ -337,6 +345,9 @@ $web17_com_au$.unitJS.interfaces = function() {
 
     runner.local={};
     runner.local.teardown = function() {} // Implementable.
+
+    runner.only = [ test_func1 , test_func2 ];
+    runner.onlyFound = false;
 
     return runner;
   }();
