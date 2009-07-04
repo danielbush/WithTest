@@ -129,7 +129,7 @@ var tmp = function() {
         test_name=testOrder[i];
 
         onlyFound=false;
-        if(runner.only) {
+        if(runner.only && runner.only.length>0) {
           for(j=0;j<runner.only.length;j++) {
             if(runner.only[j]==tests[test_name]){
               onlyFound=true;
