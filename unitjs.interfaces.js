@@ -359,8 +359,22 @@ $web17_com_au$.unitJS.interfaces = function() {
    * Printer Interface (implementable)
    * ----------------------------------------------------------------
    *
-   * A printer object is used by a test runner
+   * A printer object is used by runner.run
    * to print the results of the tests it runs.
+   *
+   * Printer is given node into which it will print results.
+   * In unitJS the DefaultPrinter when instantiated creates a tests div
+   * within this node; then simply appends results.
+   * The section_printer method can be used to recurse on this
+   * behaviour allowing you to create a tree with each node
+   * representing a set of test results (from an invocation of runner.run)
+   * and/or a set of nodes.
+   * If you do this, quite often the root node and any other 
+   * non-leaf nodes will contain no tests.
+   * Note that it is up to the implementation to set an appropriate
+   * parentNode for its section_printer's.
+   * An example of the recursive use of the printer can be seen with the DefaultPrinter
+   * and its use runner.sections.run in unitJS.
    *
    * PARAMETERS
    * parentNode : the parent node we should attach our results to.
