@@ -22,9 +22,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>UnitJS Assertion Tests</title>
-<link rel="stylesheet" type="text/css" href="../defaultPrinter.css" media="screen" />
-<script language="JavaScript" type="text/javascript" src="../unitjs.js"></script>
-<script language="JavaScript" type="text/javascript" src="../unitjs.printers.js"></script>
+<link rel="stylesheet" type="text/css"
+      href="../defaultPrinter.css" media="screen" />
+<script language="JavaScript" type="text/javascript"
+        src="../unitjs.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="../unitjs.printers.js"></script>
 <script language="JavaScript" type="text/javascript">
 
 var U       = $web17_com_au$.unitJS;
@@ -34,68 +37,68 @@ var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
 var Sections = $web17_com_au$.unitJS.Sections;
 var Section  = $web17_com_au$.unitJS.Section;
 
-/*
- * Set up tests.
- *
- */
-
-var testOrder=[];
-var tests={};
+var sections = new Sections();
 var stmt;
+var s,s1,s2,s3,s4,s5;
+var printer;
+var setupChecker = {val:null};
+var teardownChecker;
 
+//------------------------------------------------
+s = sections.add('Assertion tests');
 
 stmt = 'Test assert';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   A.assert("true should be true", true);
   A.assert(true);
 }
 
 stmt = 'Test assertTrue';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertTrue("true should be true", true);
     A.assertTrue(true);
 }
 
 stmt = 'Test assertFalse';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertFalse("false should be false", false);
     A.assertFalse(false);
 }
 
 stmt = 'Test assertEquals';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertEquals("1 should equal 1", 1, 1);
     A.assertEquals(1, 1);
 }
 
 stmt = 'Test assertNotEquals';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertNotEquals("1 should not equal 2", 1, 2);
     A.assertNotEquals(1, 2);
 }
 
 stmt = 'Test assertNull';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertNull("null should be null", null);
     A.assertNull(null);
 }
 
 stmt = 'Test assertNotNull';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertNotNull("1 should not be null", 1);
     A.assertNotNull(1);
 }
 
 stmt = 'Test assertUndefined';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     var myVar;
     A.assertUndefined(
       "A declared but unassigned variable should have the undefined value", 
@@ -104,29 +107,31 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertNotUndefined';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertNotUndefined("1 should not be undefined", 1);
     A.assertNotUndefined(1);
 }
 
 stmt = 'Test assertNaN';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertNaN("a string should not be a number", "string");
     A.assertNaN("string");
 }
 
 stmt = 'Test assertNotNaN';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertNotNaN("1 should not be not a number", 1);
     A.assertNotNaN(1);
 }
 
+//--------------------------------------------------
+s2 = s.subsections.add('Assertion utilities');
 stmt = 'Test utils.fail';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
     var excep = null;
     try {
         utils.fail("Failure message",'');
@@ -139,8 +144,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test too few arguments to assertion functions';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
     var excep = null;
     try {
         A.assert();
@@ -153,8 +158,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test too many arguments to assertion functions';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
     var excep = null;
     try {
         A.assertEquals("A comment", true, true, true);
@@ -167,8 +172,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test invalid argument comment type';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
     var excep = null;
     try {
         A.assertNull(1, true);
@@ -181,8 +186,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test invalid boolean test / argument type';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
     var excep = null;
     try {
         A.assert("string");
@@ -195,8 +200,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertArrayEquals';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     var array1 = Array();
     array1[0] = "foo";
     array1[1] = "bar";
@@ -250,8 +255,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertObjectEquals';
-testOrder.push(stmt);
-tests[stmt] = function()
+s.testOrder.push(stmt);
+s.tests[stmt] = function()
 {
     var failure;
     var o1 = {foo:'bar'};
@@ -344,8 +349,8 @@ tests[stmt] = function()
 }
 
 stmt = 'Test assertObjectEquals for strings';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     var s1 = 'string1';
     var s2 = 'string1';
     var newS1 = new String('string1');
@@ -354,8 +359,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertObjectEquals for numbers';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     var failure;
     var n1 = 1;
     var n2 = 1;
@@ -389,8 +394,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertEvaluatesToTrue';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertEvaluatesToTrue("foo");
     A.assertEvaluatesToTrue(true);
     A.assertEvaluatesToTrue(1);
@@ -403,8 +408,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertEvaluatesToFalse';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertEvaluatesToFalse("");
     A.assertEvaluatesToFalse(null);
     A.assertEvaluatesToFalse(false);
@@ -418,8 +423,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertHTMLEquals';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertHTMLEquals("<div id=mydiv>foobar</div>", "<div id='mydiv'>foobar</div>");
     A.assertHTMLEquals("<p/>", "<p></p>");
     A.assertHTMLEquals("foo bar", "foo bar");
@@ -427,8 +432,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertHashEquals';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     var hash1 = new Array();
     hash1["key1"] = "value1";
     hash1["key2"] = "value2";
@@ -459,8 +464,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertRoughlyEquals';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertRoughlyEquals(1, 1.1, 0.5);
     A.assertRoughlyEquals(1, 5, 6);
     A.assertRoughlyEquals(-4, -5, 2);
@@ -473,16 +478,19 @@ tests[stmt] = function() {
 }
 
 stmt = 'Test assertContains';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
     A.assertContains("foo", "foobar");
     A.assertContains("ooba", "foobar");
     A.assertContains("bar", "foobar");
 }
 
-stmt = '[Stats object] Test stats show that 3rd assertion fails';
-testOrder.push(stmt);
-tests[stmt] = function(STATS) {
+//------------------------------------------------
+s = sections.add('Stats object');
+
+stmt = 'stats show that 3rd assertion fails';
+s.testOrder.push(stmt);
+s.tests[stmt] = function(STATS) {
     A.assert(true);
     A.assert(true);
     try {
@@ -491,9 +499,9 @@ tests[stmt] = function(STATS) {
     A.assert(STATS.current.assertion_count==3);
 }
 
-stmt = '[Stats object] Test stats show that error occurs on or after 2nd assertion';
-testOrder.push(stmt);
-tests[stmt] = function(STATS) {
+stmt = 'stats show that error occurs on or after 2nd assertion';
+s.testOrder.push(stmt);
+s.tests[stmt] = function(STATS) {
     try {
       A.assert(true);
       A.assert(true);
@@ -502,11 +510,23 @@ tests[stmt] = function(STATS) {
     A.assert(STATS.current.assertion_count==2);
 }
 
-stmt = 'Test setup works at beginning of test';
-testOrder.push(stmt);
-var setupChecker = {val:null};
+stmt = '[Stats object] Test assertion count for a test';
+s.testOrder.push(stmt);
+s.tests[stmt] = function(STATS) {
+    A.assertEquals(0,STATS.current.assertion_count);
+    A.assertEquals(1,STATS.current.assertion_count);
+    A.assertEquals(2,STATS.current.assertion_count);
+    // etc...
+}
+
+
+//------------------------------------------------
+s = sections.add('setup/teardown');
+
 U.runner.setup = function() { setupChecker.val='setup!'; }
-tests[stmt] = function() {
+stmt = 'Test setup works at beginning of test';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   A.assertEquals('setup!',setupChecker.val);
 }
 
@@ -517,53 +537,51 @@ tests[stmt] = function() {
 // - SECOND TEST: test that A.teardown is called by checking 
 //   teardownChecker has been modified
 
+U.runner.teardown = function() {
+  if(teardownChecker) teardownChecker.val='teardown!';
+}
 stmt = 'Test teardown works at end of test - part 1';
-testOrder.push(stmt);
-var teardownChecker;
-U.runner.teardown = function() { if(teardownChecker) teardownChecker.val='teardown!'; }
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   // Create teardownChecker here.
   teardownChecker = {val:null};  
   A.assertEquals(null,teardownChecker.val);
 }
+
 stmt = 'Test teardown works at end of test - part 2';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   // ... and we should be updated here thanks to previous test.
   A.assertEquals('teardown!',teardownChecker.val);
 }
 
-// A little weird - this causes an error but pt2 tests that we get what we want.
+// A little weird - this causes an error but pt2 tests that we get what we
+// want.
 
-stmt = 'Test that teardown is called after an error or failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
-testOrder.push(stmt);
 teardownChecker=null;
-tests[stmt] = function() {
+stmt = 'Test that teardown is called after an error or failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   // Create teardownChecker here.
   teardownChecker = {val:null};  
   U.runner.teardown = function() { if(teardownChecker) teardownChecker.val='teardown2!'; }
   throw new Error('foo');
 }
+
 stmt = 'Test that teardown is called after an error or failure in a test - pt2 - SHOULD PASS (!) '
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   // ... and we should be updated here thanks to previous test.
   A.assertEquals('teardown2!',teardownChecker.val);
 }
 
 
-stmt = '[Stats object] Test assertion count for a test';
-testOrder.push(stmt);
-tests[stmt] = function(STATS) {
-    A.assertEquals(0,STATS.current.assertion_count);
-    A.assertEquals(1,STATS.current.assertion_count);
-    A.assertEquals(2,STATS.current.assertion_count);
-    // etc...
-}
+//------------------------------------------------
+s = sections.add('sections');
 
 stmt = 'Calling Sections.add with a string creates and returns a Section object with that name';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   var sections,section;
   sections = new Sections();
   section = sections.add('foo');
@@ -572,8 +590,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Adding a Section object to a Sections object augments members array';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   var sections,section;
   sections = new Sections();
   A.assertEquals(0,sections.members.length);
@@ -585,8 +603,8 @@ tests[stmt] = function() {
 }
 
 stmt = 'Adding a Sections object to another Sections object augments members array of the latter';
-testOrder.push(stmt);
-tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
   var sections1 = new Sections(),sections2 = new Sections();
   var s1 = new Section('s1'),s2 = new Section('s2'),s3 = new Section('s3');
   sections1.add(s1);
@@ -602,11 +620,21 @@ tests[stmt] = function() {
 // Not sure how to do these yet...
 // -- Sat May 23 15:29:57 EST 2009
 
-stmt = '[Stats object] Test assertion level (for detecting nested public assertion calls)';
-stmt = '[Stats object] Test all/failure/error test counts';
-stmt = '[Stats object] Test global assertion count';
+//------------------------------------------------
+s2 = s.subsections.add('stats collection');
 
-var printer;
+stmt = 'assertion level (for detecting nested public assertion calls)';
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {}
+
+stmt = 'all/failure/error test counts';
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {}
+
+stmt = 'global assertion count';
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {}
+
 function init() {
   printer = new Printer(document.body);
 }
@@ -621,6 +649,6 @@ function init() {
   This page contains tests for the UnitJS Assertion
   functions.  Basically we're testing ourselves with ourselves.
 </p>
-<input type="button" onclick="U.runner.run(testOrder,tests,printer);" value="Run tests" />
+<input type="button" onclick="U.runner.sections.run(sections,printer);" value="Run tests" />
 </body>
 </html>
