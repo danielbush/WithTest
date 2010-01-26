@@ -161,7 +161,9 @@ $web17_com_au$.unitJS = function() {
     runner.sections={};
 
     runner.sections.run = function(sections,printer,level) {
+      var i;
       var section,section_printer,calc_stats,all_stats,nested;
+
       all_stats = new Stats();
 
       if(!level) {
@@ -169,7 +171,7 @@ $web17_com_au$.unitJS = function() {
         printer.reset();  // Get printer to delete master 'tests' div.
       }
 
-      for(var i=0;i<sections.members.length;i++) {
+      for(i=0;i<sections.members.length;i++) {
         section = sections.members[i];
         section_printer = printer.section_printer( section.name );
         section.stats = runner.run(section.testOrder,section.tests,section_printer,true);

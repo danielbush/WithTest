@@ -171,7 +171,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    * - When you run tests without any sectioning, you
    *   use testOrder and tests objects directly.
    * - When you use sections, the Section object contains
-   *   instances of testOrder and tests object.
+   *   instances of testOrder and tests objects.
    *
    * Sections
    *   - members
@@ -190,7 +190,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *       See testOrder
    *   - subsections
    *       A section may have its own subsections.
-   *       At any rate, me.sections should point to an
+   *       At any rate, me.subsections should point to an
    *       object that implements the module.Sections interface.
    *   - calculateStats
    *       Sum stats for section and all its subsections.
@@ -233,7 +233,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   unitJS provides one implementation: unitjs.printers.DefaultPrinter.
    *   See printer interface.
    *
-   * - run()
+   * - run(testOrder,tests,printer,nested)
    *     Run tests in the order specified by testOrder.
    *     Catch any errors and note if they are assertion failures or
    *     otherwise.
@@ -252,7 +252,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *                (In general leave this out as it is used
    *                internally)
    *
-   * - sections.run()
+   * - sections.run(sections,printer,level)
    *     Run tests for each section in 'sections'.
    *     Should be invoked initially by the user
    *     without the 'level' parameter.
