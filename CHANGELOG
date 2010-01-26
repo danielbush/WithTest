@@ -1,4 +1,14 @@
 
+Current - 27-Jan-10
+[DB]
+* UnitJS's own tests now use sections - see tests/.
+* Tests are highlighted - red/green.
+* Teardown called after error or failure in test
+* Fixed some bugs relating to DefaultPrinter and how it resets, uses its div tag(s).
+* Sections.add can handle Section and Sections instances.
+
+
+
 Version 0.3 - 9-Jun-09
 [DB]
 * Created interfaces js file for defining key interfaces of unitJS

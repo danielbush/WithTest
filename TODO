@@ -1,5 +1,32 @@
 
-Aug-2008 DB - Daniel Bush
+highlight empty tests and empty sections {
+  @author: DB
+  @date: 27-Jan-10
+  - expand/collapse functions to expand/collapse all sections/subsections -
+    without showing the tests
+  - sections with 0 tests should be highlighted in a neutral colour - blue
+  - similarly, maybe we could highlight tests with 0 assertions with the same
+    colour scheme
+  - expand only sections which are empty or contain empty sections or empty tests
+}
+
+missing tests and stats/section runner re-implementation {
+  @author: DB
+  @date: 27-Jan-10
+  - test stats collection for a series of tests (this might be done already)
+  - test stats collection for a section of tests (excl. subsections)
+  - test stats collection for a section of tests incl subsections
+  - test stats merge
+  - rewrite the way stats are collected for sections and their subsections
+    - at the moment I think as the sections test runner recurses, the stats
+      collection also recurses possibly needlessly; that is, calculateStats()
+      is inefficient or being inappropriately used.
+      The sections runner should probably return stats which we merge.
+}
+
+
+Aug-2008 {
+@author: DB
 1   We don't count errors and fails; and I still need to
     figure out if we are clearly distinguishing between these
     two. [DB]
@@ -12,3 +39,4 @@ Aug-2008 DB - Daniel Bush
     if they are in the tests.  Although, anonymous functions
     are handy and get used everywhere so this is just a fact
     of life. [DB]
+}
