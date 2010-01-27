@@ -198,6 +198,11 @@ $web17_com_au$.unitJS.interfaces = function() {
    *   - stats
    *       Store instance of Stats object containing stats
    *       for this section.  Does not include subsections.
+   *   - pending
+   *       Boolean flag that you can set to true if you want
+   *       to mark the section as incomplete.  This would
+   *       mean that you still have to finish writing tests
+   *       for that section (or its subsections).
    * 
    *
    */
@@ -346,7 +351,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      instances could be set to a nested section div
    *      element rather than the main testing div element.
    *
-   *  - updateSectionStatus(stats)
+   *  - updateSectionStatus(stats,pending)
    *
    *      Instruct the printer to update itself with the
    *      latest stats for the section it is handling.
@@ -363,6 +368,9 @@ $web17_com_au$.unitJS.interfaces = function() {
    *        stats for this section and all of its
    *        subsections.  stats.section.* contains stats for
    *        the section by itself without the subsections.
+   *      pending:
+   *        If true, the printer should do something to
+   *        indicate the section is pending.
    *
    *      runner.sections.run will invoke this method on
    *      each section's section_printer after runner.run.  

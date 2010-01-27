@@ -134,14 +134,16 @@ $web17_com_au$.unitJS_module = function() {
     runner.run = function(testOrder,tests,printer,nested) {
 
       var stats = new module.Stats();
+      var test_name,test_func;
+      var i;
 
       if(!nested) printer.reset(); 
         // Get printer to delete master 'tests' div.
 
       // Run the tests and print to screen...
 
-      for ( var i=0; i<testOrder.length; i++ ) {
-        var test_name=testOrder[i];
+      for ( i=0; i<testOrder.length; i++ ) {
+        test_name=testOrder[i];
 
         try {
           stats.tests++;
@@ -150,22 +152,23 @@ $web17_com_au$.unitJS_module = function() {
           stats.current.test_name=test_name;
           STATS=stats; // So assertion code can update stats.
           if(runner.setup) runner.setup();
-          tests[test_name](stats);
+          test_func = tests[test_name];
+          test_func(stats);
             // Pass stats in to the test mainly so I can test this framework
             // more easily.
-          printer.printPass(i+1,test_name,stats);
+          printer.printPass(i+1,test_name,stats,test_func.pending);
         }
 
         catch(e) {
           if(e.isFailure) {
             stats.failed_tests++;
             stats.section.failed_tests++;
-            printer.printFail(i+1,test_name,stats,e);
+            printer.printFail(i+1,test_name,stats,e,test_func.pending);
           }
           else {
             stats.errored_tests++;
             stats.section.errored_tests++;
-            printer.printError(i+1,test_name,stats,e);
+            printer.printError(i+1,test_name,stats,e,test_func.pending);
           }
           stats.current.reset();
         }
@@ -183,7 +186,8 @@ $web17_com_au$.unitJS_module = function() {
     runner.sections={};
 
     runner.sections.run = function(sections,printer,level) {
-      var i;
+
+      var i,n,p;
       var section,section_printer,calc_stats,all_stats,nested;
 
 
@@ -201,10 +205,35 @@ $web17_com_au$.unitJS_module = function() {
           section.tests,
           section_printer,
           true);
+
+        // Flag a section as pending if it contains a pending
+        // test. 
+
+        for(n in section.tests) {
+          if(section.tests[n].pending){
+            section.pending=true
+            break;
+          }
+        }
+
+        // Make all parent sections pending if they contain
+        // a pending section.
+        //
+        // _pending=true => "we've already done all the parents".
+
+        if(section.pending==true && !section._pending) {
+          section._pending=true;
+          for(p=section.parent;p;p=p.parent) {
+            if(p._pending) break;
+            p.pending=true;
+            p._pending=true;
+          }
+        }
+
         if(section.subsections.members.length>0)
           runner.sections.run(section.subsections,section_printer,level+1);
         calc_stats = section.calculateStats();
-        section_printer.updateSectionStatus(calc_stats);
+        section_printer.updateSectionStatus(calc_stats,section.pending);
         if(level==1) {
           all_stats.merge(calc_stats);
         }
@@ -228,7 +257,7 @@ $web17_com_au$.unitJS_module = function() {
    *
    */
 
-  module.Sections = function() {
+  module.Sections = function(parentSection) {
     var me = this;
     me.members = [];
 
@@ -245,11 +274,13 @@ $web17_com_au$.unitJS_module = function() {
       var s,i;
       if(obj instanceof module.Section) {
         me.members.push(obj);
+        if(parentSection) obj.parent = parentSection;
       } 
 
       else if(obj instanceof module.Sections) {
         for(i=0;i<obj.members.length;i++) {
           me.members.push(obj.members[i]);
+          if(parentSection) obj.members[i].parent = parentSection;
         }
       } 
       
@@ -257,6 +288,7 @@ $web17_com_au$.unitJS_module = function() {
         // Assume obj is a string name.
         s = new module.Section(obj);
         me.members.push(s);
+        if(parentSection) s.parent = parentSection;
         return s;
       }
     }
@@ -265,7 +297,7 @@ $web17_com_au$.unitJS_module = function() {
   module.Section = function(name) {
     var me = this;
     me.name = name;
-    me.subsections = new module.Sections();  // For subsections.
+    me.subsections = new module.Sections(me);  // For subsections.
     me.testOrder=[];
     me.tests={};
     me.stats = null;

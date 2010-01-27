@@ -2,13 +2,19 @@
 highlight empty tests and empty sections {
   @author: DB
   @date: 27-Jan-10
+  - be able to flag a section or test as pending; paint in neutral color - blue
   - expand/collapse functions to expand/collapse all sections/subsections -
     without showing the tests
+    - expand next level / collapse next level
+    - show pending or empty sections and tests
+    - collapse all
+    - expand all
+    - expand all with tests
   - sections with 0 tests should be highlighted in a neutral colour - blue
   - similarly, maybe we could highlight tests with 0 assertions with the same
     colour scheme
-  - expand only sections which are empty or contain empty sections or empty tests
-  - be able to flag a section or test as pending; paint in neutral color - blue
+  - expand only sections which are empty or contain empty sections or empty
+    tests
 }
 
 missing tests and stats/section runner re-implementation {

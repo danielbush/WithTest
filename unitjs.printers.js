@@ -119,27 +119,43 @@ $web17_com_au$.unitJS.printers = function() {
     if(nested)  build();
     if(!nested) me.reset();
 
-    me.updateSectionStatus = function(stats) {
+    me.updateSectionStatus = function(stats,pending) {
       var msg = ' (Tests:'+stats.section.tests+'; ';
-      if(stats.section.failed_tests>0||stats.section.errored_tests) {
+      if(stats.section.failed_tests>0||stats.section.errored_tests>0) {
         msg+=' Fails: '+stats.section.failed_tests+
              ' / Errors: '+stats.section.errored_tests+')';
         banner_div.className = "banner section-fail";
+        if(pending) {
+          msg+=' [Pending]';
+          banner_div.className += " section-pending";
+        }
         h2_div.appendChild(document.createTextNode(msg));
       }
       else if(stats.tests==0) {
         msg+=' No tests)'
         banner_div.className = "banner section-empty";
+        if(pending) {
+          msg+=' [Pending]';
+          banner_div.className += " section-pending";
+        }
         h2_div.appendChild(document.createTextNode(msg));
       }
       else if(stats.assertions==0) {
         msg+=' No assertions)'
         banner_div.className = "banner section-empty";
+        if(pending) {
+          msg+=' [Pending]';
+          banner_div.className += " section-pending";
+        }
         h2_div.appendChild(document.createTextNode(msg));
       }
       else {
         msg+=' Passed)'
         banner_div.className = "banner section-pass";
+        if(pending) {
+          msg+=' [Pending]';
+          banner_div.className += " section-pending";
+        }
         h2_div.appendChild(document.createTextNode(msg));
       }
     }
@@ -148,27 +164,27 @@ $web17_com_au$.unitJS.printers = function() {
       return new module.DefaultPrinter(tests_div,name,true);
     }
 
-    me.printPass = function(num,test_name,stats) {
+    me.printPass = function(num,test_name,stats,pending) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
       test_div.appendChild(t);
       if(stats.current.assertion_count==0) {
         test_div.className = 'test test-empty';
-        test_div.appendChild(empty());
+        test_div.appendChild(empty(pending));
       } else {
         test_div.className = 'test test-pass';
-        test_div.appendChild(passed());
+        test_div.appendChild(passed(pending));
       }
       test_div.appendChild(clearing_div());
       tests_div.appendChild(test_div);
     }
 
-    me.printFail  = function(num,test_name,stats,e) {
+    me.printFail  = function(num,test_name,stats,e,pending) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
       test_div.className = 'test test-fail';
       test_div.appendChild(t);
-      test_div.appendChild(failed());
+      test_div.appendChild(failed(pending));
       test_div.appendChild(clearing_div());
       test_div.appendChild(tag('P',
         "Failure on assertion #"+stats.current.assertion_count+'. '+e.message));
@@ -179,12 +195,12 @@ $web17_com_au$.unitJS.printers = function() {
       tests_div.appendChild(test_div);
     }
 
-    me.printError = function(num,test_name,stats,e) {
+    me.printError = function(num,test_name,stats,e,pending) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
       test_div.className = 'test test-error';
       test_div.appendChild(t);
-      test_div.appendChild(errored());
+      test_div.appendChild(errored(pending));
       test_div.appendChild(clearing_div());
       test_div.appendChild(tag('P',
         "Error occurred on or after assertion #"+stats.current.assertion_count));
@@ -226,27 +242,39 @@ $web17_com_au$.unitJS.printers = function() {
       return p;
     }
 
-    function passed() {
-      var span=tag('SPAN',"PASSED");
+    function passed(pending) {
+      var span;
+      if(pending) span=tag('SPAN',"PASSED [PENDING]");
+      else span=tag('SPAN',"PASSED");
       span.className="pass";
+      if(pending) span.className += ' pending';
       return span;
     }
 
-    function failed() {
-      var span=tag('SPAN',"FAILED");
+    function failed(pending) {
+      var span;
+      if(pending) span=tag('SPAN',"FAILED [PENDING]");
+      else span=tag('SPAN',"FAILED");
       span.className="fail";
+      if(pending) span.className += ' pending';
       return span;
     }
 
-    function errored() {
-      var span=tag('SPAN',"ERROR!");
+    function errored(pending) {
+      var span;
+      if(pending) span=tag('SPAN',"ERROR! [PENDING]");
+      else span=tag('SPAN',"ERROR!");
       span.className="error";
+      if(pending) span.className += ' pending';
       return span;
     }
 
-    function empty() {
-      var span=tag('SPAN',"NO ASSERTIONS");
+    function empty(pending) {
+      var span;
+      if(pending) span=tag('SPAN',"NO ASSERTIONS [PENDING]");
+      else span=tag('SPAN',"NO ASSERTIONS");
       span.className="empty";
+      if(pending) span.className += ' pending';
       return span;
     }
 

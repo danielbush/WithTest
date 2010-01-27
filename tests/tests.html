@@ -603,7 +603,7 @@ s.tests[stmt] = function() {
 
 }
 
-stmt = 'Adding a Sections object to another Sections object augments members array of the latter';
+stmt = "Adding a Sections object to another Sections object augments members array of the latter";
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
   var sections1 = new Sections(),sections2 = new Sections();
@@ -618,9 +618,32 @@ s.tests[stmt] = function() {
   A.assertEquals(3,sections2.members.length);
 }
 
+stmt = "Adding a subsection sets its parent property to the section"
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var s,s2,s3,s4,s5,s6;
+  var sections = new Sections();
+  var sections2 = new Sections();
 
-// Not sure how to do these yet...
-// -- Sat May 23 15:29:57 EST 2009
+  // Add using add()...
+  s = sections.add('foo');
+  s2 = s.subsections.add('bar');
+  A.assertEquals(s,s2.parent);
+
+  // Add section instance...
+  s3 = new Section('baz');
+  s2.subsections.add(s3);
+  A.assertEquals(s2,s3.parent);
+
+  // Add sections instance...
+  s4 = sections.add('foo2');
+  s5 = sections2.add('foo');
+  s6 = sections2.add('bar');
+  s4.subsections.add(sections2);
+  A.assertEquals(s4,s5.parent);
+  A.assertEquals(s4,s6.parent);
+
+}
 
 //------------------------------------------------
 s2 = s.subsections.add('stats collection');
@@ -731,10 +754,59 @@ s.tests[stmt] = function() {
 }
 
 
+//------------------------------------------------
+s = sections.add('section flagged as pending');
+s.pending=true;
+
+stmt = 'test with an assertion'
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  A.assert(true);
+}
 
 
+//------------------------------------------------
+s = sections.add('section with one test flagged as pending');
+stmt = 'test with an assertion'
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  A.assert(true);
+}
+s.tests[stmt].pending=true;
 
 
+//------------------------------------------------
+s = sections.add('section with subsection that is flagged as pending');
+s2 = s.subsections.add('subsection');
+s2.pending=true;
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
+  A.assert(true);
+}
+
+
+//------------------------------------------------
+s = sections.add('section with subsection that has one test flagged as pending');
+s2 = s.subsections.add('subsection');
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
+  A.assert(true);
+}
+s2.tests[stmt].pending=true;
+
+//------------------------------------------------
+s = sections.add('section with subsection that is empty and marked as pending');
+s2 = s.subsections.add('pending empty subsection');
+s2.pending=true;
+
+//------------------------------------------------
+s = sections.add('section with subsection that has one failed test flagged as pending');
+s2 = s.subsections.add('subsection');
+s2.testOrder.push(stmt);
+s2.tests[stmt] = function() {
+  A.assert(false);
+}
+s2.tests[stmt].pending=true;
 
 //------------------------------------------------
 function init() {

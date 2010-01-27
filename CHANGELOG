@@ -14,6 +14,9 @@ Current - 27-Jan-10
   module and test its results.
 * Sections with no tests or tests with no assertions are
   now highlighted in blue colour.
+* Sections and tests can be flagged as pending; these are highlighted
+  in blue and tagged by the default printer.  Parent sections are also
+  highlighted if they contain a pending item.
 
 Version 0.3.1 - 27-Jan-10
 [DB]

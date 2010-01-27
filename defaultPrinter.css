@@ -68,6 +68,9 @@ div.test span.pass {
   float:right;
   margin-right:1em;
 }
+div.test span.pass.pending {
+  color:#44a;
+}
 
 div.test span.error {
   font-weight:bold;
@@ -76,12 +79,16 @@ div.test span.error {
   float:right;
   margin-right:1em;
 }
+div.test span.error.pending {
+}
 
 div.test span.fail {
   font-weight:bold;
   color:red;
   float:right;
   margin-right:1em;
+}
+div.test span.fail.pending {
 }
 
 div.test span.empty {
@@ -108,6 +115,18 @@ div.test.test-error {
   background-color:#dfd;
 }
 
+.section-pass.section-pending {
+  background-color:#ccccff;
+}
+.section-fail.section-pending {
+  background-color:#fdd;
+  /* Still error colours.  How about orange? */
+}
+
+.section-pending {
+  background-color:#ccccff;
+  color:#44a;
+}
 .section-empty {
   background-color:#ccccff;
   color:#44a;
