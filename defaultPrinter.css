@@ -84,6 +84,17 @@ div.test span.fail {
   margin-right:1em;
 }
 
+div.test span.empty {
+  font-weight:bold;
+  color:#44a;
+  float:right;
+  margin-right:1em;
+}
+
+div.test.test-empty {
+  background-color:#ccccff;
+}
+
 div.test.test-fail ,
 div.test.test-error {
   background-color:#ffeeee;
@@ -95,4 +106,9 @@ div.test.test-error {
 
 .section-pass {
   background-color:#dfd;
+}
+
+.section-empty {
+  background-color:#ccccff;
+  color:#44a;
 }

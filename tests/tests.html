@@ -705,6 +705,38 @@ s2.tests[stmt] = function() {
 }
 
 
+//------------------------------------------------
+s = sections.add('empty section');
+
+//------------------------------------------------
+s = sections.add('section with tests but no assertions');
+
+stmt = 'no assertions!';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+}
+
+//------------------------------------------------
+s = sections.add('section with tests some of which have no assertions');
+
+stmt = 'has assertions 1';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  A.assert(true);
+}
+
+stmt = 'has no assertions';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+}
+
+
+
+
+
+
+
+//------------------------------------------------
 function init() {
   printer = new Printer(document.body);
 }

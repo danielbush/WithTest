@@ -346,7 +346,7 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      instances could be set to a nested section div
    *      element rather than the main testing div element.
    *
-   *  - updateSectionStatus
+   *  - updateSectionStatus(stats)
    *
    *      Instruct the printer to update itself with the
    *      latest stats for the section it is handling.
@@ -356,6 +356,13 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      tests.  This is something it only knows after
    *      having printed all the test results out via
    *      runner.run.
+   *
+   *      PARAMETERS
+   *      stats:
+   *        UnitJS will pass a stats object summarising all
+   *        stats for this section and all of its
+   *        subsections.  stats.section.* contains stats for
+   *        the section by itself without the subsections.
    *
    *      runner.sections.run will invoke this method on
    *      each section's section_printer after runner.run.  

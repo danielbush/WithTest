@@ -8,6 +8,7 @@ highlight empty tests and empty sections {
   - similarly, maybe we could highlight tests with 0 assertions with the same
     colour scheme
   - expand only sections which are empty or contain empty sections or empty tests
+  - be able to flag a section or test as pending; paint in neutral color - blue
 }
 
 missing tests and stats/section runner re-implementation {

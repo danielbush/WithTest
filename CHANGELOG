@@ -12,6 +12,8 @@ Current - 27-Jan-10
   invocations of runner, we will have to probably decouple.
 * Added at least one test where we spawn a separate unitjs
   module and test its results.
+* Sections with no tests or tests with no assertions are
+  now highlighted in blue colour.
 
 Version 0.3.1 - 27-Jan-10
 [DB]

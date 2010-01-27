@@ -122,8 +122,19 @@ $web17_com_au$.unitJS.printers = function() {
     me.updateSectionStatus = function(stats) {
       var msg = ' (Tests:'+stats.section.tests+'; ';
       if(stats.section.failed_tests>0||stats.section.errored_tests) {
-        msg+=' Fails: '+stats.section.failed_tests+' / Errors: '+stats.section.errored_tests+')';
+        msg+=' Fails: '+stats.section.failed_tests+
+             ' / Errors: '+stats.section.errored_tests+')';
         banner_div.className = "banner section-fail";
+        h2_div.appendChild(document.createTextNode(msg));
+      }
+      else if(stats.tests==0) {
+        msg+=' No tests)'
+        banner_div.className = "banner section-empty";
+        h2_div.appendChild(document.createTextNode(msg));
+      }
+      else if(stats.assertions==0) {
+        msg+=' No assertions)'
+        banner_div.className = "banner section-empty";
         h2_div.appendChild(document.createTextNode(msg));
       }
       else {
@@ -140,9 +151,14 @@ $web17_com_au$.unitJS.printers = function() {
     me.printPass = function(num,test_name,stats) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
-      test_div.className = 'test test-pass';
       test_div.appendChild(t);
-      test_div.appendChild(passed());
+      if(stats.current.assertion_count==0) {
+        test_div.className = 'test test-empty';
+        test_div.appendChild(empty());
+      } else {
+        test_div.className = 'test test-pass';
+        test_div.appendChild(passed());
+      }
       test_div.appendChild(clearing_div());
       tests_div.appendChild(test_div);
     }
@@ -225,6 +241,12 @@ $web17_com_au$.unitJS.printers = function() {
     function errored() {
       var span=tag('SPAN',"ERROR!");
       span.className="error";
+      return span;
+    }
+
+    function empty() {
+      var span=tag('SPAN',"NO ASSERTIONS");
+      span.className="empty";
       return span;
     }
 
