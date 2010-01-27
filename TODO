@@ -15,13 +15,24 @@ missing tests and stats/section runner re-implementation {
   @date: 27-Jan-10
   - test stats collection for a series of tests (this might be done already)
   - test stats collection for a section of tests (excl. subsections)
+    @DONE: 27-Jan-10
+    @note { This is what Section.stats does by default }
   - test stats collection for a section of tests incl subsections
+    @DONE: 27-Jan-10
+    @note { This is what runner.sections.run returns }
   - test stats merge
   - rewrite the way stats are collected for sections and their subsections
     - at the moment I think as the sections test runner recurses, the stats
       collection also recurses possibly needlessly; that is, calculateStats()
       is inefficient or being inappropriately used.
       The sections runner should probably return stats which we merge.
+      @note {
+        @date: 27-Jan-10
+        Wondering if it's worth it.  The amount of recursion isn't that
+        great normally.  We can perhaps make runner.sections.run
+        more efficient by passing in a stats instance and aggregating
+        as we pop back up from the recursions.
+      }
 }
 
 
