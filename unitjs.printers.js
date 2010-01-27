@@ -20,6 +20,24 @@ $web17_com_au$.unitJS.printers = function() {
 
   var module={};
 
+  // DummyPrinter
+  //
+  // This is more of a stub-like printer that doesn't try to
+  // output results into an html document.
+
+  module.DummyPrinter = function(parentNode,label) {
+    var me = this;
+    me.printPass = function(num,test_name,stats) {}
+    me.printFail = function(num,test_name,stats) {}
+    me.printError = function(num,test_name,stats) {}
+    me.printStats = function(stats) {}
+    me.section_printer = function(section_name){
+      return me;
+    }
+    me.updateSectionStatus = function(stats) {}
+    me.reset = function() {}
+  }
+
   // DefaultPrinter
   //
   // Prints results of tests into an html document.

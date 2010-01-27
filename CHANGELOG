@@ -1,6 +1,20 @@
 
 Current - 27-Jan-10
 [DB]
+* runner.sections.run returns a stats object so we can
+  test the resulting stats.
+* The unitjs module can spawn a copy of itself; this is
+  so we can test unitjs using itself.
+  Making nested calls to the runner leads to errors; this
+  is because of coupling between the assertions and runner
+  submodules in unitjs.
+  If we ever get multi-threaded or have a need to make nested
+  invocations of runner, we will have to probably decouple.
+* Added at least one test where we spawn a separate unitjs
+  module and test its results.
+
+Version 0.3.1 - 27-Jan-10
+[DB]
 * UnitJS's own tests now use sections - see tests/.
 * Tests are highlighted - red/green.
 * Teardown called after error or failure in test

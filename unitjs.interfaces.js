@@ -135,7 +135,8 @@ $web17_com_au$.unitJS.interfaces = function() {
     var me = this;
     me.tests = 0;         // Count all tests
     me.failed_tests = 0;  // Count failed tests
-    me.errored_tests = 0; // Count tests which threw an error other than an assertion failure
+    me.errored_tests = 0; 
+      // Count tests which threw an error other than an assertion failure
     me.assertions = 0;    // Count the number of assertions called
 
     me.section={};
@@ -307,7 +308,8 @@ $web17_com_au$.unitJS.interfaces = function() {
    *
    * PARAMETERS
    * parentNode : the parent node we should attach our results to.
-   * label      : Optional description that will be shown at the top before the tests.
+   * label      : Optional description that will be shown at the top before the
+   *              tests.
    *
    * Printer
    *  - print*
@@ -315,7 +317,8 @@ $web17_com_au$.unitJS.interfaces = function() {
    *      PARAMETERS
    *      num       : the ordinal number of the test
    *      test_name : name or description of the test
-   *      stats     : a Stats object instance, used for collecting stats in unitJS
+   *      stats     : a Stats object instance, used for collecting stats in
+   *                  unitJS
    *      e         : error object; for printFail this should be the unitJS
    *                  failure object.
    *
@@ -369,6 +372,7 @@ $web17_com_au$.unitJS.interfaces = function() {
       return new module.Printer(parentNode,label); 
     };
     me.updateSectionStatus = function(stats){}
+    me.reset = function() {}
 
   }
 

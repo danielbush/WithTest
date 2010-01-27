@@ -30,9 +30,30 @@ var $web17_com_au$ = $web17_com_au$ || {};
  *
  */
 
-$web17_com_au$.unitJS = function() {
+$web17_com_au$.unitJS_module = function() {
 
   var module={};
+
+  // Spawn a completely new unitJS module.
+  // 
+  // Only useful if you need to run tests
+  // using a different runner inside of test
+  // run by an outer runner.
+  //
+  // If you try to use the same test runner inside
+  // of an existing test, you will probably run
+  // into problems especially with the STATS variable.
+  //
+  // The only reason you might want nested runners
+  // is to test unitjs itself.  If other reasons pop
+  // up, then we will revisit the way unitjs is 
+  // implemented with a view to getting rid of the need
+  // for 'spawn'.
+  // -- DB, Wed Jan 27 13:07:24 EST 2010
+
+  module.spawn = function() {
+    return $web17_com_au$.unitJS_module();
+  }
 
   var _UNDEFINED_VALUE;
 
@@ -47,7 +68,7 @@ $web17_com_au$.unitJS = function() {
    *
    */
 
-  var Stats = function() {
+  module.Stats = function() {
 
     var me=this;
 
@@ -112,9 +133,10 @@ $web17_com_au$.unitJS = function() {
 
     runner.run = function(testOrder,tests,printer,nested) {
 
-      var stats = new Stats();
+      var stats = new module.Stats();
 
-      if(!nested) printer.reset();  // Get printer to delete master 'tests' div.
+      if(!nested) printer.reset(); 
+        // Get printer to delete master 'tests' div.
 
       // Run the tests and print to screen...
 
@@ -127,10 +149,10 @@ $web17_com_au$.unitJS = function() {
           stats.current.reset();
           stats.current.test_name=test_name;
           STATS=stats; // So assertion code can update stats.
-          // Pass stats in to the test mainly so I can test this framework
-          // more easily.
           if(runner.setup) runner.setup();
           tests[test_name](stats);
+            // Pass stats in to the test mainly so I can test this framework
+            // more easily.
           printer.printPass(i+1,test_name,stats);
         }
 
@@ -164,9 +186,9 @@ $web17_com_au$.unitJS = function() {
       var i;
       var section,section_printer,calc_stats,all_stats,nested;
 
-      all_stats = new Stats();
 
       if(!level) {
+        all_stats = new module.Stats();
         level = 1;
         printer.reset();  // Get printer to delete master 'tests' div.
       }
@@ -174,16 +196,23 @@ $web17_com_au$.unitJS = function() {
       for(i=0;i<sections.members.length;i++) {
         section = sections.members[i];
         section_printer = printer.section_printer( section.name );
-        section.stats = runner.run(section.testOrder,section.tests,section_printer,true);
+        section.stats = runner.run(
+          section.testOrder,
+          section.tests,
+          section_printer,
+          true);
         if(section.subsections.members.length>0)
           runner.sections.run(section.subsections,section_printer,level+1);
         calc_stats = section.calculateStats();
-        if(level==1) all_stats.merge(calc_stats);
         section_printer.updateSectionStatus(calc_stats);
+        if(level==1) {
+          all_stats.merge(calc_stats);
+        }
       }
 
       if(level==1) {
         printer.printStats(all_stats);
+        return all_stats;
       }
     }
 
@@ -241,7 +270,7 @@ $web17_com_au$.unitJS = function() {
     me.tests={};
     me.stats = null;
     me.calculateStats = function() {
-      var stats = new Stats();
+      var stats = new module.Stats();
       stats.merge(me.stats);
       for(var i=0;i<me.subsections.members.length;i++) {
         stats.merge(me.subsections.members[i].calculateStats());
@@ -256,8 +285,10 @@ $web17_com_au$.unitJS = function() {
    * _assert 
    *   - there is one private assertion: _assert
    *     which is usually called by all the other assertions
-   *   - takes public assertion args and an additional arg provided by the assertion:
-   *     assertionTypeMessage : a generic message shown at failure that identifies the assertion.
+   *   - takes public assertion args and an additional arg provided by the
+   *     assertion:
+   *     assertionTypeMessage : a generic message shown at failure that
+   *     identifies the assertion.
    *   - if the boolean test fails 'comment' and 'assertionTypeMessage' are 
    *     passed off to module.utils.fail and these are used to generate (throw)
    *     a failure error object
@@ -794,4 +825,6 @@ $web17_com_au$.unitJS = function() {
 
   return module;
 
-}();
+}
+
+$web17_com_au$.unitJS = $web17_com_au$.unitJS_module();

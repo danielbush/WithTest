@@ -34,6 +34,7 @@ var U       = $web17_com_au$.unitJS;
 var A       = $web17_com_au$.unitJS.assertions;
 var utils   = $web17_com_au$.unitJS.utils;
 var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
+var DummyPrinter = $web17_com_au$.unitJS.printers.DummyPrinter;
 var Sections = $web17_com_au$.unitJS.Sections;
 var Section  = $web17_com_au$.unitJS.Section;
 
@@ -617,23 +618,71 @@ s.tests[stmt] = function() {
   A.assertEquals(3,sections2.members.length);
 }
 
+
 // Not sure how to do these yet...
 // -- Sat May 23 15:29:57 EST 2009
 
 //------------------------------------------------
 s2 = s.subsections.add('stats collection');
 
-stmt = 'assertion level (for detecting nested public assertion calls)';
+stmt = 'runner.sections.run returns a stats object for all section instances in sections'
 s2.testOrder.push(stmt);
-s2.tests[stmt] = function() {}
+s2.tests[stmt] = function() {
 
-stmt = 'all/failure/error test counts';
-s2.testOrder.push(stmt);
-s2.tests[stmt] = function() {}
+  // We're creating a whole new unitjs testing session within this test...
 
-stmt = 'global assertion count';
-s2.testOrder.push(stmt);
-s2.tests[stmt] = function() {}
+  var unitjs = U.spawn();
+    // Because of the way stats is shared between the runner and
+    // the assertions submodule in UnitJS, trying to use the runner
+    // in a nested context can cause problems.
+    // So we spawn a copy of the unitjs module here.
+  var AA = unitjs.assertions;
+    // Bad things happen if we use the assertions from the outer
+    // unitjs.
+
+  var stmt1='stmt.1';
+  var stmt2='stmt.2';
+  var stmt3='stmt.3';
+  var stmt4='stmt.4';
+  var sections = new unitjs.Sections();
+  var section = new unitjs.Section('s.1');
+  var section2 = new unitjs.Section('s.2');
+  var stats = null;
+  var printer = new DummyPrinter();
+    // Printers are an independent module so
+    // don't bother.
+
+  sections.add(section);
+  sections.add(section2);
+
+  section.testOrder.push(stmt1);
+  section.testOrder.push(stmt2);
+  section.testOrder.push(stmt3);
+  section2.testOrder.push(stmt4);
+  section.tests[stmt1] = function(){ AA.assert(true); }
+  section.tests[stmt2] = function(){ AA.assert(true);AA.assert(true); }
+  section.tests[stmt3] = function(){ AA.assert(false);AA.assert(true); }
+  section2.tests[stmt4] = function(){
+    AA.assert(true);throw new Error('foo');
+  }
+
+  stats = unitjs.runner.sections.run(sections,printer);
+    // We should be returned global stats for all sections.
+
+  // We're a bit lazy here.  We'll test a whole bunch of things...
+  // I should probably break this up into several little tests
+  // put the above prep work into a function.
+  // -- DB, Wed Jan 27 14:21:11 EST 2010
+
+  A.assert(stats instanceof unitjs.Stats);
+  A.assertEquals(4,stats.tests);
+  A.assertEquals(1,stats.failed_tests);
+  A.assertEquals(1,stats.errored_tests);
+  A.assertEquals(5,stats.assertions);
+    // We count the failed assertion but none after it within the test.
+    // We count assertions prior to some error within a test.
+}
+
 
 function init() {
   printer = new Printer(document.body);
