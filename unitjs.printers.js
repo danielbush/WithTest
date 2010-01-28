@@ -160,8 +160,12 @@ $web17_com_au$.unitJS.printers = function() {
       }
     }
 
+    var section_printers = [];
+
     me.section_printer = function(name) {
-      return new module.DefaultPrinter(tests_div,name,true);
+      var printer = new module.DefaultPrinter(tests_div,name,true);
+      section_printers.push(printer);
+      return printer;
     }
 
     me.printPass = function(num,test_name,stats,pending) {
@@ -225,6 +229,30 @@ $web17_com_au$.unitJS.printers = function() {
         'Assertions: '+stats.assertions+'<br/>';
       holder_div.appendChild(stats_div);
       stats_container_div.appendChild(holder_div);
+    }
+
+    // Functions for changing view shown by the tests.
+    //
+    // These functions are not part of the standard interface
+    // expected by unitjs.  They are extras provided by 
+    // DefaultPrinter.
+
+    me.collapse = function(nested) {
+      var i;
+      if(nested) tests_div.style.display='none';
+      for(i=0;i<section_printers.length;i++){
+        section_printers[i].collapse(true);
+      }
+    }
+
+    me.show_pending = function() {
+      return;
+      // TODO:
+      tests_div.style.display='none';
+      for(i=0;i<tests_div.childNodes;i++) {
+        if(tests_div.childNodes[i].className.indexOf('test ')==0) {
+        }
+      }
     }
 
     // Helper functions to create tags:
