@@ -18,7 +18,7 @@ Current - 27-Jan-10
   in blue and tagged by the default printer.  Parent sections are also
   highlighted if they contain a pending item.
 * DefaultPrinter now has a collapse function to collapse sections;
-  expand function to expand sections.
+  expand function to expand sections and/or tests.
 
 Version 0.3.1 - 27-Jan-10
 [DB]

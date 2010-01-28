@@ -279,9 +279,46 @@ $web17_com_au$.unitJS.printers = function() {
     me.expand = function() {
       if(!modifiable()) return;
       var i;
-      if(nested) tests_div.style.display='';
+      if(nested) {
+        tests_div.style.display='';
+        show_tests(tests_div);
+      }
       for(i=0;i<section_printers.length;i++){
         section_printers[i].expand();
+      }
+    }
+
+    // Hide the test divs in a tests_div.
+
+    var hide_tests = function(tests_div) {
+      var j;
+      for(j=0;j<tests_div.childNodes.length;j++) {
+        if(tests_div.childNodes.item(j).className.indexOf('test ')==0) {
+          tests_div.childNodes.item(j).style.display='none';
+        }
+      }
+    }
+
+    // Show the test divs in a tests_div.
+
+    var show_tests = function(tests_div) {
+      var j;
+      for(j=0;j<tests_div.childNodes.length;j++) {
+        if(tests_div.childNodes.item(j).className.indexOf('test ')==0) {
+          tests_div.childNodes.item(j).style.display='';
+        }
+      }
+    }
+
+    me.expand_sections = function() {
+      if(!modifiable()) return;
+      var i,j;
+      if(nested) {
+        tests_div.style.display='';
+        hide_tests(tests_div);
+      }
+      for(i=0;i<section_printers.length;i++){
+        section_printers[i].expand_sections();
       }
     }
 
