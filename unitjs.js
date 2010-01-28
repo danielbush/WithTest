@@ -190,8 +190,8 @@ $web17_com_au$.unitJS_module = function() {
       var i,n,p;
       var section,section_printer,calc_stats,all_stats,nested;
 
-
       if(!level) {
+        printer.start();
         all_stats = new module.Stats();
         level = 1;
         printer.reset();  // Get printer to delete master 'tests' div.
@@ -241,6 +241,7 @@ $web17_com_au$.unitJS_module = function() {
 
       if(level==1) {
         printer.printStats(all_stats);
+        printer.finish();
         return all_stats;
       }
     }

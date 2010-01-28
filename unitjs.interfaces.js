@@ -317,6 +317,10 @@ $web17_com_au$.unitJS.interfaces = function() {
    *              tests.
    *
    * Printer
+   *  - start       : called by unitjs when it starts a test
+   *                  run
+   *  - finish      : called by unitjs when it finishes a
+   *                  test run
    *  - print*
    *      Print that the test passed, failed or threw an error
    *      PARAMETERS

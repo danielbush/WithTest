@@ -27,6 +27,8 @@ $web17_com_au$.unitJS.printers = function() {
 
   module.DummyPrinter = function(parentNode,label) {
     var me = this;
+    me.start = function() {}
+    me.finish = function() {}
     me.printPass = function(num,test_name,stats) {}
     me.printFail = function(num,test_name,stats) {}
     me.printError = function(num,test_name,stats) {}
@@ -64,6 +66,17 @@ $web17_com_au$.unitJS.printers = function() {
     var h2_div;
     var tests_div;
     var stats_container_div;
+
+    var finished = false;
+      // If true, the printer has finished printing the
+      // results of a test run.
+
+    me.start = function() {
+      finished = false;
+    }
+    me.finish = function() {
+      finished = true;
+    }
 
     // Delete 'tests' div if already in DOM...
 
@@ -238,6 +251,17 @@ $web17_com_au$.unitJS.printers = function() {
     // DefaultPrinter.
 
     me.collapse = function(nested) {
+
+      // Nested printers will think they are not finished.
+      // 'finished' is only set for the outer printer.
+
+      if(!nested) {
+        if(!finished) {
+          alert('You need to run some tests!');
+          return;
+        }
+      }
+
       var i;
       if(nested) tests_div.style.display='none';
       for(i=0;i<section_printers.length;i++){
