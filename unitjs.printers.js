@@ -118,6 +118,7 @@ $web17_com_au$.unitJS.printers = function() {
       }
 
       title_div.onclick = function() {
+        me.collapse(true);
         tests_div.style.display=='none' ?
         tests_div.style.display='' :
         tests_div.style.display='none' ;
@@ -175,6 +176,7 @@ $web17_com_au$.unitJS.printers = function() {
         }
         h2_div.appendChild(document.createTextNode(msg));
       }
+      if(pending) tests_div.pending=true;
     }
 
     var section_printers = [];
@@ -189,6 +191,7 @@ $web17_com_au$.unitJS.printers = function() {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
       test_div.passed=true;
+      if(pending) test_div.pending=true;
       test_div.appendChild(t);
       if(stats.current.assertion_count==0) {
         test_div.className = 'test test-empty';
@@ -205,6 +208,7 @@ $web17_com_au$.unitJS.printers = function() {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
       test_div.passed=false;
+      if(pending) test_div.pending=true;
       test_div.className = 'test test-fail';
       test_div.appendChild(t);
       test_div.appendChild(failed(pending));
@@ -224,6 +228,7 @@ $web17_com_au$.unitJS.printers = function() {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
       test_div.error=true;
+      if(pending) test_div.pending=true;
       test_div.className = 'test test-error';
       test_div.appendChild(t);
       test_div.appendChild(errored(pending));
@@ -277,10 +282,19 @@ $web17_com_au$.unitJS.printers = function() {
       return true;
     }
 
-    me.collapse = function() {
+    me.collapse = function(only_reset) {
       if(!modifiable()) return;
       var i;
-      if(nested) tests_div.style.display='none';
+      if(nested) {
+        if(!only_reset) tests_div.style.display='none';
+        show_tests(tests_div);
+          // This allows us to reset the display
+          // property on all the tests in all the 
+          // sections.  This can be messed up
+          // by using various select expansion functions.
+          // These tests won't show because the sections
+          // themselves are being hidden.
+      }
       for(i=0;i<section_printers.length;i++){
         section_printers[i].collapse();
       }
@@ -333,8 +347,23 @@ $web17_com_au$.unitJS.printers = function() {
           } else test_div.style.display='none';
         }
       }
-
       return failed;
+    }
+
+    var show_pending = function(tests_div) {
+      var j,test_div;
+      var pending=false;
+
+      for(j=0;j<tests_div.childNodes.length;j++) {
+        test_div = tests_div.childNodes.item(j);
+        if(test_div.className.indexOf('test ')==0) {
+          if(test_div.pending===true) {
+            test_div.style.display='';
+            pending=true;
+          } else test_div.style.display='none';
+        }
+      }
+      return pending;
     }
 
     me.expand_sections = function() {
@@ -381,14 +410,18 @@ $web17_com_au$.unitJS.printers = function() {
       return (failed||failed_children);
     }
 
-    me.show_pending = function() {
-      return;
-      // TODO:
-      tests_div.style.display='none';
-      for(i=0;i<tests_div.childNodes;i++) {
-        if(tests_div.childNodes[i].className.indexOf('test ')==0) {
-        }
+    me.expand_pending = function() {
+      if(!modifiable()) return;
+      var i,j,pending=false,pending_children=false;
+      for(i=0;i<section_printers.length;i++){
+        pending_children = section_printers[i].expand_pending();
       }
+      if(nested) {
+        pending = (show_pending(tests_div) || tests_div.pending);
+        if(pending||pending_children) tests_div.style.display='';
+        else tests_div.style.display='none';
+      }
+      return (pending||pending_children);
     }
 
     // Helper functions to create tags:

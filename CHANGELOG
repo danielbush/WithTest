@@ -19,7 +19,8 @@ Current - 27-Jan-10
   highlighted if they contain a pending item.
 * DefaultPrinter now has a collapse function to collapse sections;
   expand function to expand sections and/or tests; a function that
-  expands only failed or errored tests.
+  expands only failed or errored tests and a function that expands
+  only pending sections or tests.
 
 Version 0.3.1 - 27-Jan-10
 [DB]
