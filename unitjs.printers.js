@@ -91,6 +91,10 @@ $web17_com_au$.unitJS.printers = function() {
     function build() {
       tests_frame_div = document.createElement('DIV');
       tests_div = document.createElement('DIV');
+      tests_div.passed = true;
+        // By default, tests_div is set to passed.
+        // This will get modified if we printFail or
+        // printError.
       stats_container_div=document.createElement('DIV');
 
       tests_frame_div.innerHTML = 
@@ -184,6 +188,7 @@ $web17_com_au$.unitJS.printers = function() {
     me.printPass = function(num,test_name,stats,pending) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
+      test_div.passed=true;
       test_div.appendChild(t);
       if(stats.current.assertion_count==0) {
         test_div.className = 'test test-empty';
@@ -199,22 +204,26 @@ $web17_com_au$.unitJS.printers = function() {
     me.printFail  = function(num,test_name,stats,e,pending) {
       var test_div=document.createElement('DIV');
       var t=tag('SPAN',num+': '+test_name+'... ');
+      test_div.passed=false;
       test_div.className = 'test test-fail';
       test_div.appendChild(t);
       test_div.appendChild(failed(pending));
       test_div.appendChild(clearing_div());
       test_div.appendChild(tag('P',
-        "Failure on assertion #"+stats.current.assertion_count+'. '+e.message));
+        "Failure on assertion #"+stats.current.assertion_count+
+        '. '+e.message));
       if ( e.comment )
         test_div.appendChild(tag('P',"Comment: "+e.comment));
       if ( e.stack ) // Firefox when throwing 'new Error(msg)':
         test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
       tests_div.appendChild(test_div);
+      tests_div.passed = false;
     }
 
     me.printError = function(num,test_name,stats,e,pending) {
       var test_div=document.createElement('DIV');
       var t=tag('P',num+': '+test_name+'... ');
+      test_div.error=true;
       test_div.className = 'test test-error';
       test_div.appendChild(t);
       test_div.appendChild(errored(pending));
@@ -225,6 +234,7 @@ $web17_com_au$.unitJS.printers = function() {
       if ( e.stack ) // Firefox when throwing 'new Error(msg)':
         test_div.appendChild(tag('PRE',"Firefox Stack trace: "+e.stack));
       tests_div.appendChild(test_div);
+      tests_div.error = true;
     }
 
     me.printStats = function(stats) {
@@ -310,6 +320,23 @@ $web17_com_au$.unitJS.printers = function() {
       }
     }
 
+    var show_failed = function(tests_div) {
+      var j,test_div;
+      var failed=false;
+
+      for(j=0;j<tests_div.childNodes.length;j++) {
+        test_div = tests_div.childNodes.item(j);
+        if(test_div.className.indexOf('test ')==0) {
+          if(test_div.error===true || test_div.passed===false) {
+            test_div.style.display='';
+            failed=true;
+          } else test_div.style.display='none';
+        }
+      }
+
+      return failed;
+    }
+
     me.expand_sections = function() {
       if(!modifiable()) return;
       var i,j;
@@ -320,6 +347,38 @@ $web17_com_au$.unitJS.printers = function() {
       for(i=0;i<section_printers.length;i++){
         section_printers[i].expand_sections();
       }
+    }
+
+    // Expand tests and sections where a failure or error
+    // has occurred.
+    //
+    // Parent sections need to be open to show child sections
+    // that have failed/erroneous tests.
+    //
+    // - 'show_failed' returns true if the current section has a failed
+    //   test.
+    // - we recurse on the children of the current section
+    // - we then return true if either the current section or
+    //   its child sections have had an error
+    // 
+    // There's probably a more sane way to do this.
+    // When updateSectionStatus is called, we pass in the final
+    // stats for the section and all of its subsections.
+    // This might obviate some of the madness here and in 
+    // other functions.
+
+    me.expand_failed = function() {
+      if(!modifiable()) return;
+      var i,j,failed=false,failed_children=false;
+      for(i=0;i<section_printers.length;i++){
+        failed_children = section_printers[i].expand_failed();
+      }
+      if(nested) {
+        failed = show_failed(tests_div);
+        if(failed||failed_children) tests_div.style.display='';
+        else tests_div.style.display='none';
+      }
+      return (failed||failed_children);
     }
 
     me.show_pending = function() {
