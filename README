@@ -54,8 +54,7 @@ GETTING STARTED
 -----------------------------------------------------------
 See exmples/ directory for standalone (examples.html) and
 an example using sections.
-Note: for compactness, I've put the tests in the html file - 
-it would probably be tidier to put them in their own js file.
+Also see tests/ .
 
 More generally:
 Suppose you have an html file for running your tests and your project js files
