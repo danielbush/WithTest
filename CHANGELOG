@@ -17,7 +17,8 @@ Current - 27-Jan-10
 * Sections and tests can be flagged as pending; these are highlighted
   in blue and tagged by the default printer.  Parent sections are also
   highlighted if they contain a pending item.
-* DefaultPrinter now has a collapse function to collapse sections
+* DefaultPrinter now has a collapse function to collapse sections;
+  expand function to expand sections.
 
 Version 0.3.1 - 27-Jan-10
 [DB]

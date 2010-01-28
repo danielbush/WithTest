@@ -250,22 +250,38 @@ $web17_com_au$.unitJS.printers = function() {
     // expected by unitjs.  They are extras provided by 
     // DefaultPrinter.
 
-    me.collapse = function(nested) {
+    // Return true if we can modifiy the result of the
+    // printer.
+    //
+    // NOTE:
+    // Nested printers will think they are not finished.
+    // 'finished' is only set for the root printer.
 
-      // Nested printers will think they are not finished.
-      // 'finished' is only set for the outer printer.
-
+    var modifiable = function() {
       if(!nested) {
         if(!finished) {
           alert('You need to run some tests!');
-          return;
+          return false;
         }
       }
+      return true;
+    }
 
+    me.collapse = function() {
+      if(!modifiable()) return;
       var i;
       if(nested) tests_div.style.display='none';
       for(i=0;i<section_printers.length;i++){
-        section_printers[i].collapse(true);
+        section_printers[i].collapse();
+      }
+    }
+
+    me.expand = function() {
+      if(!modifiable()) return;
+      var i;
+      if(nested) tests_div.style.display='';
+      for(i=0;i<section_printers.length;i++){
+        section_printers[i].expand();
       }
     }
 
