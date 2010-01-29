@@ -72,10 +72,17 @@ tests[stmt] = function() {
   A.assert("ok", true);
 }
 
-stmt = 'Blank test passes';
+stmt = 'Blank test is marked as blank';
 testOrder.push(stmt);
 tests[stmt] = function() {
 }
+
+stmt = 'A pending test';
+testOrder.push(stmt);
+tests[stmt] = function() {
+  A.assert(true);
+}
+tests[stmt].pending=true;
 
 var printer;
 

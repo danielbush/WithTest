@@ -1,3 +1,19 @@
+odds and ends {
+  @date: 29-Jan-10
+
+  - 'setup' and 'teardown': clearer way to set these up on a per section
+    basis
+  - a better way to handle testOrder, tests and stmt.
+    Currently 'stmt' needs to be unique for each test series.
+    It's also quite verbose having to push stmt onto testOrder
+    and adding it to the 'tests' hash for each test.
+  - Not sure if we already did this, but it's sometimes nice
+    to be able to run only one test and disable all the others.
+    We'd have some way of notifying the runner to do this
+    using a line of code in our tests somewhere.  To get
+    normal function back, we just have to remove the line again.
+
+}
 
 highlight empty tests and empty sections {
   @author: DB

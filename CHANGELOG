@@ -21,6 +21,7 @@ Current - 27-Jan-10
   expand function to expand sections and/or tests; a function that
   expands only failed or errored tests and a function that expands
   only pending sections or tests.
+* Added QUICKSTART file.
 
 Version 0.3.1 - 27-Jan-10
 [DB]

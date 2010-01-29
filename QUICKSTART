@@ -1,0 +1,272 @@
+QUICKSTART - the UnitJS Unit Testing Framework
+
+UnitJS is a unit testing framework for javascript in the browser.
+UnitJS supports TDD - test-driven development.
+
+We're going to explain
+1) how it works
+2) how the framework is structured
+
+SETTING UP THE FRAMEWORK
+
+You'll need the following references in your html file
+(in the head tag):
+
+This loads the main framework code:
+  <script language="JavaScript" type="text/javascript"
+          src="../unitjs.js"></script>
+
+This loads the default printer which you can use to print
+results to an html page:
+  <script language="JavaScript" type="text/javascript"
+          src="../unitjs.printers.js"></script>
+  <link rel="stylesheet" type="text/css"
+        href="../defaultPrinter.css" media="screen" />
+
+You can write your own printer with its own css in which case you
+would replace the above with your own stuff.
+
+
+
+Then, you need to create shortcuts to the code you loaded
+above.  The various modules of code that make up UnitJS
+are stored in 'package variables' - in this case, ones
+using my url (web17.com.au):
+
+  <script language="JavaScript" type="text/javascript">
+
+    var U       = $web17_com_au$.unitJS;
+    var A       = $web17_com_au$.unitJS.assertions;
+    var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
+    var Sections = $web17_com_au$.unitJS.Sections;
+    var Section  = $web17_com_au$.unitJS.Section;
+
+The Printer and section variables are explained further down.
+
+WRITING TESTS
+
+If you just have a bunch of tests and want to test them as one big
+series, you can do it like this.  First define:
+
+  var testOrder=[];
+  var tests={};
+  var stmt;
+
+'stmt' will hold a description of your test which you will reuse 
+with each test.
+'testOrder' is an array which you push your test statements on.  If you don't
+push your statements onto it, your tests won't get run.
+'tests' is a hash which stores your statements as keys and anonymous
+functions containing your assertion code as values.
+
+IMPORTANT:
+What this means is that you should keep your stmt's unique otherwise
+the key-value pair in 'tests' will get overwritten.
+If you are writing a lot of tests consider breaking them up into
+sections (covered further down).
+(One of the TODO actions for this project is to review the way testOrder and
+tests is handled as it is a little verbose at the moment.)
+
+
+Now write your tests like this:
+
+  stmt = 'Test that true is true'
+  testOrder.push(stmt);
+  tests[stmt] = function() {
+    A.assert(true);
+  }
+
+  stmt = 'This test will fail'
+  testOrder.push(stmt);
+  tests[stmt] = function() {
+    var a = true;
+    A.assertEquals(false,a);
+  }
+
+  ...
+  ...
+  ...
+
+Note that assertions are stored under a global variable 'A'
+which we used at setup (see above).
+See tests/tests.html for available assertions.  (I tend to
+only use assertEquals and assert).
+
+
+
+UnitJS also allows you to structure your tests hierarchically.
+This is useful for a project where you may have many different things 
+to test within your application and possibly many edge-cases.
+
+UnitJS does this by organising test series into sections.  Each section has a
+'testOrder' array and a 'tests' hash just as with a single test
+series (above).
+You can think of sections as folders and tests as files.
+Subsections are basically subfolders and you can nest these arbitrarily.
+
+First we need to set up a 'sections' variable.  This is the root 
+of our hierarchical structure.  And then we proceed in a similar
+fashion to single test series:
+
+  var sections = new Sections();
+  var stmt;
+  var s,s1,s2,s3,s4,s5;
+
+  s = sections.add('Section A');
+
+  stmt = '1st test in Section A';
+  s.testOrder.push(stmt);
+  s.tests[stmt] = function() {
+    A.assert("true should be true", true);
+    A.assert(true);
+  }
+
+Now, suppose we want a subsection for Section A:
+
+  // Create subsection for s; store it in s2.
+  s2 = s.subsections.add('Subsection A.1');
+
+  stmt = 'Another test'
+  s2.testOrder.push(stmt);
+  s2.tests[stmt] = function() {
+    A.assert("true should be true", true);
+    A.assert(true);
+  }
+
+And we can keep nesting if we want:
+
+  // Create subsection for s2.
+  s3 = s2.subsections.add('Subsection A.1.1');
+
+  stmt = 'Another test'
+  s3.testOrder.push(stmt);
+  s3.tests[stmt] = function() {
+    A.assert("true should be true", true);
+    A.assert(true);
+  }
+
+Reuse the s* and stmt variables as needed, they're
+just placeholders that allow you to modify the tree
+of sections and subsections that you are building
+in the 'sections' variable.
+
+  s = sections.add('Section B');
+  ...
+  ...
+
+After you're done, hand 'sections' over to the test runner to run them.
+
+
+
+RUNNING TESTS AND PRINTING TEST RESULTS
+
+To run tests, you use a runner that comes with UnitJS.
+The runner will also require a printer which it calls
+to provide the results.
+The runner expects the printer to provide a set of functions 
+that it will call at various points during its execution phase.  This is a
+standard printer interface.  You can write your own printer and implement your
+own code for this interface.  UnitJS comes with an existing printer called
+DefaultPrinter.  DefaultPrinter comes with a bunch of extra functions that
+aren't part of the interface (see tests/tests.html).
+
+You get it like this:
+
+  var Printer = $web17_com_au$.unitJS.printers.DefaultPrinter;
+
+Create an instance of DefaultPrinter; this should be done only after
+the document has loaded so use the onload event in the body tag.
+
+  var printer;
+  window.onload = function() {printer = new Printer(document.body);}
+
+To run a single series of tests (not using sections), you do:
+
+  U.runner.run(testOrder,tests,printer);
+
+To run the sections that we created above:
+
+  U.runner.sections.run(sections,printer);
+
+Note: 'sections' was the first thing we created prior to populating it with
+actual section instances.  See above.
+
+The DefaultPrinter will highlight passed tests as green, failed or errored
+tests as red/pink; it will show empty sections as blue.
+
+
+
+PENDING TESTS
+
+You can flag tests and sections as pending which is a way for you
+to remind yourself that you haven't finished writing all the tests
+for that area.
+
+The DefaultPrinter will highlight pending sections as blue.
+Let's create a section:
+
+  s = sections.add('Section A');
+
+We can mark a section as pending like this:
+
+  s.pending = true;
+
+Now let's add a test:
+
+  stmt = '1st test in Section A';
+  s.testOrder.push(stmt);
+  s.tests[stmt] = function() {
+    A.assert("true should be true", true);
+    A.assert(true);
+  }
+
+We can flag an individual test as pending like this:
+
+  s.tests[stmt].pending=true;
+
+Sections that have a pending test become pending as a result.
+
+EXAMPLE
+
+A good example of testing by sections and how the DefaultPrinter
+prints the results can be found in UnitJS's very own tests.
+Point your browser to tests/tests.html and look at how it
+shows pending tests and how it allows you to filter resultings
+by pending or by failure.
+
+
+MISCELLANEOUS
+
+You can assign teardown and setup functions to the runner:
+
+  U.runner.setup = function() { ... your code ... }
+  U.runner.teardown = function() { ... your code ... }
+
+The runner runs these around each test it runs.  This applies
+to sections as well.  
+
+You can spawn a completely new, independent copy of unitjs:
+
+  var U = $web17_com_au$.unitJS;
+  var U2 = $web17_com_au$.unitJS_module();
+  var U3 = $web17_com_au$.unitJS_module();
+  ...
+
+OR
+
+  var U2 = U.spawn();
+  ...
+
+As far as I can see, the only reason to do this is to test the framework
+behaviour using itself but I thought it worth mentioning. 
+For instance you can run a series of tests or section-based tests within a test
+function of a separate unitjs instance.
+You'll need to set up everything in a similar way to the outer unitjs
+framework.  
+
+IMPORTANT
+It's important, if you do this, to use the assertion module of the relevant
+unitjs instance otherwise you will get strange results!!
+
+
+
