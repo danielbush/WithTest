@@ -1,5 +1,5 @@
 
-Current - 27-Jan-10
+Version 0.4 - 29-Jan-10
 [DB]
 * runner.sections.run returns a stats object so we can
   test the resulting stats.
@@ -22,6 +22,7 @@ Current - 27-Jan-10
   expands only failed or errored tests and a function that expands
   only pending sections or tests.
 * Added QUICKSTART file.
+
 
 Version 0.3.1 - 27-Jan-10
 [DB]
