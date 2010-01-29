@@ -441,7 +441,8 @@ $web17_com_au$.unitJS.printers = function() {
       if(!modifiable()) return;
       var i,j,failed=false,failed_children=false;
       for(i=0;i<section_printers.length;i++){
-        failed_children = section_printers[i].expand_failed();
+        failed_children =
+          section_printers[i].expand_failed()||failed_children;
       }
       if(nested) {
         failed = show_failed(tests_div);
@@ -455,7 +456,8 @@ $web17_com_au$.unitJS.printers = function() {
       if(!modifiable()) return;
       var i,j,pending=false,pending_children=false;
       for(i=0;i<section_printers.length;i++){
-        pending_children = section_printers[i].expand_pending();
+        pending_children =
+          section_printers[i].expand_pending()||pending_children;
       }
       if(nested) {
         pending = (show_pending(tests_div) || tests_div.pending);
