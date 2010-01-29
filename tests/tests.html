@@ -541,6 +541,7 @@ s.tests[stmt] = function() {
 U.runner.teardown = function() {
   if(teardownChecker) teardownChecker.val='teardown!';
 }
+
 stmt = 'Test teardown works at end of test - part 1';
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
@@ -560,16 +561,20 @@ s.tests[stmt] = function() {
 // want.
 
 teardownChecker=null;
-stmt = 'Test that teardown is called after an error or failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
+stmt = 'Test that teardown is called after an error or '+
+       'failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
   // Create teardownChecker here.
   teardownChecker = {val:null};  
-  U.runner.teardown = function() { if(teardownChecker) teardownChecker.val='teardown2!'; }
+  U.runner.teardown = function() {
+    if(teardownChecker) teardownChecker.val='teardown2!';
+  }
   throw new Error('foo');
 }
 
-stmt = 'Test that teardown is called after an error or failure in a test - pt2 - SHOULD PASS (!) '
+stmt = 'Test that teardown is called after an error or '+
+       'failure in a test - pt2 - SHOULD PASS (!) '
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
   // ... and we should be updated here thanks to previous test.
