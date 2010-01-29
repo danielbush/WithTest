@@ -45,6 +45,13 @@ var printer;
 var setupChecker = {val:null};
 var teardownChecker;
 
+// TODO: 4-Jul-09
+stmt = 'Runner should only run the tests in runner.only if set';
+stmt = 'Runner should run all tests if runner.only is null or []';
+stmt = 'runner.onlyFound should be set to true if runner finds (and runs) a test that matches one in runner.only';
+stmt = 'runner.run should reset runner.onlyFound to false at beginning of each run';
+
+
 //------------------------------------------------
 s = sections.add('Assertion tests');
 
@@ -487,7 +494,42 @@ s.tests[stmt] = function() {
 }
 
 //------------------------------------------------
-s = sections.add('Stats object');
+s = sections.add('runner.only');
+
+stmt = 'runner.only runs only selected test'
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var unitjs = U.spawn();
+  var AA = unitjs.assertions;
+  var Section = unitjs.Section;
+  var section;
+  var sections = new unitjs.Sections();
+  var s1,s2,s3;
+  var stmt;
+  var f1,f2;
+  var stats;
+
+  s1 = sections.add('sec 1');
+
+  stmt = 'test 1'
+  s1.testOrder.push(stmt);
+  s1.tests[stmt] = function() {
+    AA.assert(true);
+  }
+  stmt = 'test 2'
+  s1.testOrder.push(stmt);
+  f1 = s1.tests[stmt] = function() {
+    AA.assert(true);
+  }
+  unitjs.runner.only.push(f1);
+  stats = unitjs.runner.sections.run(sections,new DummyPrinter());
+  A.assertEquals(1,stats.tests);
+    // Would be 2.
+
+}
+
+//------------------------------------------------
+s = sections.add('stats');
 
 stmt = 'stats show that 3rd assertion fails';
 s.testOrder.push(stmt);
@@ -520,212 +562,9 @@ s.tests[stmt] = function(STATS) {
     // etc...
 }
 
-
-
-//------------------------------------------------
-s = sections.add('setup/teardown');
-
-U.runner.setup = function() { setupChecker.val='setup!'; }
-stmt = 'Test setup works at beginning of test';
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  A.assertEquals('setup!',setupChecker.val);
-}
-
-// To test teardown, we
-// - create A.teardown function (which is done prior to any test running)
-//   and which modifies a global teardownChecker object if it exists
-// - FIRST TEST: create a teardownChecker object
-// - SECOND TEST: test that A.teardown is called by checking 
-//   teardownChecker has been modified
-
-U.runner.teardown = function() {
-  if(teardownChecker) teardownChecker.val='teardown!';
-}
-
-stmt = 'Test teardown works at end of test - part 1';
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  // Create teardownChecker here.
-  teardownChecker = {val:null};  
-  A.assertEquals(null,teardownChecker.val);
-}
-
-stmt = 'Test teardown works at end of test - part 2';
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  // ... and we should be updated here thanks to previous test.
-  A.assertEquals('teardown!',teardownChecker.val);
-}
-
-// A little weird - this causes an error but pt2 tests that we get what we
-// want.
-
-teardownChecker=null;
-stmt = 'Test that teardown is called after an error or '+
-       'failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  // Create teardownChecker here.
-  teardownChecker = {val:null};  
-  U.runner.teardown = function() {
-    if(teardownChecker) teardownChecker.val='teardown2!';
-  }
-  throw new Error('foo');
-}
-
-stmt = 'Test that teardown is called after an error or '+
-       'failure in a test - pt2 - SHOULD PASS (!) '
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  // ... and we should be updated here thanks to previous test.
-  A.assertEquals('teardown2!',teardownChecker.val);
-}
-
-
-//------------------------------------------------
-s = sections.add('sections');
-
-stmt = 'Calling Sections.add with a string creates and returns a Section object with that name';
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var sections,section;
-  sections = new Sections();
-  section = sections.add('foo');
-  A.assertEquals(section,sections.members[0]);
-  A.assertEquals('foo',section.name);
-}
-
-stmt = 'Test section setup and teardown is called and called in addition to runner.setup/teardown '
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var sections = new Sections(),section,printer = new DummyPrinter();
-  var obj = {setup:null,teardown:null};  
-  var runner_obj = {setup:null,teardown:null};  
-  // I'm going to create a new module of unitjs here otherwise
-  // we get an error with the STATS object.  The unitjs module currently 
-  // assumes there are no nested invocations.
-  // -- DBush 15-Jun-09
-  var U2 = U.spawn();
-
-  section = sections.add('section 1');
-  section.tests['test1'] = function(){};
-  section.testOrder.push('test1');
-  section.setup = function(){ obj.setup = true; }
-  section.teardown = function(){ obj.teardown = true; }
-  U2.runner.setup = function(){ runner_obj.setup = true; }
-  U2.runner.teardown = function(){ runner_obj.teardown = true; }
-
-  U2.runner.sections.run(sections,printer);
-  A.assertEquals(true,obj.setup);
-  A.assertEquals(true,obj.teardown);
-  A.assertEquals(true,runner_obj.setup);
-  A.assertEquals(true,runner_obj.teardown);
-}
-
-stmt = 'Test section teardown is still called after a test error'
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var sections = new Sections(),section,printer = new DummyPrinter();
-  var obj = {teardown:null};  
-  // I'm going to create a new module of unitjs here otherwise
-  // we get an error with the STATS object.  The unitjs module currently 
-  // assumes there are no nested invocations.
-  // -- DBush 15-Jun-09
-  var U2 = U.spawn();
-
-  section = sections.add('section 1');
-  section.tests['test1'] = function(){throw new Error('foo');};
-  section.testOrder.push('test1');
-  section.teardown = function(){ obj.teardown = true; }
-
-  U2.runner.sections.run(sections,printer);
-  A.assertEquals(true,obj.teardown);
-}
-
-stmt = 'Local teardown function is called on the test '+
-       'that sets it and no others';
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var tests={},testOrder=[],printer = new DummyPrinter();
-  var U2 = U.spawn();
-  var obj = {test1:0};
-
-  tests['test 1'] = function() {
-    U2.runner.local.teardown = function() {
-      obj.test1++;
-    }
-  }
-  testOrder.push('test 1');
-  tests['test 2'] = function(){ }
-  testOrder.push('test 2');
-  U2.runner.run(testOrder,tests,printer);
-
-  A.assertEquals(1,obj.test1);  // Only incremented once.
-}
-
-
-stmt = 'Adding a Section object to a Sections object augments members array';
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var sections,section;
-  sections = new Sections();
-  A.assertEquals(0,sections.members.length);
-  section = new Section('section1');
-  sections.add(section);
-  A.assertEquals(1,sections.members.length);
-  A.assertEquals(section,sections.members[0]);
-
-}
-
-stmt = "Adding a Sections object to another Sections object augments members array of the latter";
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var sections1 = new Sections(),sections2 = new Sections();
-  var s1 = new Section('s1'),s2 = new Section('s2'),s3 = new Section('s3');
-  sections1.add(s1);
-  sections1.add(s2);
-  sections2.add(s3);
-  sections2.add(sections1);
-  A.assertEquals(s3,sections2.members[0]);
-  A.assertEquals(s1,sections2.members[1]);
-  A.assertEquals(s2,sections2.members[2]);
-  A.assertEquals(3,sections2.members.length);
-}
-
-stmt = "Adding a subsection sets its parent property to the section"
-s.testOrder.push(stmt);
-s.tests[stmt] = function() {
-  var s,s2,s3,s4,s5,s6;
-  var sections = new Sections();
-  var sections2 = new Sections();
-
-  // Add using add()...
-  s = sections.add('foo');
-  s2 = s.subsections.add('bar');
-  A.assertEquals(s,s2.parent);
-
-  // Add section instance...
-  s3 = new Section('baz');
-  s2.subsections.add(s3);
-  A.assertEquals(s2,s3.parent);
-
-  // Add sections instance...
-  s4 = sections.add('foo2');
-  s5 = sections2.add('foo');
-  s6 = sections2.add('bar');
-  s4.subsections.add(sections2);
-  A.assertEquals(s4,s5.parent);
-  A.assertEquals(s4,s6.parent);
-
-}
-
-//------------------------------------------------
-s2 = s.subsections.add('stats collection');
-
 stmt = 'runner.sections.run returns a stats object for all section instances in sections'
-s2.testOrder.push(stmt);
-s2.tests[stmt] = function() {
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
 
   // We're creating a whole new unitjs testing session within this test...
   //
@@ -800,6 +639,208 @@ s2.tests[stmt] = function() {
     // This is a subsection of the above.  It was not included
     // in its parent's stats.
   A.assertEquals(1,sections.members[1].subsections.members[0].stats.assertions);
+}
+
+
+
+
+//------------------------------------------------
+s = sections.add('setup/teardown');
+
+U.runner.setup = function() { setupChecker.val='setup!'; }
+stmt = 'Test setup works at beginning of test';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  A.assertEquals('setup!',setupChecker.val);
+}
+
+// To test teardown, we
+// - create A.teardown function (which is done prior to any test running)
+//   and which modifies a global teardownChecker object if it exists
+// - FIRST TEST: create a teardownChecker object
+// - SECOND TEST: test that A.teardown is called by checking 
+//   teardownChecker has been modified
+
+U.runner.teardown = function() {
+  if(teardownChecker) teardownChecker.val='teardown!';
+}
+
+stmt = 'Test teardown works at end of test - part 1';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  // Create teardownChecker here.
+  teardownChecker = {val:null};  
+  A.assertEquals(null,teardownChecker.val);
+}
+
+stmt = 'Test teardown works at end of test - part 2';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  // ... and we should be updated here thanks to previous test.
+  A.assertEquals('teardown!',teardownChecker.val);
+}
+
+// A little weird - this causes an error but pt2 tests that we get what we
+// want.
+
+teardownChecker=null;
+stmt = 'Test that teardown is called after an error or '+
+       'failure in a test - pt1 - CAUSES DELIBERATE ERROR :-) '
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  // Create teardownChecker here.
+  teardownChecker = {val:null};  
+  U.runner.teardown = function() {
+    if(teardownChecker) teardownChecker.val='teardown2!';
+  }
+  throw new Error('foo');
+}
+
+stmt = 'Test that teardown is called after an error or '+
+       'failure in a test - pt2 - SHOULD PASS (!) '
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  // ... and we should be updated here thanks to previous test.
+  A.assertEquals('teardown2!',teardownChecker.val);
+}
+
+stmt = 'Test section setup and teardown is called and called in addition to runner.setup/teardown '
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections = new Sections(),section,printer = new DummyPrinter();
+  var obj = {setup:null,teardown:null};  
+  var runner_obj = {setup:null,teardown:null};  
+  // I'm going to create a new module of unitjs here otherwise
+  // we get an error with the STATS object.  The unitjs module currently 
+  // assumes there are no nested invocations.
+  // -- DBush 15-Jun-09
+  var U2 = U.spawn();
+
+  section = sections.add('section 1');
+  section.tests['test1'] = function(){};
+  section.testOrder.push('test1');
+  section.setup = function(){ obj.setup = true; }
+  section.teardown = function(){ obj.teardown = true; }
+  U2.runner.setup = function(){ runner_obj.setup = true; }
+  U2.runner.teardown = function(){ runner_obj.teardown = true; }
+
+  U2.runner.sections.run(sections,printer);
+  A.assertEquals(true,obj.setup);
+  A.assertEquals(true,obj.teardown);
+  A.assertEquals(true,runner_obj.setup);
+  A.assertEquals(true,runner_obj.teardown);
+}
+
+stmt = 'Test section teardown is still called after a test error'
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections = new Sections(),section,printer = new DummyPrinter();
+  var obj = {teardown:null};  
+  // I'm going to create a new module of unitjs here otherwise
+  // we get an error with the STATS object.  The unitjs module currently 
+  // assumes there are no nested invocations.
+  // -- DBush 15-Jun-09
+  var U2 = U.spawn();
+
+  section = sections.add('section 1');
+  section.tests['test1'] = function(){throw new Error('foo');};
+  section.testOrder.push('test1');
+  section.teardown = function(){ obj.teardown = true; }
+
+  U2.runner.sections.run(sections,printer);
+  A.assertEquals(true,obj.teardown);
+}
+
+stmt = 'Local teardown function is called on the test '+
+       'that sets it and no others';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var tests={},testOrder=[],printer = new DummyPrinter();
+  var U2 = U.spawn();
+  var obj = {test1:0};
+
+  tests['test 1'] = function() {
+    U2.runner.local.teardown = function() {
+      obj.test1++;
+    }
+  }
+  testOrder.push('test 1');
+  tests['test 2'] = function(){ }
+  testOrder.push('test 2');
+  U2.runner.run(testOrder,tests,printer);
+
+  A.assertEquals(1,obj.test1);  // Only incremented once.
+}
+
+
+
+//------------------------------------------------
+s = sections.add('sections');
+
+stmt = 'Calling Sections.add with a string creates and returns a Section object with that name';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections,section;
+  sections = new Sections();
+  section = sections.add('foo');
+  A.assertEquals(section,sections.members[0]);
+  A.assertEquals('foo',section.name);
+}
+
+
+stmt = 'Adding a Section object to a Sections object augments members array';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections,section;
+  sections = new Sections();
+  A.assertEquals(0,sections.members.length);
+  section = new Section('section1');
+  sections.add(section);
+  A.assertEquals(1,sections.members.length);
+  A.assertEquals(section,sections.members[0]);
+
+}
+
+stmt = "Adding a Sections object to another Sections object augments members array of the latter";
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections1 = new Sections(),sections2 = new Sections();
+  var s1 = new Section('s1'),s2 = new Section('s2'),s3 = new Section('s3');
+  sections1.add(s1);
+  sections1.add(s2);
+  sections2.add(s3);
+  sections2.add(sections1);
+  A.assertEquals(s3,sections2.members[0]);
+  A.assertEquals(s1,sections2.members[1]);
+  A.assertEquals(s2,sections2.members[2]);
+  A.assertEquals(3,sections2.members.length);
+}
+
+stmt = "Adding a subsection sets its parent property to the section"
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var s,s2,s3,s4,s5,s6;
+  var sections = new Sections();
+  var sections2 = new Sections();
+
+  // Add using add()...
+  s = sections.add('foo');
+  s2 = s.subsections.add('bar');
+  A.assertEquals(s,s2.parent);
+
+  // Add section instance...
+  s3 = new Section('baz');
+  s2.subsections.add(s3);
+  A.assertEquals(s2,s3.parent);
+
+  // Add sections instance...
+  s4 = sections.add('foo2');
+  s5 = sections2.add('foo');
+  s6 = sections2.add('bar');
+  s4.subsections.add(sections2);
+  A.assertEquals(s4,s5.parent);
+  A.assertEquals(s4,s6.parent);
+
 }
 
 
@@ -882,12 +923,6 @@ s2.tests[stmt] = function() {
   A.assert(false);
 }
 s2.tests[stmt].pending=true;
-
-// TODO: 4-Jul-09
-stmt = 'Runner should only run the tests in runner.only if set';
-stmt = 'Runner should run all tests if runner.only is null or []';
-stmt = 'runner.onlyFound should be set to true if runner finds (and runs) a test that matches one in runner.only';
-stmt = 'runner.run should reset runner.onlyFound to false at beginning of each run';
 
 
 
