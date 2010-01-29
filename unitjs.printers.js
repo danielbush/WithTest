@@ -118,10 +118,38 @@ $web17_com_au$.unitJS.printers = function() {
       }
 
       title_div.onclick = function() {
-        me.collapse(true);
-        tests_div.style.display=='none' ?
-        tests_div.style.display='' :
-        tests_div.style.display='none' ;
+        var hidden_tests = tests_div.hidden_tests;
+          // This is a bit of a hack.
+          // When user is clicking on a section it may be open
+          // already but just have its tests hidden.
+          // So that first click will appear not to do anything
+          // if this is the case because whilst we will display
+          // the test_div's the section itself becomes hidden.
+          // tests_div.hidden_tests == true =>
+          //   "some tests were hidden in this tests_div" .
+
+        show_tests(tests_div);
+          // Show the individual test_div's for this particular
+          // tests_div.
+          // 
+          // We are simply restoring normal state to these
+          // test_div's.
+          // Ordinarily, regardless of whether a section
+          // is hidden or visible, test_div's have their display
+          // set to visible.  Sometimes, one or more may be
+          // selectively hidden by a previous expand_* filtering
+          // operation.
+
+        if(hidden_tests) {
+          // Override normal toggling logic if there are some
+          // hidden tests (see notes above).
+          tests_div.style.display='';
+        } else {
+          // Normal toggling logic...
+          tests_div.style.display=='none' ?
+          tests_div.style.display='' :
+          tests_div.style.display='none' ;
+        }
       };
 
       stats_container_div.className = "stats-container";
@@ -296,7 +324,7 @@ $web17_com_au$.unitJS.printers = function() {
           // themselves are being hidden.
       }
       for(i=0;i<section_printers.length;i++){
-        section_printers[i].collapse();
+        section_printers[i].collapse(only_reset);
       }
     }
 
@@ -321,6 +349,7 @@ $web17_com_au$.unitJS.printers = function() {
           tests_div.childNodes.item(j).style.display='none';
         }
       }
+      tests_div.hidden_tests=true;
     }
 
     // Show the test divs in a tests_div.
@@ -332,6 +361,7 @@ $web17_com_au$.unitJS.printers = function() {
           tests_div.childNodes.item(j).style.display='';
         }
       }
+      tests_div.hidden_tests=false;
     }
 
     var show_failed = function(tests_div) {
@@ -344,7 +374,10 @@ $web17_com_au$.unitJS.printers = function() {
           if(test_div.error===true || test_div.passed===false) {
             test_div.style.display='';
             failed=true;
-          } else test_div.style.display='none';
+          } else {
+            test_div.style.display='none';
+            tests_div.hidden_tests=true;
+          }
         }
       }
       return failed;
@@ -360,7 +393,10 @@ $web17_com_au$.unitJS.printers = function() {
           if(test_div.pending===true) {
             test_div.style.display='';
             pending=true;
-          } else test_div.style.display='none';
+          } else {
+            test_div.style.display='none';
+            tests_div.hidden_tests=true;
+          }
         }
       }
       return pending;

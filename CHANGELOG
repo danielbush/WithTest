@@ -1,4 +1,9 @@
 
+Version 0.4.1 - 29-Jan-10
+[DB]
+* Fixed small bug in how DefaultPrinter handles click action
+  on one of its sections.
+
 Version 0.4 - 29-Jan-10
 [DB]
 * runner.sections.run returns a stats object so we can
