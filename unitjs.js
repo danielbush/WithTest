@@ -130,12 +130,22 @@ $web17_com_au$.unitJS_module = function() {
 
     runner.setup = null;
     runner.teardown = null;
+    runner.local = {};
+    runner.only = [];
+    runner.onlyFound = false;
+      // Doesn't appear to be used
+      // except to perhaps help in testing.
 
-    runner.run = function(testOrder,tests,printer,nested) {
+    runner.run = function(testOrder,tests,printer,nested,options) {
 
       var stats = new module.Stats();
       var test_name,test_func;
-      var i;
+      var i,j;
+      var onlyFound;  
+        // Only used if runner.only is set; reset after each test.
+
+      runner.onlyFound = false;  
+        // Reset (here) at beginning of each run.
 
       if(!nested) printer.reset(); 
         // Get printer to delete master 'tests' div.
@@ -145,6 +155,20 @@ $web17_com_au$.unitJS_module = function() {
       for ( i=0; i<testOrder.length; i++ ) {
         test_name=testOrder[i];
 
+        // Short-circuit this process if runner.only
+        // has been set...
+
+        onlyFound=false;
+        if(runner.only && runner.only.length>0) {
+          for(j=0;j<runner.only.length;j++) {
+            if(runner.only[j]==tests[test_name]){
+              onlyFound=true;
+              runner.onlyFound = true;
+            }
+          }
+          if(!onlyFound) { continue; }
+        }
+
         try {
           stats.tests++;
           stats.section.tests++;
@@ -152,6 +176,7 @@ $web17_com_au$.unitJS_module = function() {
           stats.current.test_name=test_name;
           STATS=stats; // So assertion code can update stats.
           if(runner.setup) runner.setup();
+          if(options && options.setup) options.setup();
           test_func = tests[test_name];
           test_func(stats);
             // Pass stats in to the test mainly so I can test this framework
@@ -173,7 +198,12 @@ $web17_com_au$.unitJS_module = function() {
           stats.current.reset();
         }
 
-        if(runner.teardown) runner.teardown();
+        if(runner.local.teardown) {
+          runner.local.teardown();
+          runner.local.teardown = null;
+        }
+        if(options && options.teardown) options.teardown();
+        if(runner.teardown)  runner.teardown();
         STATS=null;
 
       }
@@ -204,7 +234,8 @@ $web17_com_au$.unitJS_module = function() {
           section.testOrder,
           section.tests,
           section_printer,
-          true);
+          true,
+          { setup:section.setup , teardown:section.teardown });
 
         // Flag a section as pending if it contains a pending
         // test. 
@@ -293,6 +324,7 @@ $web17_com_au$.unitJS_module = function() {
         return s;
       }
     }
+
   }
 
   module.Section = function(name) {

@@ -511,7 +511,7 @@ s.tests[stmt] = function(STATS) {
     A.assert(STATS.current.assertion_count==2);
 }
 
-stmt = '[Stats object] Test assertion count for a test';
+stmt = 'Test assertion count for a test';
 s.testOrder.push(stmt);
 s.tests[stmt] = function(STATS) {
     A.assertEquals(0,STATS.current.assertion_count);
@@ -519,6 +519,7 @@ s.tests[stmt] = function(STATS) {
     A.assertEquals(2,STATS.current.assertion_count);
     // etc...
 }
+
 
 
 //------------------------------------------------
@@ -594,6 +595,75 @@ s.tests[stmt] = function() {
   A.assertEquals(section,sections.members[0]);
   A.assertEquals('foo',section.name);
 }
+
+stmt = 'Test section setup and teardown is called and called in addition to runner.setup/teardown '
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections = new Sections(),section,printer = new DummyPrinter();
+  var obj = {setup:null,teardown:null};  
+  var runner_obj = {setup:null,teardown:null};  
+  // I'm going to create a new module of unitjs here otherwise
+  // we get an error with the STATS object.  The unitjs module currently 
+  // assumes there are no nested invocations.
+  // -- DBush 15-Jun-09
+  var U2 = U.spawn();
+
+  section = sections.add('section 1');
+  section.tests['test1'] = function(){};
+  section.testOrder.push('test1');
+  section.setup = function(){ obj.setup = true; }
+  section.teardown = function(){ obj.teardown = true; }
+  U2.runner.setup = function(){ runner_obj.setup = true; }
+  U2.runner.teardown = function(){ runner_obj.teardown = true; }
+
+  U2.runner.sections.run(sections,printer);
+  A.assertEquals(true,obj.setup);
+  A.assertEquals(true,obj.teardown);
+  A.assertEquals(true,runner_obj.setup);
+  A.assertEquals(true,runner_obj.teardown);
+}
+
+stmt = 'Test section teardown is still called after a test error'
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var sections = new Sections(),section,printer = new DummyPrinter();
+  var obj = {teardown:null};  
+  // I'm going to create a new module of unitjs here otherwise
+  // we get an error with the STATS object.  The unitjs module currently 
+  // assumes there are no nested invocations.
+  // -- DBush 15-Jun-09
+  var U2 = U.spawn();
+
+  section = sections.add('section 1');
+  section.tests['test1'] = function(){throw new Error('foo');};
+  section.testOrder.push('test1');
+  section.teardown = function(){ obj.teardown = true; }
+
+  U2.runner.sections.run(sections,printer);
+  A.assertEquals(true,obj.teardown);
+}
+
+stmt = 'Local teardown function is called on the test '+
+       'that sets it and no others';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var tests={},testOrder=[],printer = new DummyPrinter();
+  var U2 = U.spawn();
+  var obj = {test1:0};
+
+  tests['test 1'] = function() {
+    U2.runner.local.teardown = function() {
+      obj.test1++;
+    }
+  }
+  testOrder.push('test 1');
+  tests['test 2'] = function(){ }
+  testOrder.push('test 2');
+  U2.runner.run(testOrder,tests,printer);
+
+  A.assertEquals(1,obj.test1);  // Only incremented once.
+}
+
 
 stmt = 'Adding a Section object to a Sections object augments members array';
 s.testOrder.push(stmt);
@@ -812,6 +882,14 @@ s2.tests[stmt] = function() {
   A.assert(false);
 }
 s2.tests[stmt].pending=true;
+
+// TODO: 4-Jul-09
+stmt = 'Runner should only run the tests in runner.only if set';
+stmt = 'Runner should run all tests if runner.only is null or []';
+stmt = 'runner.onlyFound should be set to true if runner finds (and runs) a test that matches one in runner.only';
+stmt = 'runner.run should reset runner.onlyFound to false at beginning of each run';
+
+
 
 //------------------------------------------------
 function init() {
