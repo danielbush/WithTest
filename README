@@ -14,10 +14,8 @@ lot of the added features of JSUnit.
 I wanted something simple which I could then hack into more
 complex or automated solutions as I required.
 
-UnitJS's main purpose is to allow you to write and collect
-together your tests and run them in some desired order; the
-results are added to the html page in which the tests have
-been embedded.
+UnitJS's main purpose is to allow you to write and organise
+your tests and run them in some desired order.
 
 WARNING: Most work has been done in Firefox and no thought
 has been given at the moment to providing helpful stack
