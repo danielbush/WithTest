@@ -12,9 +12,99 @@ div.clear {
 h2 {
   font-size:1.2em;
 }
+a {
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+
+
+/*
+------------------------------------------------------------
+Stats summary.  Appears above sections.
+*/
+
+div.stats {
+  border-top:solid #666 1px;
+  padding:1em;
+  background-color:#eef;
+}
+
+
+/*
+------------------------------------------------------------
+Section styling
+
+These are the header lines that summarise a series of tests.
+
+Basic rules:
+Pending: blue background, blue text
+Empty:   blue background, normal text
+Pass:    green background, normal text
+Fail:    pink/red background, normal text
+Error:   pink/red background, normal text
+
+These combine in various ways:
+1) A pending section that has a fail or error keeps
+its red background but has blue text.
+2) A pending section that has all passed uses
+pending colours entirely.
+
+*/
+
+div.section {
+  background-color:#eee;
+  padding-left:1em;
+}
+div.section .section {
+  padding-left:2em;
+}
+
 .section .section h2 {
   font-size:1.1em;
 }
+
+.section-fail {
+  background-color:#fdd;
+}
+
+.section-pass {
+  background-color:#dfd;
+}
+
+/* Blue with blue text */
+
+.section-pending {
+  background-color:#ccccff;
+  color:#44a;
+}
+
+/* Blue but normal text */
+
+.section-empty {
+  background-color:#ccccff;
+}
+
+/* Make blue instead of green */
+
+.section-pass.section-pending {
+  background-color:#ccccff;
+}
+
+/*
+   Keep error colours; trumps pending colours.
+   How about orange?
+ */
+
+.section-fail.section-pending {
+  background-color:#fdd;
+}
+
+
+
+/*
+  Banner, menu and title are all inside the section div
+*/
 
 div.banner {
   padding-left:1em;
@@ -32,10 +122,17 @@ div.banner div.title {
   float:left;
   cursor:pointer;
 }
-a {
-  text-decoration:underline;
-  cursor:pointer;
-}
+
+
+/*
+------------------------------------------------------------
+Test divs - these are grouped by sections (above)
+and contain individual test results.
+
+General policy is to keep these grey with normal text
+except for errors and fails.
+
+*/
 
 div.test {
   background-color:#dddddd;
@@ -44,30 +141,17 @@ div.test {
   border-top:solid #337 1px;
 }
 
-div.section {
-  background-color:#eee;
-  padding-left:1em;
-}
-div.section .section {
-  padding-left:1em;
-}
-
-div.section-stats ,
-div.stats {
-  border-top:solid #666 1px;
-  padding:1em;
-  background-color:#eef;
-}
-
 div.test span {
   float:left;
 }
+
 div.test span.pass {
   font-weight:bold;
   color:green;
   float:right;
   margin-right:1em;
 }
+
 div.test span.pass.pending {
   color:#44a;
 }
@@ -79,6 +163,7 @@ div.test span.error {
   float:right;
   margin-right:1em;
 }
+
 div.test span.error.pending {
 }
 
@@ -88,6 +173,7 @@ div.test span.fail {
   float:right;
   margin-right:1em;
 }
+
 div.test span.fail.pending {
 }
 
@@ -99,7 +185,6 @@ div.test span.empty {
 }
 
 div.test.test-empty {
-  background-color:#ccccff;
 }
 
 div.test.test-fail ,
@@ -107,27 +192,3 @@ div.test.test-error {
   background-color:#ffeeee;
 }
 
-.section-fail {
-  background-color:#fdd;
-}
-
-.section-pass {
-  background-color:#dfd;
-}
-
-.section-pass.section-pending {
-  background-color:#ccccff;
-}
-.section-fail.section-pending {
-  background-color:#fdd;
-  /* Still error colours.  How about orange? */
-}
-
-.section-pending {
-  background-color:#ccccff;
-  color:#44a;
-}
-.section-empty {
-  background-color:#ccccff;
-  color:#44a;
-}
