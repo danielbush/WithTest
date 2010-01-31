@@ -217,8 +217,9 @@ $web17_com_au$.unitJS_module = function() {
 
     runner.sections.run = function(sections,printer,level) {
 
-      var i,n,p;
+      var i,n,p,j;
       var section,section_printer,calc_stats,all_stats,nested;
+      var section_only_mode=(sections.only.length>0),is_only=false;
 
       if(!level) {
         printer.start();
@@ -229,13 +230,27 @@ $web17_com_au$.unitJS_module = function() {
 
       for(i=0;i<sections.members.length;i++) {
         section = sections.members[i];
+        is_only=false;
+
         section_printer = printer.section_printer( section.name );
+
+        if(section_only_mode) {
+          for(j=0;j<sections.only.length;j++) {
+            if(sections.only[j]==section) {
+              is_only=true;
+              break;
+            }
+          }
+        }
+
+        if(!section_only_mode||(section_only_mode && is_only))
         section.stats = runner.run(
           section.testOrder,
           section.tests,
           section_printer,
           true,
           { setup:section.setup , teardown:section.teardown });
+        else section.stats = new module.Stats();
 
         // Flag a section as pending if it contains a pending
         // test. 
@@ -261,8 +276,10 @@ $web17_com_au$.unitJS_module = function() {
           }
         }
 
-        if(section.subsections.members.length>0)
+        if(section.subsections.members.length>0) {
+          section.subsections.only = sections.only;
           runner.sections.run(section.subsections,section_printer,level+1);
+        }
         calc_stats = section.calculateStats();
         section_printer.updateSectionStatus(calc_stats,section.pending);
         if(level==1) {
@@ -293,6 +310,7 @@ $web17_com_au$.unitJS_module = function() {
     var me = this;
     me.members = [];
 
+    me.only = [];
 
     // Adding sections
     //
