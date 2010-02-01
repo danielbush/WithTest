@@ -169,6 +169,8 @@ $web17_com_au$.unitJS_module = function() {
           if(!onlyFound) { continue; }
         }
 
+        if(tests[test_name]) {
+
         try {
           stats.tests++;
           stats.section.tests++;
@@ -204,6 +206,8 @@ $web17_com_au$.unitJS_module = function() {
         }
         if(options && options.teardown) options.teardown();
         if(runner.teardown)  runner.teardown();
+        }
+
         STATS=null;
 
       }

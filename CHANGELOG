@@ -1,4 +1,8 @@
 
+[DB]
+* Test runner will skip a test if the statement is loaded into
+testOrder but not found in 'tests'.  1-Feb-10.
+
 Version 0.4.2 - 29-Jan-10
 [DB]
 * Merged work from an older branch. This included:
