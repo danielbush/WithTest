@@ -355,6 +355,9 @@ $web17_com_au$.unitJS_module = function() {
     me.subsections = new module.Sections(me);  // For subsections.
     me.testOrder=[];
     me.tests={};
+    me.stmts = {};
+      // Place to store statements for this section.
+      // These should correspond to 'tests' and 'testOrder'.
     me.stats = null;
     me.calculateStats = function() {
       var stats = new module.Stats();
