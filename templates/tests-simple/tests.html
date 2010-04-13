@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+
+    <title>Tests</title>
+
+    <!-- Unitjs code -->
+    <script language="javascript" type="text/javascript"
+            src="../../unitjs.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="../../unitjs.printers.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="../../defaultPrinter.css" media="screen" />
+
+    <!-- Your application code -->
+    <script language="javascript" type="text/javascript"
+            src="../application.js"></script>
+
+    <!-- Your tests -->
+    <script language="javascript" type="text/javascript"
+            src="tests.js"></script>
+  </head>
+
+  <body onload="U.runner.run(testOrder,tests,new Printer(document.body))">
+
+  </body>
+</html>
+

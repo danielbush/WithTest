@@ -7,6 +7,13 @@ We're going to explain
 1) how it works
 2) how the framework is structured
 
+TEMPLATES
+For the really impatient:
+- go to directory called 'templates'
+- each subdirectory of templates is an example of
+  how to use unitjs and can be quickly subsumed into
+  your project
+
 SETTING UP THE FRAMEWORK
 
 You'll need the following references in your html file
@@ -14,14 +21,14 @@ You'll need the following references in your html file
 
 This loads the main framework code:
   <script language="JavaScript" type="text/javascript"
-          src="../unitjs.js"></script>
+          src="/path/to/unitjs.js"></script>
 
 This loads the default printer which you can use to print
 results to an html page:
   <script language="JavaScript" type="text/javascript"
-          src="../unitjs.printers.js"></script>
+          src="/path/to/unitjs.printers.js"></script>
   <link rel="stylesheet" type="text/css"
-        href="../defaultPrinter.css" media="screen" />
+        href="/path/to/defaultPrinter.css" media="screen" />
 
 You can write your own printer with its own css in which case you
 would replace the above with your own stuff.
@@ -263,10 +270,8 @@ For instance you can run a series of tests or section-based tests within a test
 function of a separate unitjs instance.
 You'll need to set up everything in a similar way to the outer unitjs
 framework.  
-
-IMPORTANT
-It's important, if you do this, to use the assertion module of the relevant
-unitjs instance otherwise you will get strange results!!
+NOTE: It's important, if you do this, to use the assertion module of the
+relevant unitjs instance otherwise you will get strange results!!
 
 
 
