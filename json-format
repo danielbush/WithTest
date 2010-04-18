@@ -1,0 +1,68 @@
+From: Daniel Bush 
+Date: Sun Apr 18 22:17:26 EST 2010
+Subject: Storing tests as json prior to displaying them in any format
+
+Advantages
+- We can persist results in couchdb or mongodb etc
+  - may be useful if we need to collect results
+- We can collate results from other browsers on other machines
+  - other machine:
+    - the unitjs framework (eg IE on windows) posts test results to a
+      server
+  - server:
+    - collates results - in couchdb or memory
+  - your machine:
+    - connect to the server to get the results and collate and print
+      to a browser using a unitjs printer
+    - merge with results that were run locally 
+
+
+Format
+In pseudo BNF form:
+
+The result of a single test:
+result := {
+    status: PASS|FAIL|ERROR
+    message: "error or fail message including which assertion"
+    stacktrace: "..."
+    assertions: 24  # Count the assertions
+}
+A single test is represented by:
+test := {
+    stmt:"test statement"
+    t:function(){}
+    result:result
+}
+
+Tests are grouped into series:
+test-series := [ test, test, ... ]
+
+A section is a test series with a name:
+section := {
+    title: "Test module A"
+    tests: test-series
+}
+
+Sections are hiearchical:
+section-tree := [ section , [ section , section , ... ]
+
+A data structure for summarising results over a series, tree or
+sub-tree:
+results-summary := {
+  pass: 20
+  fail: 2
+  error: 3
+  tests: pass+fail+error
+  assertions: 234
+}
+
+Notes
+- test results should be passed from one instance of unitjs to another either
+  as a single test-series or as a section-tree
+
+Collation of results
+- use map or rmap to calculate the results
+- the results take the form of results-summary (above)
+- results-summary can be stashed in the object (o) representing
+  section, section-tree and test-series
+      o.results = results_summary
