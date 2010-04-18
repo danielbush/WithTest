@@ -1,7 +1,7 @@
 /* 
  * This is a source file for UnitJS a unit testing framework
  * for javascript.
- * Copyright (C) 2009 Daniel Bush
+ * Copyright (C) 2009-2010 Daniel Bush
  * This program is distributed under the terms of the GNU
  * General Public License.  A copy of the license should be
  * enclosed with this project in the file LICENSE.  If not
