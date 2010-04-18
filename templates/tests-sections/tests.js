@@ -1,10 +1,23 @@
-// Unpack unitJS modules into global namespace.
+// Unpack unitJS components into global namespace.
 
 var U        = $web17_com_au$.unitJS;
 var A        = $web17_com_au$.unitJS.assertions;
-var Printer  = $web17_com_au$.unitJS.printers.DefaultPrinter;
 var Sections = $web17_com_au$.unitJS.Sections;
 var Section  = $web17_com_au$.unitJS.Section;
+var Printer  = $web17_com_au$.unitJS.printers.DefaultPrinter;
+
+// Generic namespace for a js app that might be used across
+// one or more pages; in this case, our testing app.
+
+app = {};
+
+// init(): Called at onload time.
+
+app.init = function(){
+    app.printer = new Printer(document.body);
+    U.runner.sections.run(sections,app.printer);
+}
+
 
 // Set up variables for running tests.
 // 
@@ -23,7 +36,7 @@ s1.tests[stmt] = function() {
     A.assertEquals('foo',my_module.foo());
 }
 
-stmt = "foo function doesn't return 'bar"
+stmt = "foo function doesn't return bar"
 s1.testOrder.push(stmt);
 s1.tests[stmt] = function() {
     var a = true;
@@ -39,7 +52,7 @@ s1.tests[stmt] = function() {
     A.assertEquals('foo',my_module.foo());
 }
 
-stmt = "foo function doesn't return 'bar"
+stmt = "foo function doesn't return bar"
 s1.testOrder.push(stmt);
 s1.tests[stmt] = function() {
     var a = true;
@@ -54,7 +67,7 @@ s2.tests[stmt] = function() {
     A.assertEquals('foo',my_module.foo());
 }
 
-stmt = "foo function doesn't return 'bar"
+stmt = "foo function doesn't return bar"
 s2.testOrder.push(stmt);
 s2.tests[stmt] = function() {
     var a = true;

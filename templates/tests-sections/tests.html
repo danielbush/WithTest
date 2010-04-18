@@ -23,9 +23,44 @@
     <!-- Your tests -->
     <script language="javascript" type="text/javascript"
             src="tests.js"></script>
+    <script type="text/javascript" >
+    </script>
+    <link rel="stylesheet" type="text/css"
+          href="styles.css" media="screen" />
   </head>
 
-  <body onload="U.runner.sections.run(sections,new Printer(document.body))">
+  <body onload="app.init();">
+    <div>
+      <ul class="test-bar" >
+        
+        <li>
+          <input value="Collapse all / reset"
+                 type="button"
+                 onclick="app.printer.collapse();return false;" />
+        </li>
+        <li>
+          <input value="Expand"
+                 type="button"
+                 onclick="app.printer.expand_sections();return false;" />
+        </li>
+        <li>
+          <input value="Expand all"
+                 type="button"
+                 onclick="app.printer.expand();return false;" />
+        </li>
+        <li>
+          <input value="Show failed"
+                 type="button"
+                 onclick="app.printer.expand_failed();return false;" />
+        </li>
+        <li>
+          <input value="Show pending"
+                 type="button"
+                 onclick="app.printer.expand_pending();return false;" />
+        </li>
+
+      </ul>
+    </div>
 
   </body>
 </html>

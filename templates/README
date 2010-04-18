@@ -1,19 +1,19 @@
 Unitjs templates
 
-This directory contains a minimal app for javascript (that would be run in a
-browser) and 2 tests-* subdirectories, each showing an alternate way to test
-the app.
+This directory contains a minimal app for javascript (that would be
+run in a browser) and 2 tests-* subdirectories, each showing an
+alternate way to test the app.
 
 Some notes:
-- the index.html page does nothing; it is a valid xhtml template (if you're
-  looking for one :) ) 
-- the application.js file contains a simple module (my_module) with one very
-  simple function, for demonstration purposes only
-- You can view tests of this function in each of the 3 tests-* directories by
-  pointing your browser to tests-*/tests.html
-- The tests will run automatically.  You can build different testing behaviours
-  such as running groups of tests from a button instead of running all
-  automatically when the page loads.
+- the index.html page does nothing; it is a valid xhtml template (if
+  you're looking for one :) )
+- the application.js file contains a simple module (my_module) with
+  one very simple function, for demonstration purposes only
+- You can view tests of this function in each of the 3 tests-*
+  directories by pointing your browser to tests-*/tests.html
+- The tests will run automatically.  You can build different testing
+  behaviours such as running groups of tests from a button instead of
+  running all automatically when the page loads.
 
 The test directories are:
 - tests-simple/
@@ -26,9 +26,10 @@ To use this template:
 1) copy one of the tests-* directories into your own javascript app
 2) rename this directory to tests/ or whatever you prefer
 3) edit tests/tests.html file accordingly
-   - script tags correctly reference your application code (so you can invoke
-     it and test it)
-   - the unitjs script and link tags correctly reference the unitjs code 
+   - script tags correctly reference your application code (so you can
+     invoke it and test it)
+   - the unitjs script and link tags correctly reference the unitjs
+     code
 4) start writing your own tests in tests/tests.js
 
 Notes:
