@@ -1,5 +1,6 @@
 
 [DB]
+* Added simple bash script build system.  19-Apr-10.
 * Added unitjs templates - a quick way to get unitjs working
   in a project.  See templates/ directory.  13-Apr-10.
 * Test runner will skip a test if the statement is loaded into
