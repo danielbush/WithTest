@@ -1,17 +1,15 @@
 
-/* 
- * This is a source file for UnitJS a unit testing framework
- * for javascript.
- * Copyright (C) 2009-2010 Daniel Bush
- * This program is distributed under the terms of the GNU
- * General Public License.  A copy of the license should be
- * enclosed with this project in the file LICENSE.  If not
- * see <http://www.gnu.org/licenses/>.
- *
- * Substantial parts of this code were taken from the JSUnit
- * project.  The Initial Developer of the Original Code is
- * Edward Hieatt, edward@jsunit.net.  Portions created by
- * the Initial Developer are Copyright (C) 2003 the Initial
- * Developer.  All Rights Reserved.
- *
- */
+   This is a source file for UnitJS a unit testing framework
+   for javascript.
+   Copyright (C) 2009-2010 Daniel Bush
+   This program is distributed under the terms of the GNU
+   General Public License.  A copy of the license should be
+   enclosed with this project in the file LICENSE.  If not
+   see <http://www.gnu.org/licenses/>.
+  
+   Substantial parts of this code were taken from the JSUnit
+   project.  The Initial Developer of the Original Code is
+   Edward Hieatt, edward@jsunit.net.  Portions created by
+   the Initial Developer are Copyright (C) 2003 the Initial
+   Developer.  All Rights Reserved.
+  
