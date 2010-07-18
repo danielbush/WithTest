@@ -77,6 +77,7 @@ $web17_com_au$.unitJS_module = function() {
     me.failed_tests=0;
     me.errored_tests=0;
     me.assertions=0;  // Total number of assertions executed.
+    me.untested = [];
 
     me.section={};
     me.section.name=null;
@@ -84,6 +85,7 @@ $web17_com_au$.unitJS_module = function() {
     me.section.failed_tests = 0;
     me.section.errored_tests = 0;
     me.section.assertions = 0;
+    me.section.untested = [];
     me.section.reset = function() { 
       me.section.name=null;
       me.section.tests=0;
@@ -108,11 +110,15 @@ $web17_com_au$.unitJS_module = function() {
       me.failed_tests  +=stats.failed_tests;
       me.errored_tests +=stats.errored_tests;
       me.assertions    +=stats.assertions;
+      for(var j=0;j<stats.untested.length;j++)
+        me.untested.push(stats.untested[j]);
 
       me.section.tests         +=stats.section.tests;
       me.section.failed_tests  +=stats.section.failed_tests;
       me.section.errored_tests +=stats.section.errored_tests;
       me.section.assertions    +=stats.section.assertions;
+      for(var j=0;j<stats.section.untested.length;j++)
+        me.section.untested.push(stats.section.untested[j]);
     }
 
   }
@@ -136,11 +142,21 @@ $web17_com_au$.unitJS_module = function() {
       // Doesn't appear to be used
       // except to perhaps help in testing.
 
+    // Run a testOrder sequence of tests
+    //
+    // If nested=true, we are running a section's testOrder
+    // in which case we do not print out stats.
+    //
+    // [TODO]
+    // We need to check that all the tests
+    // in 'tests' get run.  
+    // - is testOrder missing any?
+
     runner.run = function(testOrder,tests,printer,nested,options) {
 
       var stats = new module.Stats();
-      var test_name,test_func;
-      var i,j;
+      var test_name,full_test_name,test_func,to_check={};
+      var i,j,n;
       var onlyFound;  
         // Only used if runner.only is set; reset after each test.
 
@@ -152,8 +168,17 @@ $web17_com_au$.unitJS_module = function() {
 
       // Run the tests and print to screen...
 
-      for ( i=0; i<testOrder.length; i++ ) {
+      for(i=0; i<testOrder.length; i++) {
         test_name=testOrder[i];
+        full_test_name = test_name;
+        if(options && options.stmts) {
+          // format is stmts[key] = "test description"
+          // tests[key] = function() {}
+          // testOrder[i] = key
+          // stmts is set by Section#set_stmts which 
+          // populates testOrder.
+          full_test_name = test_name + ': ' + options.stmts[test_name];
+        }
 
         // Short-circuit this process if runner.only
         // has been set...
@@ -170,6 +195,7 @@ $web17_com_au$.unitJS_module = function() {
         }
 
         if(tests[test_name]) {
+        to_check[test_name] = true;
 
         try {
           stats.tests++;
@@ -183,19 +209,19 @@ $web17_com_au$.unitJS_module = function() {
           test_func(stats);
             // Pass stats in to the test mainly so I can test this framework
             // more easily.
-          printer.printPass(i+1,test_name,stats,test_func.pending);
+          printer.printPass(i+1,full_test_name,stats,test_func.pending);
         }
 
         catch(e) {
           if(e.isFailure) {
             stats.failed_tests++;
             stats.section.failed_tests++;
-            printer.printFail(i+1,test_name,stats,e,test_func.pending);
+            printer.printFail(i+1,full_test_name,stats,e,test_func.pending);
           }
           else {
             stats.errored_tests++;
             stats.section.errored_tests++;
-            printer.printError(i+1,test_name,stats,e,test_func.pending);
+            printer.printError(i+1,full_test_name,stats,e,test_func.pending);
           }
           stats.current.reset();
         }
@@ -212,7 +238,22 @@ $web17_com_au$.unitJS_module = function() {
 
       }
 
+      // Look for tests in 'tests' that were not in
+      // 'testOrder'.
+
+      stats.untested = [];
+      stats.section.untested = [];
+      for(var n in tests) {
+        if(!to_check[n]) {
+          stats.untested.push(n);
+          stats.section.untested.push(n);
+          printer.printError(++i,'[MISSING]: '+n,stats,{message:"Test is defined but not run - did you forget to include it in your statements?"},test_func.pending);
+        }
+      }
+
+      // If we're in standalone (non-section) mode:
       if(!nested) printer.printStats(stats);
+
       return stats;
 
     }
@@ -253,7 +294,7 @@ $web17_com_au$.unitJS_module = function() {
           section.tests,
           section_printer,
           true,
-          { setup:section.setup , teardown:section.teardown });
+          { setup:section.setup , teardown:section.teardown , stmts:section.stmts });
         else section.stats = new module.Stats();
 
         // Flag a section as pending if it contains a pending
@@ -355,9 +396,13 @@ $web17_com_au$.unitJS_module = function() {
     me.subsections = new module.Sections(me);  // For subsections.
     me.testOrder=[];
     me.tests={};
-    me.stmts = {};
+    me.stmts = null;
       // Place to store statements for this section.
       // These should correspond to 'tests' and 'testOrder'.
+      // The key should be a code or number that enumerates
+      // and maybe organises the statements in some way.
+      // eg a001, a002, etc
+
     me.stats = null;
     me.calculateStats = function() {
       var stats = new module.Stats();
@@ -366,6 +411,26 @@ $web17_com_au$.unitJS_module = function() {
         stats.merge(me.subsections.members[i].calculateStats());
       }
       return stats;
+    }
+
+    // Update me.stmts and me.testOrder.
+    //
+    // Caller will need to set me.tests.
+    // This function is useful if you want to define
+    // all your statements up front using a unique 
+    // identify 
+    //   stmts = {
+    //     a001: 'test that ...', .... };
+    // and then provide tests for each in a separate section.
+    // Note that you will need to use the key (eg a001) 
+    // when writing your tests:
+    //   section.tests['a001'] = function(){...}
+
+    me.set_stmts = function(stmts) {
+      var n;
+      me.stmts = stmts;
+      for(n in stmts) me.testOrder.push(n);
+      return me;
     }
   }
 

@@ -288,6 +288,9 @@ $web17_com_au$.unitJS.printers = function() {
         'Tests - Failed: '+stats.failed_tests+'<br/>'+
         'Tests - Errors: '+stats.errored_tests+'<br/>'+
         'Assertions: '+stats.assertions+'<br/>';
+      if(stats.untested.length>0) {
+        stats_div.innerHTML += 'Missing: '+stats.untested.length+'<br/>';
+      }
       holder_div.appendChild(stats_div);
       stats_container_div.appendChild(holder_div);
     }

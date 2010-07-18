@@ -528,6 +528,46 @@ s.tests[stmt] = function() {
 
 }
 
+//------------------------------------------------
+s = sections.add('missing tests');
+
+// For tests in 'tests' but not in 'testOrder'.
+
+stmt = 'Stats counts missing tests in sections'
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+  var unitjs = U.spawn();
+  var AA = unitjs.assertions;
+  var sections = new unitjs.Sections();
+  var printer = new DummyPrinter();
+  var stats = null;
+  var section = new unitjs.Section('s.1');
+  var section2 = new unitjs.Section('s.2');
+  var section3 = new unitjs.Section('s.3');
+
+  sections.add(section);
+  sections.add(section2);
+  section2.subsections.add(section3);
+
+  section.testOrder.push('stmt1');
+  section.tests['stmt1'] = function() { AA.assert(true); }
+
+  section2.testOrder.push('stmt2');
+  section2.tests['stmt2'] = function() { AA.assert(true); }
+
+  section3.testOrder.push('stmt3');
+  section3.tests['stmt3'] = function() { AA.assert(true); }
+
+  // These tests don't get pushed into test order
+  section.tests['stmt1-missing'] = function() { AA.assert(true); }
+  section3.tests['stmt3-missing-1'] = function() { AA.assert(true); }
+  section3.tests['stmt3-missing-2'] = function() { AA.assert(true); }
+
+  stats = unitjs.runner.sections.run(sections,printer);
+  A.assertEquals(3,stats.tests);
+  A.assertEquals(3,stats.untested.length);
+
+}
 
 //------------------------------------------------
 s = sections.add('section only');
