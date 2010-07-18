@@ -1,4 +1,5 @@
 
+Version 0.4.4 - Jul-2010
 [DB]
 * replaced build.sh with build.conf
 * added set_stmts and stmts to Section object
