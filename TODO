@@ -1,4 +1,32 @@
 odds and ends {
+  @date: 18-Jul-10
+
+  - Need an example showing upfront vs inline test styles
+    (see commit and changelog about this time)
+    - maybe do this in templates
+  - the code is getting a little messy; what I'd like to do:
+    - all tests should be written in sections even if there
+      is only one section; so we don't have to choose or
+      worry about two different runner functions
+      - the basic runner is still the heart but we'll
+        give it a less obvious name and use its name for
+        the section runner
+    - get rid of interfaces and just comment the code as
+      appropriate; eg I added a comment about 'nested' flag
+      to the runner function
+    - the runner should not worry about the printer at all;
+      it should just return stats; the section runner can
+      fold this into a tree-like structure if we have nested
+      sections and return this
+      - a printer can treewalk the stats
+        - preorder it builds the nested tag structure if
+          it wants to display hierachically in (x)html
+        - postorder it collates the stats
+    - get rid of stats.section.* and stats.*; I think there
+      only needs to be one
+}
+
+odds and ends {
   @date: 29-Jan-10
 
   - 'setup' and 'teardown': clearer way to set these up on a per section

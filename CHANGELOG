@@ -1,5 +1,21 @@
 
 [DB]
+* replaced build.sh with build.conf
+* added set_stmts and stmts to Section object
+  * allows for an "upfront" style of setting statements
+  * tests are defined at a later point in the file using
+    the statement labels that are defined in object
+    literal passed to set_stmts
+    * this is in contrast to an inline style where
+      test statements are immediately followed by the
+      tests themselves (no labels are used)
+    * it was possible to do "upfront" without set_stmts
+      but we're looking for a way to run upfront with minimal
+      boiler plate
+* missing tests are checked for and noted
+
+Version 0.4.3.1 - Apr-10
+[DB]
 * Added simple bash script build system.  19-Apr-10.
 * Added unitjs templates - a quick way to get unitjs working
   in a project.  See templates/ directory.  13-Apr-10.

@@ -1,11 +1,14 @@
 From: Daniel Bush 
-Updated: Tue Apr 13 12:16:53 EST 2010
+Updated: Sun Jul 18 10:46:28 EST 2010
 Date: Fri Aug 29 09:18:39 EST 2008
 Subject: What is UnitJS?
 
 For the impatient, head over to the QUICKSTART file.
 This is recommended reading regardless of your impatience
 level.
+If you're really impatient, head over to the templates/
+directory and use the templates there as the basis for
+your application.
 
 UnitJS is simplified unit testing framework.
 It was originally put together overnight using some of the
