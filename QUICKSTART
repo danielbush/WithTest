@@ -198,6 +198,15 @@ To run the sections that we created above:
 Note: 'sections' was the first thing we created prior to populating it with
 actual section instances.  See above.
 
+The printer prints sections and leaves them in collapsed form.
+We can automatically get the tests with errors to be shown
+once you're run tests like this:
+
+  printer.expand_failed();
+
+There are several other expand/collapse functions.
+
+
 The DefaultPrinter will highlight passed tests as green, failed or errored
 tests as red/pink; it will show empty sections as blue.
 
