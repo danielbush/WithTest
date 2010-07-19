@@ -1,6 +1,9 @@
 odds and ends {
   @date: 18-Jul-10
 
+  - add test for set_stmts
+    - set_stmts({ label:"stmt" }); section.tests = {/* no label */}
+      - this caused an error - see commit dated 19-Jul-2010
   - Need an example showing upfront vs inline test styles
     (see commit and changelog about this time)
     - maybe do this in templates
