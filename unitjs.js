@@ -247,7 +247,7 @@ $web17_com_au$.unitJS_module = function() {
         if(!to_check[n]) {
           stats.untested.push(n);
           stats.section.untested.push(n);
-          printer.printError(++i,'[MISSING]: '+n,stats,{message:"Test is defined but not run - did you forget to include it in your statements?"},test_func.pending);
+          printer.printError(++i,'[MISSING]: '+n,stats,{message:"Test is defined but not run - did you forget to include it in your statements?"},false);
         }
       }
 
