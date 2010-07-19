@@ -591,22 +591,38 @@ $web17_com_au$.unitJS_module = function() {
               'Expected not NaN');
     }
 
+    // More general version of assertEquals
+    // - assertEquals uses ===
+    // - here we use == on strings and numbers
+    //   so that object instances and literals are equal
+    //   (see Notes below)
+    // 
+    // Notes
+    // In javascript:
+    //   - 1 == '1' => true
+    //   - 'foo' == new String('foo')  => true
+    //   - 'foo' === new String('foo') => false
+    //
+
     assertions.assertObjectEquals = function() {
       module.utils._validateArguments(2, arguments);
       var var1 = module.utils.nonCommentArg(1, 2, arguments);
       var var2 = module.utils.nonCommentArg(2, 2, arguments);
-      var type;
+      var type1 = module.utils._trueTypeOf(var1);
+      var type2 = module.utils._trueTypeOf(var2);
       var msg = module.utils.commentArg(2, arguments) ? 
                 module.utils.commentArg(2, arguments):'';
       var isSame = (var1 === var2);
-      //shortpath for references to same object
-      var isEqual = ( 
-        (type = module.utils._trueTypeOf(var1)) == 
-        module.utils._trueTypeOf(var2) );
-      if (isEqual && !isSame) {
-        switch (type) {
+      var sameType = (type1 == type2);
+      var isEqual = isSame || sameType;
+      if(!isSame) {
+        switch (type1) {
           case 'String':
+              if(type2!='String') {isEqual = false; break; }
+              isEqual = (var1 == var2);
+              break;
           case 'Number':
+              if(type2!='Number') {isEqual = false; break; }
               isEqual = (var1 == var2);
               break;
           case 'Boolean':
@@ -623,9 +639,9 @@ $web17_com_au$.unitJS_module = function() {
                   for (i in var1)
                     assertions.assertObjectEquals(
                       msg + ' found nested ' + 
-                      type + '@' + i + '\n', 
+                      type1 + '@' + i + '\n', 
                       var1[i], var2[i]);
-          }
+        }
           _assert(msg, isEqual, 
                   'Expected ' + module.utils._displayStringForValue(var1) + 
                   ' but was ' + module.utils._displayStringForValue(var2));
