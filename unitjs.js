@@ -252,7 +252,10 @@ $web17_com_au$.unitJS_module = function() {
       }
 
       // If we're in standalone (non-section) mode:
-      if(!nested) printer.printStats(stats);
+      if(!nested) {
+          printer.printStats(stats);
+          printer.finish();
+      }
 
       return stats;
 
