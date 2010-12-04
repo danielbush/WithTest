@@ -1,8 +1,0 @@
-
-ul.test-bar {
-    list-style-position:outside;
-    list-style-type:none;
-}
-ul.test-bar li {
-    display:inline;
-}

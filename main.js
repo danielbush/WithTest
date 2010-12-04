@@ -1,4 +1,4 @@
-
+/*
    This is a source file for UnitJS a unit testing framework
    for javascript.
    Copyright (C) 2009-2010 Daniel Bush
@@ -10,3 +10,8 @@
    Parts of this code relating to assertions were taken from the
    JSUnit project: Edward Hieatt, edward@jsunit.net Copyright (C) 2003
    All Rights Reserved.
+*/ 
+
+
+var $dlb_id_au$ = $dlb_id_au$ || {};
+$dlb_id_au$.unitJS = $dlb_id_au$.unitJS || {};

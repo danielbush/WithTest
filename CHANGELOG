@@ -1,4 +1,18 @@
 
+Version 0.5.0 - Nov-2010
+[DB]
+* total rewrite of unitjs
+* this version is tested using unitjs-v0.4.7
+* See README.md and examples/ for how the new system works
+ 
+Version 0.4.7 - Jul-2010
+[DB]
+* small bug fixes
+  * assertArrayEquals
+  * added Logger
+  * printer bug
+  * bug with statements and tests
+
 Version 0.4.4 - Jul-2010
 [DB]
 * replaced build.sh with build.conf
