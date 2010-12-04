@@ -99,6 +99,7 @@ s.tests[stmt] = function() {
         {foo:'bar'},{foo:'bar'});}));
     E(false,test(function(){a.assertHashEquals(
         {foo:'bar'},{foo:'baz'});}));
+
     E(true, test(function(){a.assertContains(
         1,[2,1,3]);}));
     // This doesn't work:

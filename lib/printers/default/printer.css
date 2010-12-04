@@ -33,6 +33,7 @@ a {
     padding-right:1em;
 }
 
+
 /* --------------------------------------------------- */
 
 .section {
@@ -73,7 +74,7 @@ a {
     font-size:50%;
     -moz-border-radius:0.5em;
     -webkit-border-radius:0.5em;
-    -border-radius:0.5em;
+    border-radius:0.5em;
 
     /* unfancy section labels */
     background:none;
@@ -95,7 +96,6 @@ a {
     display:inline;
 }
 .section .title .status {
-    display:inline;
     float:right;
     padding-left:1em;
     padding-right:1em;
@@ -150,7 +150,7 @@ a {
     background-color:red;
     -moz-border-radius:0.5em;
     -webkit-border-radius:0.5em;
-    -border-radius:0.5em;
+    border-radius:0.5em;
 }
 .test .status.fail {
     color:red;
@@ -168,7 +168,7 @@ a {
     margin-right:0.4em;
     -moz-border-radius:0.5em;
     -webkit-border-radius:0.5em;
-    -border-radius:0.5em;
+    border-radius:0.5em;
 }
 
 .test.fail .label ,

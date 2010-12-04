@@ -1,9 +1,8 @@
 # UnitJS - a unit testing framework for javascript
 
-UnitJS is simplified unit testing framework.
-It was originally put together overnight using some of the
-code used in JSUnit.net.  By intention, it does not have a
-lot of the added features of JSUnit.
+UnitJS is simplified unit testing framework.  It was originally based
+on JSUnit.net.  By intention, it does not have a lot of the added
+features of JSUnit.
 
 I wanted something simple which I could then hack into more
 complex or automated solutions as I required.
@@ -11,15 +10,15 @@ complex or automated solutions as I required.
 UnitJS's main purpose is to allow you to write and organise
 your tests and run them in some desired order.
 
-Most of the actual assertion code comes from the original jsunit
+Most of the actual assertion code comes from the original JSUnit
 project.  How assertions are composed into tests and how tests
 are further organised and results calculated is the original
 work of unitjs.
 
 ## Notable features about unitjs:
 
-- it uses test labels; every test has to be labelled (alphanumeric (eg
-  `a001` is good))
+- it uses test labels; every test has to be labelled (alphanumeric eg
+  `a001` is good)
 - every test belongs to a section; the simplest setup is to write
   all your tests under one section
 - however it makes it easy to organise your tests further into subsections,
@@ -28,12 +27,23 @@ work of unitjs.
 - it encourages separation of test statements from test definitions
   (your actual tests).  You can write your tests (test definitions)
   next to their statements as well, but unitjs tends to encourage the
-  former; this stems from a preference of the unitjs author to put his
+  separation; this stems from a preference of the unitjs author to put his
   statements all in one spot so that they can be easily read and
   annotated; this is just a preference
 - test results are generated in a standard format that can be
-  easily converted to JSON and distributed for analysis to other parties
+  easily converted to JSON and distributed for analysis to other parties;
+  you could write your own "printer" to display them; unitjs provides
+  a default printer in `lib/printers/default`.
  
+## Note on browser compatibility
+
+This version of unitjs (v0.5.0) is a total rewrite of the previous
+version.  It has only been tested in fairly recent versions of
+firefox, IE (8), safari, chrome, opera.  IE 6-8 fail on
+assertContains.  IE6 appears to be able to run tests and calculate
+totals properly but does not render the results using the default
+printer terribly well - this appears to be a css issue with
+the default printer. 
 
 ## GETTING STARTED
 

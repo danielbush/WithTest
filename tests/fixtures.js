@@ -266,7 +266,7 @@ fixtures.test_modules["edge-case:tests > statements"] = function() {
             section:'outer test module',
             a003:{
                 statements: {
-                    section:'inner test module 2',
+                    section:'inner test module 2'
                 },
                 tests: {
                     a001:function(){},
