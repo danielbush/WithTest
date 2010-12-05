@@ -1,5 +1,11 @@
 
-Version 0.5.0 - Nov-2010
+Version 0.5.1 - Dec-2010
+[DB]
+* runner.run clones a test module's statements before they
+  are prepared and processed; this allows us to reuse statement
+  objects
+
+Version 0.5.0 - Dec-2010
 [DB]
 * total rewrite of unitjs
 * this version is tested using unitjs-v0.4.7

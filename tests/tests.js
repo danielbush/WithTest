@@ -182,6 +182,50 @@ s.tests[stmt] = function() {
     E(2,teardowns);
 }
 
+//------------------------------------------------
+s = sections.add('cloning');
+
+stmt = 'clone statements with nested ';
+s.testOrder.push(stmt);
+s.tests[stmt] = function() {
+    var unitjs = $dlb_id_au$.unitJS;
+    var cloned;
+    var tm  = fixtures.test_modules['nested statements']();
+    var tm2 = fixtures.test_modules['nested test modules']();
+
+    // Not testing this completely properly... but probably
+    // enough.
+
+    var s = {};
+    s.statements = tm.statements;
+    A.assert(s.statements===tm.statements);
+    A.assert(s.statements==tm.statements);
+
+    cloned = unitjs.runner.clone(tm);
+    A.assert(cloned!=tm);
+    A.assert(cloned!==tm);
+    A.assert(cloned.statements!==tm.statements);
+    A.assert(cloned.statements!=tm.statements);
+    E(tm.statements.section,cloned.statements.section);
+    E(tm.statements.a002.section,cloned.statements.a002.section);
+    E(tm.statements.a002.b002.section,
+      cloned.statements.a002.b002.section);
+
+    cloned = unitjs.runner.clone(tm2);
+    A.assert(cloned!=tm2);
+    A.assert(cloned!==tm2);
+    A.assert(cloned.statements!==tm2.statements);
+    A.assert(cloned.statements!=tm2.statements);
+    E(tm2.statements.section,cloned.statements.section);
+    E(tm2.statements.a002.statements.section,
+      cloned.statements.a002.statements.section);
+    A.assert(cloned.statements.a002.statements !==
+             tm2.statements.a002.statements);
+    E(tm2.statements.a002.statements.b002.statements.section,
+      cloned.statements.a002.statements.b002.statements.section);
+
+}
+
 
 //------------------------------------------------
 s = sections.add('the validate/prepare function...');
