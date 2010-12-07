@@ -14,8 +14,7 @@ var E         = U.assertions.assertEquals;
 var logger    = new Logger('unitjs logger',
                            {minimized:true,width:'700px'}).logger;
 P.pp.nested = 10; // Set degree of nesting when printing objects/arrays...
-logger.log('Welcome to the full example.');
-logger.log('click here... ',[{foo:'bar'}]);
+logger.log('put content in square brackets to pretty-print... ',[{foo:'bar'}]);
 
 
 var tests = {};
@@ -53,16 +52,11 @@ tests.test_module_1 = {
                 section:'when the undo is not contiguous...',
                 a001:'session master level is set to index of undone item',
                 a002:'undone item is converted into standard undo-tags'
-                // explain in comments: D->[Ud:D] I->[Ui:I];
-                // the D is relinked; the I is unlinked
             },
             s2:{
                 section:'when the undo item is contiguous...',
                 a001:'session master level is set to index of undone item; a partial flag is set',
                 a002:'ins/del tags are converted to partial undo tags'
-                // explain in comments: Da->[Ud:DaI] Ia->[Ui:IaD];
-                // the Da is not linked but the adjacent I is;
-                // and the Ia remains linked
             }
         },
         A3:{
@@ -98,8 +92,8 @@ tests.test_module_1 = {
         A1:{
             z002:function(){}, // Test with missing statement.
             s1:{
-                setup:function(){logger.alert('setting up...');},
-                teardown:function(){logger.alert('tearing down...');},
+                setup:function(){logger.red('setting up...');},
+                teardown:function(){logger.red('tearing down...');},
                 a001:function(){A.assert('Should fail!',false);},
                 a002:function(){A.assert('Should pass!',true);}
             },
@@ -111,7 +105,7 @@ tests.test_module_1 = {
         },
         A4:{
             s1:{
-                a001:function(){A.assert(true);}
+                a001:function(){E('true should be true',true,true);}
             },
             s2:{
                 a001:function(){A.assert(true);}
