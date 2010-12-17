@@ -22,55 +22,57 @@ var tests = {};
 tests.test_module_1 = {
     statements:{
         section:'editing and undo',
-        A1:{
+        A:{
             section: 'when editing normally...',
             z001:'you can put tests here too',
-            s1:{
+            A1:{
                 section:'in general...',
                 a001:'a placemarker is set by the edit operation and is associated with the ins/del tag',
                 a002:'the placemarker is part of the linked list but not the dom'
             },
-            s2:{
+            A2:{
                 section:'when doing a block insert/delete...',
-                b001:'the edit op should push ins/del tag onto master',
-                b002:'level should be set to length of master'
+                a001:'the edit op should push ins/del tag onto master',
+                a002:'level should be set to length of master'
             },
-            s3:{
+            A3:{
                 section:'when doing contiguous inserts/deletes...',
-                c001:'the edit op should push ins/del tag onto session master on first action',
-                c002:'level should be set to length of master',
-                c003:'subsequent edit ops should increment last undo (at master[level-1])',
-                c004:{
+                a001:'the edit op should push ins/del tag onto session master on first action',
+                a002:'level should be set to length of master',
+                a003:'subsequent edit ops should increment last undo (at master[level-1])',
+                a004:{
                     section:'when contiguity is broken',
-                    d001:'a new ins/del tag should be pushed onto session master'
+                    a004a:'a new ins/del tag should be pushed onto session master'
                 }
             }
         },
-        A2:{
+
+        B:{
             section:'when undoing...',
-            s1:{
+            B1:{
                 section:'when the undo is not contiguous...',
                 a001:'session master level is set to index of undone item',
                 a002:'undone item is converted into standard undo-tags'
             },
-            s2:{
+            B2:{
                 section:'when the undo item is contiguous...',
                 a001:'session master level is set to index of undone item; a partial flag is set',
                 a002:'ins/del tags are converted to partial undo tags'
             }
         },
-        A3:{
+
+        C:{
             section:'when redoing...',
-            s1:{
+            C1:{
                 section:'when the undo is not contiguous...'
             },
-            s2:{
+            C2:{
                 section:'when the undo is contiguous...'
             }
         },
-        A4:{
+        D:{
             section:'when user starts normal editing and there is undo that has not been redone...',
-            s1:{
+            D1:{
                 section:'when the undo is contiguous',
                 a001:'test-1',
                 a002:{
@@ -78,7 +80,7 @@ tests.test_module_1 = {
                     fn:function(){A.assert(true);}
                 }
             },
-            s2:{
+            D2:{
                 section:'when the undo is not contiguous',
                 a001:'test-1'
             }
@@ -89,25 +91,25 @@ tests.test_module_1 = {
     // You can put tests in your statements above.
 
     tests: {
-        A1:{
+        A:{
             z002:function(){}, // Test with missing statement.
-            s1:{
+            A1:{
                 setup:function(){logger.red('setting up...');},
                 teardown:function(){logger.red('tearing down...');},
                 a001:function(){A.assert('Should fail!',false);},
                 a002:function(){A.assert('Should pass!',true);}
             },
-            s2:{
-                b001:function(){},
-                b002:function(){throw new Error('An error occurred!')}
+            A2:{
+                a001:function(){},
+                a002:function(){throw new Error('An error occurred before any assertions!')}
             }
             
         },
-        A4:{
-            s1:{
+        D:{
+            D1:{
                 a001:function(){E('true should be true',true,true);}
             },
-            s2:{
+            D2:{
                 a001:function(){A.assert(true);}
             }
         }
