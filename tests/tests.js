@@ -147,39 +147,14 @@ s.tests[stmt] = function() {
 //------------------------------------------------
 s = sections.add('setup/teardown hooks');
 
-stmt = "calls setup/teardown on every test";
+stmt = "[MOVED] calls setup/teardown on every test";
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
-    var unitjs = $dlb_id_au$.unitJS;
-    var results;
-    var tm = fixtures.setup_teardown();
-    var setups=0,teardowns=0;
-    tm.statements.setup = function(){setups++};
-    tm.statements.teardown = function(){teardowns++};
-    unitjs.runner.run(tm);
-    E(2,setups);
-    E(2,teardowns);
 }
 
-stmt = "teardown is called even if there is an error";
+stmt = "[MOVED] teardown is called even if there is an error";
 s.testOrder.push(stmt);
 s.tests[stmt] = function() {
-    var unitjs = $dlb_id_au$.unitJS;
-    var results;
-    var tm = fixtures.setup_teardown();
-    var setups=0,teardowns=0;
-
-    tm.tests.a001 = function(){throw new Error('some error');}
-    tm.tests.a002 = function(){unitjs.assertions.assert(false);}
-    tm.statements.setup = function(){setups++};
-    tm.statements.teardown = function(){teardowns++};
-
-    results = unitjs.runner.run(tm);
-    //logger.blue([results]);
-    E('ERROR',results.a001.stats.status);
-    E('FAIL',results.a002.stats.status);
-    E(2,setups);
-    E(2,teardowns);
 }
 
 //------------------------------------------------

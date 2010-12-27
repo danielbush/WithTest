@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--
+/* 
+ * This is a source file for UnitJS a unit testing framework
+ * for javascript.
+ * Copyright (C) 2008-2010 Daniel Bush
+ * This program is distributed under the terms of the GNU
+ * General Public License.  A copy of the license should be
+ * enclosed with this project in the file LICENSE.  If not
+ * see <http://www.gnu.org/licenses/>.
+ *
+ * Substantial parts of this code were taken from the JSUnit
+ * project.  The Initial Developer of the Original Code is
+ * Edward Hieatt, edward@jsunit.net.  Portions created by
+ * the Initial Developer are Copyright (C) 2003 the Initial
+ * Developer.  All Rights Reserved.
+ *
+ */
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>UnitJS Assertion Tests</title>
+
+<script language="javascript" type="text/javascript"
+        src="../ext/js-logger-v0.4.5/logger.js"></script>
+
+
+
+<!-- Load the thing we are testing...-->
+<!-- This is the unitjs framework itself -->
+<!-- reference unitjs source hence "live" -->
+<script language="javascript" type="text/javascript"
+        src="../main.js"></script>
+<script language="javascript" type="text/javascript"
+        src="../lib/utils.js"></script>
+<script language="javascript" type="text/javascript"
+        src="../lib/assertions.js"></script>
+<script language="javascript" type="text/javascript"
+        src="../lib/runner.js"></script>
+<script language="javascript" type="text/javascript"
+        src="../lib/printers/default/printer.js"></script>
+<link rel="stylesheet" type="text/css"
+      href="../lib/printers/default/printer.css"/>
+<!-- Re-map -->
+<script language="javascript" type="text/javascript">
+var $unitjs = $dlb_id_au$.unitJS;
+delete($dlb_id_au$.unitJS); // Hour of my life right here.
+</script>
+
+
+
+<!-- Load the testing framework we will be testing with... -->
+
+<script language="javascript" type="text/javascript"
+        src="unitjs-v0.5.1/main.js"></script>
+<script language="javascript" type="text/javascript"
+        src="unitjs-v0.5.1/printer.js"></script>
+<link rel="stylesheet" type="text/css"
+      href="unitjs-v0.5.1/printer.css"/>
+
+
+<!-- Set up and run tests... -->
+
+<script language="javascript" type="text/javascript"
+        src="fixtures.js"></script>
+<script language="javascript" type="text/javascript"
+        src="tests2.js"></script>
+
+
+
+<script language="javascript" type="text/javascript">
+</script>
+</head>
+
+<body >
+
+  <h1>UnitJS Tests</h1>
+  <br/>
+  <p style="width:600px;color:#d11;font-weight:bold;" >
+    This test file will replace the old
+    <a href="index.html">index.html</a>.  The tests/specs here are
+    written in unitjs-v0.5.x which is a total rewrite from v0.4.x.
+  </p>
+  <br/>
+
+  <div id="top" >
+
+    <input type="button"
+           value="show errors" onclick="U.printers.show_errors(div);" />
+
+    <input type="button"
+           value="show all" onclick="U.printers.show_all(div);" />
+
+    <input type="button"
+           value="show sections" onclick="U.printers.show_sections(div);" />
+
+    <input type="button"
+           value="show incomplete/pending" onclick="U.printers.show_other(div);" />
+
+  </div>
+
+
+</body>
+</html>

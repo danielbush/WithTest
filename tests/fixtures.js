@@ -38,6 +38,26 @@ fixtures.test_modules['nested test modules'] = function() {
                 tests: {
                     b001:function(){}
                 }
+            },
+            // A sibling test module....
+            a003:{
+                statements: {
+                    section:'inner test module 2',
+                    b001:'test-2',
+                    b002: {
+                        statements: {
+                            section:'inner test module 3',
+                            c001:'test-3'
+                        },
+                        tests: {
+                            c001:function(){}
+                        }
+                    },
+                    b003:'test-3'
+                },
+                tests: {
+                    b001:function(){}
+                }
             }
         },
         tests: {
@@ -294,11 +314,20 @@ fixtures.setup_teardown = function() {
             setup:function(){},
             teardown:function(){},
             a001:'test-1',
-            a002:'test-2'
+            a002:'test-2',
+            A:{
+                section:'section-1-1',
+                setup:function(){},
+                teardown:function(){},
+                a101:'test-1-1'
+            }
         },
         tests: {
             a001:function(){},
-            a002:function(){}
+            a002:function(){},
+            A:{
+                a101:function(){}
+            }
         }
     };
 }
