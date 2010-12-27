@@ -288,9 +288,9 @@ Define D like so:
 
         module.statements = {
           section:'all my tests together!',
-          a001: A,
-          b001: B,
-          c001: C
+          A: A,
+          B: B,
+          C: C
         }
 
         return module;
