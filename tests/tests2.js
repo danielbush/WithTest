@@ -35,7 +35,6 @@ var div,div_summary,results;
 
 window.onload = function() {
     results = run(tests.unitjs);
-logger.log([results]);
     div = print(results);
     div_summary = print_summary(results);
     document.body.appendChild(div_summary);
@@ -61,6 +60,26 @@ tests.unitjs.statements = {
         // NOTE:
         // This may change but for the moment we will keep
         // things simple.
+    },
+
+    B:{
+        section:'helper modules',
+        b01:"tests are called with `this` set to result of helper module",
+        b02:"nested sections inherit helper module from parent if one is not set",
+        // RATIONALE:
+        // This seems to be a reasonable default.  For each test
+        // module (regardless of how many nested sections), we
+        // have one helper module.
+
+
+        b03:"nested test modules do NOT inherit helper modules"
+        // RATIONALE:
+        // We might write a test module and assign it a helper module.
+        // Later we might want to aggregate this and several other
+        // modules into a super test module.  The simplest thing
+        // to do in this situation is to ensure that all such
+        // test modules behave as they would were they called
+        // in isolation.  That includes not having a test module.
     }
 
 };
@@ -124,6 +143,45 @@ tests.unitjs.tests = {
             results = $U.runner.run(tm);
             E("Test should have been run.",1,tests);
             
+        }
+    },
+
+    B:{
+        b01:function(){
+            var results;
+            var tests = 0;
+            var t = [];
+            var tm = fixtures.test_modules['nested test modules']();
+            tm.tests.a001 = function(){t.push(this);tests++;};
+            tm.statements.a002.tests.b001 = function(){t.push(this);tests++;};
+            tm.statements.a002.statements.b002.tests.c001=function(){t.push(this);tests++;}
+            results = $U.runner.run(tm);
+            E(true,t[0].outer)
+            E(true,t[1].a002)
+            E(true,t[2].b002)
+            E("Test should have been run.",3,tests);
+        },
+
+        b02:function(){
+            var results;
+            var tests = 0;
+            var tm = fixtures.test_modules['nested sections']();
+            tm.tests.a002.b002.c001 = function(){t=this;tests++;};
+            results = $U.runner.run(tm);
+            E(true,t.outer);
+            E("Test should have been run.",1,tests);
+        },
+
+        b03:function(){
+            var t = true;
+            var results;
+            var tests = 0;
+            var tm = fixtures.test_modules['nested test modules']();
+            tm.statements.a003.statements.b002.tests.c001 = function(){t=this;tests++;};
+
+            results = $U.runner.run(tm);
+            E(true,!t.sibling);
+            E("Test should have been run.",1,tests);
         }
     }
 };

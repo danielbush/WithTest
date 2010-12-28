@@ -11,8 +11,7 @@ fixtures.test_modules['invalid labels'] = function() {
             fn:'test with invalid label'
         }
     };
-}
-
+} 
 fixtures.test_modules['nested test modules'] = function() {
     // Here we write a test module some of whose labels
     // are also test modules (not subsections).
@@ -30,23 +29,25 @@ fixtures.test_modules['nested test modules'] = function() {
                             c001:'test-3'
                         },
                         tests: {
+                            helper:{b002:true},
                             c001:function(){}
                         }
                     },
                     b003:'test-3'
                 },
                 tests: {
+                    helper:{a002:true},
                     b001:function(){}
                 }
             },
             // A sibling test module....
             a003:{
                 statements: {
-                    section:'inner test module 2',
+                    section:'SIBLING inner test module 2',
                     b001:'test-2',
                     b002: {
                         statements: {
-                            section:'inner test module 3',
+                            section:'SIBLING inner test module 3',
                             c001:'test-3'
                         },
                         tests: {
@@ -56,11 +57,13 @@ fixtures.test_modules['nested test modules'] = function() {
                     b003:'test-3'
                 },
                 tests: {
+                    helper:{sibling:true},
                     b001:function(){}
                 }
             }
         },
         tests: {
+            helper:{outer:true},
             a001:function(){unitjs.assertions.assert(true);}
         }
     };
@@ -120,6 +123,7 @@ fixtures.test_modules['nested sections'] = function() {
             }
         },
         tests: {
+            helper:{outer:true},
             a001:function(){unitjs.assertions.assert(true);},
             a002:{
                 b001:function(){unitjs.assertions.assert(true);},
