@@ -105,7 +105,7 @@ fixtures.test_modules['all status types'] = function() {
     };
 }
 
-fixtures.test_modules['nested statements'] = function() {
+fixtures.test_modules['nested sections'] = function() {
     return {
         statements: {
             section:'section-1',

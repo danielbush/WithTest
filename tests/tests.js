@@ -165,7 +165,7 @@ s.testOrder.push(stmt);
 s.tests[stmt] = function() {
     var unitjs = $dlb_id_au$.unitJS;
     var cloned;
-    var tm  = fixtures.test_modules['nested statements']();
+    var tm  = fixtures.test_modules['nested sections']();
     var tm2 = fixtures.test_modules['nested test modules']();
 
     // Not testing this completely properly... but probably
@@ -501,7 +501,7 @@ s.testOrder.push(stmt);
 s.tests[stmt] = function() {
     var unitjs = $dlb_id_au$.unitJS;
     var results;
-    var tm = fixtures.test_modules['nested statements']();
+    var tm = fixtures.test_modules['nested sections']();
     // TODO
     // - replace call to prepare with prepared statements fixture
     results = unitjs.runner.process(
