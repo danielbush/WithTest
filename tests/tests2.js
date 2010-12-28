@@ -54,7 +54,6 @@ tests.unitjs.statements = {
         section:'setup/teardown',
         a01:"calls setup/teardown on every test",
         a02:"teardown is called even if there is an error",
-        a03:"the result of a call to setup is passed to each test",
 
         a04:"setups are not run for nested sections"
         // NOTE:
@@ -64,7 +63,7 @@ tests.unitjs.statements = {
 
     B:{
         section:'helper modules',
-        b01:"tests are called with `this` set to result of helper module",
+        b01:"tests are called and passed the helper module",
         b02:"nested sections inherit helper module from parent if one is not set",
         // RATIONALE:
         // This seems to be a reasonable default.  For each test
@@ -116,21 +115,6 @@ tests.unitjs.tests = {
             E(2,teardowns);
         },
 
-        a03:function(){
-            var tests = 0;
-            var results;
-            var tm = fixtures.setup_teardown();
-            var setups=0,teardowns=0;
-            tm.statements.setup = function(){return {foo:true};};
-            // NOTE: we call E here, not $E because
-            // we are testing `setup`.
-            tm.tests.a001 = function(setup){E(true,setup.foo);tests++;};
-            tm.tests.a002 = function(setup){E(true,setup.foo);tests++;};
-            results = $U.runner.run(tm);
-            E("Test should have been run.",2,tests);
-            
-        },
-
         a04:function(){
             var tests = 0;
             var results;
@@ -152,9 +136,9 @@ tests.unitjs.tests = {
             var tests = 0;
             var t = [];
             var tm = fixtures.test_modules['nested test modules']();
-            tm.tests.a001 = function(){t.push(this);tests++;};
-            tm.statements.a002.tests.b001 = function(){t.push(this);tests++;};
-            tm.statements.a002.statements.b002.tests.c001=function(){t.push(this);tests++;}
+            tm.tests.a001 = function(H){t.push(H);tests++;};
+            tm.statements.a002.tests.b001 = function(H){t.push(H);tests++;};
+            tm.statements.a002.statements.b002.tests.c001=function(H){t.push(H);tests++;}
             results = $U.runner.run(tm);
             E(true,t[0].outer)
             E(true,t[1].a002)
@@ -166,7 +150,7 @@ tests.unitjs.tests = {
             var results;
             var tests = 0;
             var tm = fixtures.test_modules['nested sections']();
-            tm.tests.a002.b002.c001 = function(){t=this;tests++;};
+            tm.tests.a002.b002.c001 = function(H){t=H;tests++;};
             results = $U.runner.run(tm);
             E(true,t.outer);
             E("Test should have been run.",1,tests);
