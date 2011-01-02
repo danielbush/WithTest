@@ -123,6 +123,9 @@ a {
 .test.fail {
     background-color:#fee;
 }
+.test.other {
+    color:blue;
+}
 
 .test .name {
     display:inline;
