@@ -37,8 +37,8 @@ work of unitjs.
  
 ## Note on browser compatibility
 
-This version of unitjs (v0.5.0) is a total rewrite of the previous
-version.  It has only been tested in fairly recent versions of
+This versions of unitjs >= v0.5.0 are total rewrites of previous
+versions.  It has only been tested in fairly recent versions of
 firefox, IE (8), safari, chrome, opera.  IE 6-8 fail on
 assertContains.  IE6 appears to be able to run tests and calculate
 totals properly but does not render the results using the default
@@ -178,6 +178,29 @@ Notes:
   test will have a status of "unimplemented".  It is considered an
   error to have both an inline test definition and a non-inline
   definition.
+- labels beginning with '_' are not processed as tests.  You can use
+  these as localised helpers via the `this` keyword:
+
+      module.tests = {
+          _foo:function(){...localised helper code...},
+          a01:function(){...this._foo();...},
+          ...
+      }
+
+- labels called 'helper' are also treated as helper functions; these
+  are passed into your tests
+
+      module.tests = {
+          helper:function(){...helper code...},
+          a01:function(H){...H();...},
+          ...
+      }
+
+- `helper` functions are inherited by subsections if they don't
+  specify their own `helper` function
+- both localised and `helper` functions can be anything you want;
+  they don't have to be functions; they could be objects containing
+  several functions etc
 
 #### Assertions
 
