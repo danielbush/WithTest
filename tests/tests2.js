@@ -79,6 +79,12 @@ tests.unitjs.statements = {
         // to do in this situation is to ensure that all such
         // test modules behave as they would were they called
         // in isolation.  That includes not having a test module.
+    },
+
+    C:{
+        section:'localised helper functions',
+        c01:"labels beginning with '_' are not processed as tests",
+        c02:"values stored against these labels are available via `this`"
     }
 
 };
@@ -166,6 +172,25 @@ tests.unitjs.tests = {
             results = $U.runner.run(tm);
             E(true,!t.sibling);
             E("Test should have been run.",1,tests);
+        }
+    },
+
+    C:{
+
+        c01:function(){
+            // See c02.
+        },
+
+        c02:function(){
+            var tm = fixtures.test_modules['nested sections']();
+            var obtain;
+            tm.tests._foo = {foo:'foo'};
+            tm.tests.a001 = function() {
+                obtain = this._foo;
+            }
+            results = $U.runner.run(tm);
+            E('foo',obtain.foo);
+            
         }
     }
 };
