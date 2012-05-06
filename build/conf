@@ -1,0 +1,9 @@
+# Set this to specify the files to build:
+
+# You must specify a js minifier program in JSMINIFY variable.
+# Use 'cat' if you don't have one.
+
+JSMINIFY=cat
+
+BUILDNAME="unitjs"
+  # => build/$BUILDNAME-$VERSION/$BUILDNAME.js
