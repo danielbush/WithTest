@@ -1,5 +1,6 @@
-./main.js
-./lib/utils.js
-./lib/assertions.js
-./lib/runner.js
-./lib/printers/default/printer.js
+ext/js-logger-v0.4.5/logger.js
+main.js
+lib/utils.js
+lib/assertions.js
+lib/runner.js
+lib/printers/default/printer.js
