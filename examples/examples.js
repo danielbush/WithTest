@@ -4,8 +4,9 @@ var with_tests$ = $dlb_id_au$.unitJS.with$.with_tests$;
 var print       = $dlb_id_au$.unitJS.print.print;
 
 // Example:
+var tests;
 
-var tests = with_tests('section 1',function(M){
+tests = with_tests('section 1',function(M){
   M.tests('section 1.1',function(M){
     M.test('test a',function(){
       this.assert(true);
@@ -28,6 +29,7 @@ var with_my_project = function(fn) {
     lib2:{},
     with_tests:function(){
       L.tests = with_tests.apply(null,arguments);
+      return L.tests;
     },
     tests:null
   };
