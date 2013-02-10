@@ -1,4 +1,12 @@
 
+Version 0.6.0 - 2012
+[DB]	
+* last version for the "old" unitjs
+* introduced with_* functions
+* this version of unitjs has been replaced by much simpler codebase
+  which concentrates on with_* functions and with much simpler
+  data structure handling.
+
 Version 0.5.1 - Dec-2010
 [DB]
 * runner.run clones a test module's statements before they
