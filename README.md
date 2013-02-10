@@ -37,7 +37,7 @@ var tests = with_tests('section 1',function(M){
 
 * See 05.data.js for the format of <code>tests</code>.
     * Also do console.log(tests) to see the format.
-    * <code>with_tests</codes> is just building a tree of 'tests' and 'test' datasctructures with a root 'tests' data structures ('section 1' in the above).
+    * <code>with_tests</code> is just building a tree of 'tests' and 'test' datasctructures with a root 'tests' data structures ('section 1' in the above).
 * See 10.assertions.js for the assertions that are currently available.
 * Assertions are bound to <code>this</code> inside your test functions.
 
