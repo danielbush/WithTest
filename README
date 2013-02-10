@@ -1,0 +1,13 @@
+Unitjs - a small, flexible testing framework for javascript and optionally the browser.
+
+Why?
+* You can create nested sections of tests
+* Nice, "lispy" with_tests(...) function for creating sections and subsections of tests
+
+Example:
+
+
+Set up
+
+See examples/index.html for setting up in the browser when developing unitjs.
+For creating a single file, see build/*.list files. Concatenate ext files then main files.  Separately make available any files in assets.list.
