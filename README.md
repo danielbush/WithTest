@@ -39,7 +39,7 @@ You can print results like this:
 
 TODO: still to finish this.
 ```js
-var with_tests  = $dlb_id_au$.unitJS.print.print;
+var print  = $dlb_id_au$.unitJS.print.print;
 var node = print(tests);
 document.body.appendChild(node); // Or whatever you like.
 ```
