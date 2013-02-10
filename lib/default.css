@@ -53,6 +53,10 @@ Default styling for the default printer.
     float:right;
     clear:right;
     font-weight:bold;
+    padding-top:0.1em;
+    padding-bottom:0.1em;
+    padding-left:0.5em;
+    padding-right:0.5em;
 }
 .-unitjs .tests .status.FAIL {
     color:red;
