@@ -16,10 +16,13 @@ Default styling for the default printer.
     padding-right:1em;
 }
 
-.-unitjs .tests {
+.-unitjs > .tests .tests {
     padding-left:1em;
 }
 
+.-unitjs .tests {
+    margin-bottom:0.5em;
+}
 .-unitjs .tests .name {
     font-size:130%;
 }
@@ -31,8 +34,7 @@ Default styling for the default printer.
 /* test label */
 .-unitjs .tests .test .name {
     width:auto;
-    padding-left:1em;
-    padding-right:1em;
+    padding-left:0.5em;
 }
 .-unitjs .tests .test.PASS .name {
     background-color:#efe;
