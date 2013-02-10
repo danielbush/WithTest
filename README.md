@@ -57,6 +57,9 @@ I really like this pattern:
 ```js
 var with_my_project = function(fn) {
   var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
+  // Create some wrapper object that contains all the libs/modules you
+  // you want to test.
+  // And include with_tests.
   var L = {
     lib1:{foo:true},
     lib2:{},
