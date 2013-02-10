@@ -19,39 +19,47 @@ Default styling for the default printer.
 .-unitjs > .tests .tests {
     padding-left:1em;
 }
+.-unitjs > .tests .tests > .name {
+    background-color:#eee;
+}
 
 .-unitjs .tests {
     margin-bottom:0.5em;
 }
-.-unitjs .tests .name {
+.-unitjs .tests > .name {
     font-size:130%;
+    padding-left:10px;
+    line-height:1.8em;
+    border-top:solid #777 2px;
 }
 
+/* test */
 .-unitjs .tests .test {
-    padding-left:1em;
 }
 
 /* test label */
-.-unitjs .tests .test .name {
+.-unitjs .tests .test > .name {
     width:auto;
-    padding-left:0.5em;
+    padding-left:10px;
+    line-height:1.5em;
+    border-top:dotted #777 1px;
 }
-.-unitjs .tests .test.PASS .name {
+.-unitjs .tests .test.PASS > .name {
     background-color:#efe;
     color:green;
 }
-.-unitjs .tests .test.FAIL .name {
+.-unitjs .tests .test.FAIL > .name {
     background-color:#fee;
     color:red;
 }
-.-unitjs .tests .test.ERROR .name {
+.-unitjs .tests .test.ERROR > .name {
     background-color:#fee;
     color:red;
     font-weight:bold;
 }
 
 /* test status */
-.-unitjs .tests .status {
+.-unitjs .tests .test .status {
     float:right;
     clear:right;
     font-weight:bold;
@@ -60,10 +68,10 @@ Default styling for the default printer.
     padding-left:0.5em;
     padding-right:0.5em;
 }
-.-unitjs .tests .status.FAIL {
+.-unitjs .tests .test .status.FAIL {
     color:red;
 }
-.-unitjs .tests .status.ERROR {
+.-unitjs .tests .test .status.ERROR {
     color:white;
     background-color:red;
 }
