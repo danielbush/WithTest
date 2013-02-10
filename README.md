@@ -4,6 +4,12 @@ Unitjs
 A small, flexible testing framework for javascript and optionally the
 browser.
 
+IMPORTANT
+---------
+* Unitjs has undergone a complete rewrite and simplification around 9-Feb-2013.
+* Use old tag v0.6.0 for the old version.
+* The rewrite still needs a printer and still needs testing.
+
 Why?
 ----
 * You can create nested sections of tests
