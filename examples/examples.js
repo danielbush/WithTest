@@ -1,6 +1,7 @@
 
 var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
 var with_tests$ = $dlb_id_au$.unitJS.with$.with_tests$;
+var print       = $dlb_id_au$.unitJS.print.print;
 
 // Example:
 
@@ -35,19 +36,27 @@ var with_my_project = function(fn) {
 };
 
 tests = with_my_project(function(L){
-  L.with_tests('section 1',function(M){
+  L.with_tests('section A',function(M){
 
-    M.tests('section 1.1',function(M){
+    M.tests('section A.1',function(M){
       M.test('test b',function(){
         this.assert(L.lib1.foo);
       });
     });
 
     M.test('test a',function(){
-      this.assert(false);
+      this.assert('omg! failure!',false);
     });
 
   });
 });
-console.log(tests);
 
+console.log(tests);
+var node = print(tests);
+
+var wid = window.setInterval(function(){
+  if(document.body){
+    document.body.appendChild(node);
+    window.clearInterval(wid);
+  }
+},100);
