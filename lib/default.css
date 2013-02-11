@@ -33,6 +33,15 @@ Default styling for the default printer.
     border-top:solid #777 2px;
 }
 
+/* stats */
+.-unitjs .tests > .name > .stats {
+    float:right;
+    color:#555;
+}
+.-unitjs .tests > .name > .stats > span {
+    font-weight:bold;
+}
+
 /* test */
 .-unitjs .tests .test {
 }
