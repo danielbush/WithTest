@@ -7,14 +7,39 @@ var print       = $dlb_id_au$.unitJS.print.print;
 var tests;
 
 tests = with_tests('section 1',function(M){
+
+  M.setup(function(){
+    console.log('setup OUTER called...');
+    var o = {
+      finished:false
+    };
+    return o;
+  });
+  M.teardown(function(o){
+    console.log('teardown OUTER called...');
+    o.finished = true;
+    console.log(o.finished);
+  });
+
+  M.test('test 1',function(o){
+    console.log('test called: test 1');
+    console.log(o.finished);
+    this.assert(true);
+  });
+
+
   M.tests('section 1.1',function(M){
-    M.test('test a',function(){
+    M.setup(null); // To disable setup inheritance.
+    M.teardown(function(){
+      console.log('teardown NESTED called...');
+    });
+    M.test('test a',function(o){
+      console.log('test called: test a');
+      console.log(o.finished);
       this.assert(true);
     });
   });
-  M.test('test 1',function(){
-    this.assert(true);
-  });
+
 });
 //console.log(tests);
 
@@ -42,12 +67,15 @@ tests = with_my_project(function(L){
 
     M.tests('section A.1',function(M){
       M.test('test b',function(){
+        this.assert(true);
         this.assert(L.lib1.foo);
       });
     });
 
     M.test('test a',function(){
+      this.assert(true);
       this.assert('omg! failure!',false);
+      this.assert(true);
     });
 
   });
