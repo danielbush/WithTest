@@ -78,6 +78,12 @@ tests = with_my_project(function(L){
       this.assert(true);
     });
 
+    M.tests('section with no assertions',function(M){
+      M.test('test with no assertions',function(){
+      });
+    });
+
+
   });
 });
 

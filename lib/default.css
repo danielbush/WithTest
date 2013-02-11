@@ -15,17 +15,33 @@ Default styling for the default printer.
 .-unitjs > .tests {
     padding-right:1em;
 }
+.-unitjs .tests {
+    margin-bottom:0.5em;
+}
+.-unitjs .tests > .name {
+    font-weight:bold;
+}
+.-unitjs .tests.FAIL .name {
+    background-color:#fcc;
+}
+.-unitjs .tests.PASS .name {
+    background-color:#cfc;
+}
+.-unitjs .tests.ERROR .name {
+    background-color:#fcc;
+    color:red;
+}
+.-unitjs .tests.NOTIMPLEMENTED .name {
+    background-color:#ccf;
+    font-weight:bold;
+}
 
 .-unitjs > .tests .tests {
     padding-left:1em;
 }
 .-unitjs > .tests .tests > .name {
-    background-color:#eee;
 }
 
-.-unitjs .tests {
-    margin-bottom:0.5em;
-}
 .-unitjs .tests > .name {
     font-size:130%;
     padding-left:10px;
@@ -38,8 +54,14 @@ Default styling for the default printer.
     float:right;
     color:#555;
 }
-.-unitjs .tests > .name > .stats > span {
+.-unitjs .tests > .name > .stats > .tuple {
+    padding-right:10px;
+}
+.-unitjs .tests > .name > .stats > .tuple > .key {
     font-weight:bold;
+}
+.-unitjs .tests > .name > .stats > .tuple > .value {
+    font-weight:normal;
 }
 
 /* test */
@@ -65,6 +87,10 @@ Default styling for the default printer.
     background-color:#fee;
     color:red;
     font-weight:bold;
+}
+.-unitjs .tests .test.NOTIMPLEMENTED > .name {
+    background-color:#eef;
+    color:blue;
 }
 
 /* test status */
@@ -95,6 +121,6 @@ Default styling for the default printer.
     color:#555;
     font-family:monospace;
     padding:1em;
-    font-size:110%;
+    font-size:100%;
     overflow:scroll;
 }
