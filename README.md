@@ -78,7 +78,7 @@ var with_my_project = function(fn) {
 ```
 
 Then you can execute tests on the spot using this function.
-Note how we make <code>L</code> contain all or parts of our project as will as provide it with <code>with_tests</code>.
+Note how we make <code>L</code> contain all or parts of our project as well as provide it with <code>with_tests</code>.
 ```js
 with_my_project(function(L){
   L.with_tests('section 1',function(M){
