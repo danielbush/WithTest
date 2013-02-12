@@ -7,8 +7,9 @@ browser.
 IMPORTANT
 ---------
 * Unitjs has undergone a complete rewrite and simplification around 9-Feb-2013.
-* Use old tag v0.6.0 for the old version.
-* The rewrite still needs needs testing and refining.
+* Use old tag v0.6.0 for pre-Feb-2013
+* The new unitjs starts from tag v0.9.0
+    * The rewrite still needs needs testing and refining.
 
 Why?
 ----
