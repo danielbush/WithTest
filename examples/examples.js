@@ -66,6 +66,9 @@ var with_my_project = function(fn) {
 
 tests = with_my_project(function(L){
   L.with_tests('section A',function(M){
+    M.test('test a0',function(){
+      this.assert(true);
+    });
 
     M.tests('section A.1',function(M){
       M.test('test b',function(){
