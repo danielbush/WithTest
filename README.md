@@ -54,6 +54,31 @@ Set up
 See examples/index.html for setting up in the browser when developing unitjs.
 For creating a single file, see build/*.list files. Concatenate ext files then main files.  Separately make available any files in assets.list.
 
+Setup / Teardown
+--------------------------
+Setup and teardown functions are added to test sections.
+Nested sections inherit the parent section's setup/teardown functions.
+```js
+var tests = with_tests('section 1',function(M){
+  M.setup(function(){
+    return {
+      foo:true
+    };
+  });
+  M.teardown(function(o){
+    o.foo = false;
+  });
+  M.test('test 1',function(o){
+    this.assert(o.foo);
+  });
+  M.tests('section 1.1',function(M){
+    M.test('test 2',function(o){
+      this.assert(o.foo);  // Should work.
+    });
+  });
+});
+```
+
 Extending for your project
 --------------------------
 
