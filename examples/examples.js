@@ -75,6 +75,12 @@ tests = with_my_project(function(L){
         this.assert(true);
         this.assert(L.lib1.foo);
       });
+      M.tests('when such is the case...',function(M){
+        M.test('test-1',function(o){
+          this.assertEquals('True is true, right?',true,true);
+          throw new Error('whoops');
+        });
+      });
     });
 
     M.test('test a',function(){
@@ -83,7 +89,13 @@ tests = with_my_project(function(L){
       this.assert(true);
     });
 
-    M.tests('section with no assertions',function(M){
+    M.tests('section A.2 with passes',function(M){
+      M.test('some test',function(){
+        this.assert(true);
+      });
+    });
+
+    M.tests('section A.3 with no assertions',function(M){
       M.test('test with no assertions',function(){
       });
     });

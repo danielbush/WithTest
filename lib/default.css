@@ -27,7 +27,7 @@ Default styling for the default printer.
 .-unitjs .tests.PASS .name {
     background-color:#cfc;
 }
-.-unitjs .tests.ERROR .name {
+.-unitjs .tests.ERROR > .name {
     background-color:#fcc;
     color:red;
 }
