@@ -10,7 +10,7 @@ Default styling for the default printer.
     font-size:11pt;
 }
 .-unitjs {
-    width:800px;
+    width:1000px;
 }
 .-unitjs > .tests {
     padding-right:1em;
@@ -36,15 +36,16 @@ Default styling for the default printer.
     font-weight:bold;
 }
 
-.-unitjs > .tests .tests {
-    padding-left:1em;
-}
-
 .-unitjs .tests > .name {
     font-size:130%;
     padding-left:10px;
     line-height:1.8em;
     border-top:solid #555 1px;
+}
+
+/* test-group */
+.-unitjs .tests .test-group {
+    padding-left:1.5em;
 }
 
 /* stats */

@@ -99,11 +99,9 @@ var wid = window.setInterval(function(){
   if(document.body){
     try {
       document.body.appendChild(
-        toggleButton('Collapse all',o.collapseAll,'Expand all'));
+        toggleButton('Tests shown',o.hideTests,'Tests hidden'));
       document.body.appendChild(
-        toggleButton('Hide tests',o.hideTests,'Show tests'));
-      document.body.appendChild(
-        toggleButton('Hide details',o.hideDetails,'Show details'));
+        toggleButton('Details shown',o.hideDetails,'Details hidden'));
       document.body.appendChild(
         printButton('Failed only',o.showOnlyFailed));
       document.body.appendChild(o.node);
