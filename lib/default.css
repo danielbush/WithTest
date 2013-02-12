@@ -39,8 +39,6 @@ Default styling for the default printer.
 .-unitjs > .tests .tests {
     padding-left:1em;
 }
-.-unitjs > .tests .tests > .name {
-}
 
 .-unitjs .tests > .name {
     font-size:130%;
@@ -113,10 +111,10 @@ Default styling for the default printer.
 
 
 /* details */
-.-unitjs .details {
+.-unitjs .tests .test .details {
     padding-left:1em;
 }
-.-unitjs .details pre {
+.-unitjs .tests .test .details pre {
     background-color:#eee;
     color:#555;
     font-family:monospace;
