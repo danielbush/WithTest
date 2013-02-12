@@ -2,6 +2,8 @@
 var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
 var with_tests$ = $dlb_id_au$.unitJS.with$.with_tests$;
 var print       = $dlb_id_au$.unitJS.print.print;
+var printButton = $dlb_id_au$.unitJS.print.printButton;
+var toggleButton = $dlb_id_au$.unitJS.print.toggleButton;
 
 // Example:
 var tests;
@@ -88,11 +90,22 @@ tests = with_my_project(function(L){
 });
 
 console.log(tests);
-var node = print(tests);
+var o = print(tests);
 
 var wid = window.setInterval(function(){
   if(document.body){
-    document.body.appendChild(node);
-    window.clearInterval(wid);
+    try {
+      document.body.appendChild(
+        toggleButton('Collapse all',o.collapseAll,'Expand all'));
+      document.body.appendChild(
+        toggleButton('Hide tests',o.hideTests,'Show tests'));
+      document.body.appendChild(
+        toggleButton('Hide details',o.hideDetails,'Show details'));
+      document.body.appendChild(
+        printButton('Failed only',o.showOnlyFailed));
+      document.body.appendChild(o.node);
+    } finally {
+      window.clearInterval(wid);
+    }
   }
 },100);

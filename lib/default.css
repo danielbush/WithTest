@@ -16,10 +16,10 @@ Default styling for the default printer.
     padding-right:1em;
 }
 .-unitjs .tests {
-    margin-bottom:0.5em;
 }
 .-unitjs .tests > .name {
     font-weight:bold;
+    margin-top:0.2em;
 }
 .-unitjs .tests.FAIL .name {
     background-color:#fcc;
@@ -44,7 +44,7 @@ Default styling for the default printer.
     font-size:130%;
     padding-left:10px;
     line-height:1.8em;
-    border-top:solid #777 2px;
+    border-top:solid #555 1px;
 }
 
 /* stats */
@@ -71,7 +71,8 @@ Default styling for the default printer.
     width:auto;
     padding-left:10px;
     line-height:1.5em;
-    border-top:dotted #777 1px;
+    border-top:dotted #555 1px;
+    margin-top:0.3em;
 }
 .-unitjs .tests .test.PASS > .name {
     background-color:#efe;
