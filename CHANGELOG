@@ -1,3 +1,7 @@
+Version 0.9.0 - Feb-2013
+[DB]
+* Complete rewrite since v0.6.0.	
+* Built around use of 'with_tests'.
 
 Version 0.6.0 - 2012
 [DB]	

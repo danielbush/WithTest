@@ -15,6 +15,8 @@ Why?
 ----
 * You can create nested sections of tests
 * Nice, "lispy" with_tests(...) function for creating sections and subsections of tests
+* Included is a "printer" which takes test results and "prints" them to the DOM along with some functions to selectively filter.
+    * See examples/index.html
 
 Example:
 --------
@@ -74,7 +76,17 @@ var tests = with_tests('section 1',function(M){
   });
   M.tests('section 1.1',function(M){
     M.test('test 2',function(o){
-      this.assert(o.foo);  // Should work.
+      this.assert(o.foo);  // Inherits.
+    });
+  });
+  M.tests('section 1.2',function(M){
+    M.setup(function(){  // Override.
+      return {
+        bar:true
+      };
+    });
+    M.test('test 2',function(o){
+      this.assert(o.bar);
     });
   });
 });
