@@ -92,6 +92,46 @@ var tests = with_tests('section 1',function(M){
 });
 ```
 
+Multiple test modules and aggregating tests
+-------------------------------------------
+Instead of using 
+
+    tests = with_tests('my tests...',function(M){...});
+
+which will run your tests on the spot, you can use:
+
+    tests = with_tests$('my tests...',function(M){...});
+
+This version produces the same object, but does not run the tests.
+To run them, you'll need to:
+
+    var run  = $dlb_id_au$.unitJS.run.run;
+    run(tests);
+
+This will then walk through all the tests and execute them and update the stats.  You can then continue as before:
+
+    var print  = $dlb_id_au$.unitJS.print.print;
+    var node = print(tests);
+    document.body.appendChild(node); // Or whatever you like.
+
+Now suppose we have several such untested modules:
+```js
+  m1 = with_tests$('my tests 1...',function(M){...});
+  m2 = with_tests$('my tests 2...',function(M){...});
+```
+Now what we can do is this:
+```js
+  var data = $dlb_id_au$.unitJS.data;
+  var tests = data.makeTests(); 
+  tests.name = 'All tests';
+  tests.items.push(m1);
+  tests.items.push(m2);
+  run(tests);
+  ...
+```
+So what we've done here is create a super test module called 'tests'.
+We've then made m1 and m2 sections within it.
+
 Extending for your project
 --------------------------
 
@@ -134,3 +174,4 @@ with_my_project(function(L){
   });
 });
 ```
+
