@@ -31,7 +31,7 @@ Default styling for the default printer.
     background-color:#fcc;
     color:red;
 }
-.-unitjs .tests.NOTIMPLEMENTED .name {
+.-unitjs .tests.NOTIMPLEMENTED > .name {
     background-color:#ccf;
     font-weight:bold;
 }
