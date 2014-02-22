@@ -69,6 +69,8 @@ tests = with_tests("all the tests!!!",function(M) {
       it(a).should.be([1,2,3]);
       it(a).should.not_be([1,2,3,4]);
       it(a).should.not_be([0,1,2,3]);
+      var b = [1,[4,5],3];
+      it(b).should.be([1,[4,5],3]);
     });
     M.test("test existence",function(){
       var a = 0;
