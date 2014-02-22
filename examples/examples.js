@@ -9,7 +9,11 @@ var toggleButton = $dlb_id_au$.unitJS.print.toggleButton;
 var it          = $dlb_id_au$.unitJS.shoulds.it;
 var error_for   = $dlb_id_au$.unitJS.shoulds.error_for;
 
-// Example:
+// Build a data structure.
+// We don't need to do this, we could just have one big 'with_tests'
+// function and print the output.
+// Here we have >1 with_tests and we show how you can compose them.
+
 var all = data.makeTests(); 
 var tests;
 
@@ -58,12 +62,14 @@ all.items.push(tests);
 tests = with_tests("all the tests!!!",function(M) {
 
   M.tests("all tests here should be green",function(M){
+
     M.test('this test should pass',function(){
       this.assert(true);
       var a = true;
       it(a).should.be(true);
       it(a).should.not_be(false);
     });
+
     M.test("test array compare",function(){
       var a = [1,2,3];
       it(a).should.be([1,2,3]);
@@ -72,6 +78,7 @@ tests = with_tests("all the tests!!!",function(M) {
       var b = [1,[4,5],3];
       it(b).should.be([1,[4,5],3]);
     });
+
     M.test("test existence",function(){
       var a = 0;
       it(a).should.exist();
@@ -80,10 +87,12 @@ tests = with_tests("all the tests!!!",function(M) {
       a = undefined;
       it(a).should.not_exist();
     });
+
     M.test("test matching",function(){
       it(" foo ").should.match(/foo/);
       it(" foo ").should.not_match(/bar/);
     });
+
     M.test("test error capturing",function(){
       var throwsfn = function() {
         throw new Error("this is expected");
@@ -106,14 +115,6 @@ tests = with_tests("all the tests!!!",function(M) {
     });
   });
 
-
-  M.tests("describe some unexpected test errors",function(M){
-    M.test("this test should throw an unexpected error",function(o){
-      this.assertEquals('True is true, right?',true,true);
-      throw new Error('whoops');
-    });
-  });
-
   M.tests("describe some failing tests",function(M){
     M.test("this test should fail",function(){
       this.assert(true);
@@ -130,6 +131,12 @@ tests = with_tests("all the tests!!!",function(M) {
     });
   });
 
+  M.tests("describe some unexpected test errors",function(M){
+    M.test("this test should throw an unexpected error",function(o){
+      this.assertEquals('True is true, right?',true,true);
+      throw new Error('whoops');
+    });
+  });
 
 });
 
