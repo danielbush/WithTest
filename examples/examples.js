@@ -79,6 +79,8 @@ tests = with_tests("all the tests!!!",function(M) {
       it(a).should.not_exist();
     });
     M.test("test matching",function(){
+      it(" foo ").should.match(/foo/);
+      it(" foo ").should.not_match(/bar/);
     });
     M.test("test error capturing",function(){
       var throwsfn = function() {
@@ -120,6 +122,9 @@ tests = with_tests("all the tests!!!",function(M) {
       var a = false;
       it(a).should.be(false);
       it(a).should.be(true);
+    });
+    M.test("failed match",function(){
+      it(" foo ").should.match(/bar/);
     });
   });
 
