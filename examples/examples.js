@@ -9,55 +9,8 @@ var toggleButton = $dlb_id_au$.unitJS.print.toggleButton;
 var it          = $dlb_id_au$.unitJS.shoulds.it;
 var error_for   = $dlb_id_au$.unitJS.shoulds.error_for;
 
-// Build a data structure.
-// We don't need to do this, we could just have one big 'with_tests'
-// function and print the output.
-// Here we have >1 with_tests and we show how you can compose them.
-
 var all = data.makeTests(); 
 var tests;
-
-all.name = 'all tests';
-
-tests = with_tests('setup/teardown inheritance... check console log',function(M) {
-
-  M.setup(function(){
-    console.log('setup OUTER called...');
-    var o = {
-      finished:false
-    };
-    return o;
-  });
-  M.teardown(function(o){
-    console.log('teardown OUTER called...');
-    o.finished = true;
-    console.log(o.finished);
-  });
-
-  M.test("test standard setup/teardown",function(o){
-    this.assertEquals(false,o.finished);
-  });
-
-  M.tests("nested set of tests with no setup/teardown...",function(M){
-    M.test("we should inherit the setup",function(o){
-      this.assertEquals(false,o.finished);
-    });
-  });
-
-  M.tests("nested set of tests with own setup/teardown...",function(M){
-    M.setup(null); // To disable setup inheritance.
-    M.teardown(function(){
-      console.log('teardown NESTED called...');
-    });
-    M.test("we shouldn't inherit the setup",function(o){
-      this.assertEquals(null,o);
-    });
-  });
-
-});
-
-all.items.push(tests);
-
 
 tests = with_tests("all the tests!!!",function(M) {
 
@@ -141,11 +94,46 @@ tests = with_tests("all the tests!!!",function(M) {
     });
   });
 
+  M.tests('setup/teardown inheritance... check console log',function(M) {
+
+    M.setup(function(){
+      console.log('setup OUTER called...');
+      var o = {
+        finished:false
+      };
+      return o;
+    });
+    M.teardown(function(o){
+      console.log('teardown OUTER called...');
+      o.finished = true;
+      console.log(o.finished);
+    });
+
+    M.test("test standard setup/teardown",function(o){
+      this.assertEquals(false,o.finished);
+    });
+
+    M.tests("nested set of tests with no setup/teardown...",function(M){
+      M.test("we should inherit the setup",function(o){
+        this.assertEquals(false,o.finished);
+      });
+    });
+
+    M.tests("nested set of tests with own setup/teardown...",function(M){
+      M.setup(null); // To disable setup inheritance.
+      M.teardown(function(){
+        console.log('teardown NESTED called...');
+      });
+      M.test("we shouldn't inherit the setup",function(o){
+        this.assertEquals(null,o);
+      });
+    });
+
+  });
+
 });
 
-all.items.push(tests);
-
-var o = print(all);
+var o = print(tests);
 var wid = window.setInterval(function(){
   if(document.body){
     try {
