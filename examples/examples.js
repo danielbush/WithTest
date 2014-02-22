@@ -1,14 +1,19 @@
 
+var data        = $dlb_id_au$.unitJS.data;
 var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
 var with_tests$ = $dlb_id_au$.unitJS.with$.with_tests$;
 var print       = $dlb_id_au$.unitJS.print.print;
 var printButton = $dlb_id_au$.unitJS.print.printButton;
 var toggleButton = $dlb_id_au$.unitJS.print.toggleButton;
 
+
 // Example:
+var all = data.makeTests(); 
 var tests;
 
-tests = with_tests('section 1',function(M){
+all.name = 'all tests';
+
+tests = with_tests('setup/teardown inheritance... check console log',function(M) {
 
   M.setup(function(){
     console.log('setup OUTER called...');
@@ -23,89 +28,66 @@ tests = with_tests('section 1',function(M){
     console.log(o.finished);
   });
 
-  M.test('test 1',function(o){
-    console.log('test called: test 1');
-    console.log(o.finished);
-    this.assert(true);
+  M.test("test standard setup/teardown",function(o){
+    this.assertEquals(false,o.finished);
   });
 
+  M.tests("nested set of tests with no setup/teardown...",function(M){
+    M.test("we should inherit the setup",function(o){
+      this.assertEquals(false,o.finished);
+    });
+  });
 
-  M.tests('section 1.1',function(M){
+  M.tests("nested set of tests with own setup/teardown...",function(M){
     M.setup(null); // To disable setup inheritance.
     M.teardown(function(){
       console.log('teardown NESTED called...');
     });
-    M.test('test a',function(o){
-      console.log('test called: test a');
-      console.log(o.finished);
-      this.assert(true);
+    M.test("we shouldn't inherit the setup",function(o){
+      this.assertEquals(null,o);
     });
   });
 
 });
-//console.log(tests);
+
+all.items.push(tests);
 
 
-// Create your own testing with* function to make testing
-// convenient.
+tests = with_tests("all the tests!!!",function(M) {
 
-var with_my_project = function(fn) {
-  var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
-  var L = {
-    lib1:{foo:true},
-    lib2:{},
-    with_tests:function(){
-      L.tests = with_tests.apply(null,arguments);
-      return L.tests;
-    },
-    tests:null
-  };
-  fn(L);
-  return L.tests;
-};
-
-tests = with_my_project(function(L){
-  L.with_tests('section A',function(M){
-    M.test('test a0',function(){
+  M.tests("describe some passing tests",function(M){
+    M.test('this test should pass',function(){
       this.assert(true);
     });
+  });
 
-    M.tests('section A.1',function(M){
-      M.test('test b',function(){
-        this.assert(true);
-        this.assert(L.lib1.foo);
-      });
-      M.tests('when such is the case...',function(M){
-        M.test('test-1',function(o){
-          this.assertEquals('True is true, right?',true,true);
-          throw new Error('whoops');
-        });
-      });
+  M.tests("describe some empty tests",function(M){
+    M.test('this test should be blue',function(){
     });
+  });
 
-    M.test('test a',function(){
+
+  M.tests("describe some unexpected test errors",function(M){
+    M.test("this test should throw an unexpected error",function(o){
+      this.assertEquals('True is true, right?',true,true);
+      throw new Error('whoops');
+    });
+  });
+
+  M.tests("describe some failing tests",function(M){
+    M.test("this test should fail",function(){
       this.assert(true);
       this.assert('omg! failure!',false);
       this.assert(true);
     });
-
-    M.tests('section A.2 with passes',function(M){
-      M.test('some test',function(){
-        this.assert(true);
-      });
-    });
-
-    M.tests('section A.3 with no assertions',function(M){
-      M.test('test with no assertions',function(){
-      });
-    });
-
-
   });
+
+
 });
 
-console.log(tests);
-var o = print(tests);
+all.items.push(tests);
+
+var o = print(all);
 
 var wid = window.setInterval(function(){
   if(document.body){
