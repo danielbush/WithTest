@@ -6,6 +6,8 @@ var print       = $dlb_id_au$.unitJS.print.print;
 var printButton = $dlb_id_au$.unitJS.print.printButton;
 var toggleButton = $dlb_id_au$.unitJS.print.toggleButton;
 
+var it          = $dlb_id_au$.unitJS.shoulds.it;
+var error_for   = $dlb_id_au$.unitJS.shoulds.error_for;
 
 // Example:
 var all = data.makeTests(); 
@@ -58,6 +60,9 @@ tests = with_tests("all the tests!!!",function(M) {
   M.tests("describe some passing tests",function(M){
     M.test('this test should pass',function(){
       this.assert(true);
+      var a = true;
+      it(a).should.be(true);
+      it(a).should.not_be(false);
     });
   });
 
@@ -80,6 +85,11 @@ tests = with_tests("all the tests!!!",function(M) {
       this.assert('omg! failure!',false);
       this.assert(true);
     });
+    M.test("this test should fail 2",function(){
+      var a = false;
+      it(a).should.be(false);
+      it(a).should.be(true);
+    });
   });
 
 
@@ -88,7 +98,6 @@ tests = with_tests("all the tests!!!",function(M) {
 all.items.push(tests);
 
 var o = print(all);
-
 var wid = window.setInterval(function(){
   if(document.body){
     try {
