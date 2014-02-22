@@ -35,7 +35,8 @@ var tests = with_tests("All my tests",function(M){
 
   // Here's an outer test not inside the nested section.
   M.test('test 1',function(){
-    this.assert(true);
+    var a = true;
+    it(a).should.be(true);
   });
 });
 ```

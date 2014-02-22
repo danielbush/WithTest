@@ -66,8 +66,11 @@ tests = with_tests("all the tests!!!",function(M) {
     M.test('this test should pass',function(){
       this.assert(true);
       var a = true;
+      var b = "1";
       it(a).should.be(true);
       it(a).should.not_be(false);
+      it(b).should.be("1");
+      it(b).should.not_be(1);
     });
 
     M.test("test array compare",function(){
