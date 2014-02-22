@@ -4,34 +4,36 @@ Unitjs
 A small, flexible testing framework for javascript and optionally the
 browser.
 
-IMPORTANT
----------
-* Unitjs has undergone a complete rewrite and simplification around 9-Feb-2013.
-* Use old tag v0.6.0 for pre-Feb-2013
-* The new unitjs starts from tag v0.9.0
-    * The rewrite still needs needs testing and refining.
-
-Why?
-----
-* You can create nested sections of tests
-* Nice, "lispy" with_tests(...) function for creating sections and subsections of tests
-* Included is a "printer" which takes test results and "prints" them to the DOM along with some functions to selectively filter.
-    * See examples/index.html
-
-Example:
+Examples:
 --------
 Go run examples/index.html in your browser.
 
+Summary:
+--------
+
 This will execute some tests stored in nested sections:
+
 ```js
 var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
+var it          = $dlb_id_au$.unitJS.shoulds.it;
+var error_for   = $dlb_id_au$.unitJS.shoulds.error_for;
 
-var tests = with_tests('section 1',function(M){
-  M.tests('section 1.1',function(M){
-    M.test('test a',function(){
-      this.assert(true);
+var tests = with_tests("All my tests",function(M){
+
+  // M.tests = "a group tests".
+  // You can nest these arbitrarily.
+  M.tests("describe some feature",function(M){
+
+    // An actual test is made by called M.test.
+    M.test('it should do blah',function(){
+      var a = true;
+      var b = " foo ";
+      it(a).should.be(true);
+      it(b).should.match(/foo/);
     });
   });
+
+  // Here's an outer test not inside the nested section.
   M.test('test 1',function(){
     this.assert(true);
   });
@@ -41,8 +43,8 @@ var tests = with_tests('section 1',function(M){
 * See 05.data.js for the format of <code>tests</code>.
     * Also do console.log(tests) to see the format.
     * <code>with_tests</code> is just building a tree of 'tests' and 'test' data structures with a root 'tests' data structure ('section 1' in the above).
-* See 10.assertions.js for the assertions that are currently available.
-* Assertions are bound to <code>this</code> inside your test functions.
+
+* 10.shoulds.js replaces 10.assertions.js which is being deprecated.
 
 You can print results like this:
 ```js
@@ -50,6 +52,32 @@ var print  = $dlb_id_au$.unitJS.print.print;
 var node = print(tests);
 document.body.appendChild(node); // Or whatever you like.
 ```
+
+Assertions
+------
+See 10.shoulds.js for the assertions that are currently available.
+```js
+  it(a).should.be(...);
+  it(a).should.not_be(...);
+  it(a).should.exist(...);
+  it(a).should.not_exist(...);
+  it(a).should.match(...);
+  it(a).should.not_match(...);
+```
+
+Catching errors:
+```js
+  var e = error_for(fn);
+  it(e).should.exist();
+  it(e.message).should.be("Your error message");
+  // etc
+```
+
+Older style assertions are still supported.
+These are in 10.assertions.js.  This will be removed at some point.
+These types of assertions are bound to the ```this``` keyword
+in the test.
+
 
 Set up
 ------
@@ -108,7 +136,9 @@ To run them, you'll need to:
     var run  = $dlb_id_au$.unitJS.run.run;
     run(tests);
 
-This will then walk through all the tests and execute them and update the stats.  You can then continue as before:
+This will then walk through all the tests and execute them and update the stats.
+
+You can then continue as before:
 
     var print  = $dlb_id_au$.unitJS.print.print;
     var node = print(tests);
@@ -131,47 +161,4 @@ Now what we can do is this:
 ```
 So what we've done here is create a super test module called 'tests'.
 We've then made m1 and m2 sections within it.
-
-Extending for your project
---------------------------
-
-I really like this pattern:
-```js
-var with_my_project = function(fn) {
-  var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
-  // Create some wrapper object that contains all the libs/modules you
-  // you want to test.
-  // And include with_tests.
-  var L = {
-    lib1:{foo:true},
-    lib2:{},
-    with_tests:function(){
-      L.tests = with_tests.apply(null,arguments);
-    },
-    tests:null
-  };
-  fn(L);
-  return L.tests;
-};
-```
-
-Then you can execute tests on the spot using this function.
-Note how we make <code>L</code> contain all or parts of our project as well as provide it with <code>with_tests</code>.
-```js
-with_my_project(function(L){
-  L.with_tests('section 1',function(M){
-
-    M.tests('section 1.1',function(M){
-      M.test('test b',function(){
-        this.assert(L.lib1.foo);
-      });
-    });
-
-    M.test('test a',function(){
-      this.assert(false);
-    });
-
-  });
-});
-```
 
