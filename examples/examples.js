@@ -57,12 +57,43 @@ all.items.push(tests);
 
 tests = with_tests("all the tests!!!",function(M) {
 
-  M.tests("describe some passing tests",function(M){
+  M.tests("all tests here should be green",function(M){
     M.test('this test should pass',function(){
       this.assert(true);
       var a = true;
       it(a).should.be(true);
       it(a).should.not_be(false);
+    });
+    M.test("test array compare",function(){
+      var a = [1,2,3];
+      it(a).should.be([1,2,3]);
+      it(a).should.not_be([1,2,3,4]);
+      it(a).should.not_be([0,1,2,3]);
+    });
+    M.test("test existence",function(){
+      var a = 0;
+      it(a).should.exist();
+      a = null;
+      it(a).should.not_exist();
+      a = undefined;
+      it(a).should.not_exist();
+    });
+    M.test("test matching",function(){
+    });
+    M.test("test error capturing",function(){
+      var throwsfn = function() {
+        throw new Error("this is expected");
+      };
+      var nothrowsfn = function() {
+        return 1;
+      };
+      var e;
+
+      e = error_for(throwsfn);
+      it(e).should.exist();
+      it(e.message).should.be("this is expected");
+      e = error_for(nothrowsfn);
+      it(e).should.not_exist();
     });
   });
 
