@@ -11,26 +11,37 @@ Go run examples/index.html in your browser.
 Summary:
 --------
 
-This will execute some tests stored in nested sections:
+Suppose we're building a graph data structure.
+We'd do something like this:
 
 ```js
 var with_tests  = $dlb_id_au$.unitJS.with$.with_tests;
 var it          = $dlb_id_au$.unitJS.shoulds.it;
 var error_for   = $dlb_id_au$.unitJS.shoulds.error_for;
 
-var tests = with_tests("All my tests",function(M){
+var tests = with_tests("Data-structure tests",function(M){
 
-  // M.tests = "a group tests".
-  // You can nest these arbitrarily.
-  M.tests("describe some feature",function(M){
+  // Note: M.tests => "a group tests".
+  // (You can nest these arbitrarily.)
 
-    // An actual test is made by called M.test.
-    M.test('it should do blah',function(){
-      var a = true;
-      var b = " foo ";
-      it(a).should.be(true);
-      it(b).should.match(/foo/);
+  M.tests("describe Graph",function(M){
+
+    M.tests("when adding vertices",function(M){
+      // An actual test is made by called M.test.
+      M.test('it should do blah',function(){
+        var a = true;
+        var b = " foo ";
+        it(a).should.be(true);
+        it(b).should.match(/foo/);
+      });
     });
+
+    M.tests("when adding edges",function(M){
+      M.test('it should do foo',function(){
+         ...
+      });
+    });
+
   });
 
   // Here's an outer test not inside the nested section.
@@ -40,6 +51,20 @@ var tests = with_tests("All my tests",function(M){
   });
 });
 ```
+
+The above style of test-writing:
+```
+  describe ..
+    when ...
+      it should ...
+      we can do...
+      I should be able to do...
+    it should ...
+    .. etc ...
+```
+seems to be a very good way to test only what you need to test
+and write code for what you need to do :)
+
 
 * See 05.data.js for the format of <code>tests</code>.
     * Also do console.log(tests) to see the format.
