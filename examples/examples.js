@@ -24,6 +24,10 @@ tests = with_tests("all the tests!!!",function(M) {
       it(a).should.not_be(false);
       it(b).should.be("1");
       it(b).should.not_be(1);
+      it(null).should.be(null);
+      it(false).should.be(false);
+      it(undefined).should.be(undefined);
+      it(null).should.not_be(false);
     });
 
     M.test("test array compare",function(){
