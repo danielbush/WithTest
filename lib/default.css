@@ -36,6 +36,10 @@ Default styling for the default printer.
     font-weight:bold;
 }
 
+.-unitjs .clear {
+    clear:both;
+}
+
 .-unitjs .tests > .name {
     font-size:130%;
     padding-left:10px;
