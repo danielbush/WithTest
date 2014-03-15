@@ -14,6 +14,7 @@ var tests;
 
 tests = with_tests("all the tests!!!",function(M) {
 
+  M.tests("empty section");
   M.tests("all tests here should be green",function(M){
 
     // Throw an error or bad assertion here to test...
