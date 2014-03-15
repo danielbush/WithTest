@@ -96,6 +96,9 @@ tests = with_tests("all the tests!!!",function(M) {
     M.test("failed match",function(){
       it(" foo ").should.match(/bar/);
     });
+    M.test("bad error_for (if you don't pass a function)",function(){
+      var e = error_for("fn");
+    });
   });
 
   M.tests("describe some unexpected test errors",function(M){
