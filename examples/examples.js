@@ -16,6 +16,12 @@ tests = with_tests("all the tests!!!",function(M) {
 
   M.tests("all tests here should be green",function(M){
 
+    // Throw an error or bad assertion here to test...
+    //
+    // Uncomment one of these:
+    //throw new Error("whoopsie!");
+    //it(true).should.be(false);
+
     M.test('this test should pass',function(){
       this.assert(true);
       var a = true;
